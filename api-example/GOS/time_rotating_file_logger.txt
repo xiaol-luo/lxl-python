@@ -1,0 +1,1 @@
+2017-01-16 00:01:57  timeRotatingFileLogger  INFO test timeRotatingFileLogger info 1 [[testlogging.py:<module>:77]]

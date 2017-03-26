@@ -1,0 +1,3 @@
+the item is apple
+the item is boy
+the item is cat

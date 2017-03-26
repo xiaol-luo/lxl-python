@@ -1,0 +1,25 @@
+hello world!
+hello world!
+hello world!
+hello world!
+2015-10-18 17:30:33,609 - logger.py:17 - stream_logger - hello world!
+2015-10-18 17:30:36,110 - logger.py:17 - stream_logger - hello world!
+2015-10-18 17:30:59,277 - logger.py:17 - logger - hello world!
+2015-10-18 17:31:06,204 - logger.py:17 - logger - hello world!
+2015-10-18 17:31:07,389 - logger.py:17 - logger - hello world!
+2015-10-18 17:31:08,449 - logger.py:17 - logger - hello world!
+2015-10-18 17:31:09,323 - logger.py:17 - logger - hello world!
+2015-10-18 17:31:10,181 - logger.py:17 - logger - hello world!
+2015-10-18 17:31:11,320 - logger.py:17 - logger - hello world!
+2015-10-18 17:31:12,412 - logger.py:17 - logger - hello world!
+logger : 2015-10-18 17:40:37,822 DEBUG(10) logger.py:17 logger:<module> - hello world!
+logger : 2015-10-18 17:42:26,305 DEBUG(10) logger.py:17 logger:<module> - hello world!
+logger : 2015-10-18 17:42:26,305 DEBUG(10) logger.py:20 logger:DoLogInFile - LogInFile
+logger : 2015-10-18 17:43:10,282 DEBUG(10) logger.py:17 logger:<module>:17 - hello world!
+logger : 2015-10-18 17:43:10,282 DEBUG(10) logger.py:20 logger:DoLogInFile:20 - LogInFile
+logger : 2015-10-18 17:43:58,658 DEBUG(10) logger.py:17 logger:<module>:17 - hello world!
+logger : 2015-10-18 17:43:58,658 DEBUG(10) logger.py:20 logger:DoLogInFunction:20 - Print Log In Function !
+logger : 2015-10-18 17:44:26,551 DEBUG(10) logger.py:17 logger:<module>:17 - Print Log Not In Function !
+logger : 2015-10-18 17:44:26,551 DEBUG(10) logger.py:20 logger:DoLogInFunction:20 - Print Log In Function !
+logger : 2015-10-18 17:44:47,486 DEBUG(10) logger.py:17 logger:<module>:17 - Print Log Not In Function !
+logger : 2015-10-18 17:44:47,486 DEBUG(10) logger.py:20 logger:DoLogInFunction:20 - Print Log In Function !

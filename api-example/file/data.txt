@@ -1,0 +1,8 @@
+
+#comment
+[title]
+key1=value1
+ key2 = value2 #xxx
+key3 = value3#xxx
+=xx
+xx=

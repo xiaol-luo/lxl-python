@@ -1,0 +1,3 @@
+2017-01-15 21:41:00  root  INFO test logging info [[testlogging.py:<module>:21]]
+2017-01-15 21:41:00  consoleLogger  DEBUG test consoleLogger debug [[testlogging.py:<module>:23]]
+2017-01-15 21:41:00  consoleLogger  INFO test consoleLogger info [[testlogging.py:<module>:24]]

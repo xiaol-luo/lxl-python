@@ -1,0 +1,1 @@
+2017-01-16 00:01:57  rotatingFileLogger  INFO test rotatingFileLogger 2 info [[testlogging.py:<module>:74]]

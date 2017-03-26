@@ -1,0 +1,1 @@
+2017-01-16 00:01:57  fileLogger  INFO test fileLogger info [[testlogging.py:<module>:67]]
