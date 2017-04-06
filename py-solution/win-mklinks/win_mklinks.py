@@ -14,8 +14,10 @@ linkDirMap = {
     "examples/try-lua-protobuf/external/protobuf": "examples/protobuf/src",
     "examples/try-lua-protobuf/external/libs": "ws/output",
     "ws/try-lua-protobuf/luamsg/script": "examples/try-lua-protobuf/luamsg/script",
-    "git-dir/lxl-cpp-code/try-libevent/3rdpart/libevent/include": "git-dir/Libevent/include",
-    "git-dir/lxl-cpp-code/try-libevent/3rdpart/libevent/libs": "git-ws/libevent/bin",
+    "git-dir/lxl-cpp-code/try-libevent/3rdpart/libevent/include": "git-dir/Libevent/WIN32-Code/nmake", 
+    "git-dir/lxl-cpp-code/try-libevent/3rdpart/libevent/libs": "git-ws/libevent/lib",
+    'git-dir/lxl-cpp-code/try-libevent/3rdpart/common/include': 'git-dir/lxl-cpp-code/common',
+    'git-dir/lxl-cpp-code/try-libevent/3rdpart/common/libs': 'git-ws/common',
 }
 
 def RemoveLink():
