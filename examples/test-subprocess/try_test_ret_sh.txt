@@ -1,0 +1,5 @@
+sh test_ret.sh 0
+echo $?
+
+sh test_ret.sh 1
+echo $?
