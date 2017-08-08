@@ -1,0 +1,26 @@
+[env]
+excel_dir = ./excel
+out_config_dir = ../output/config
+out_code_dir = ../output/code
+
+[excel2csv-rank.define]
+file_path = rank/rank.txt
+sheet_name = 排行榜定义
+out_csv_file_path = rank/rank_define.csv
+class_name = RankDefine
+out_cs_file_path = rank/rank_define.cs
+out_cpp_file_path = rank/rank_define.cpp
+out_lua_file_path = rank/rank_define.lua
+
+[excel2csv-hero.define]
+file_path = hero/hero.txt
+sheet_name = 英雄定义
+out_csv_file_path = hero/hero_define.csv
+class_name = HeroDefine
+out_cs_file_path = hero/hero_define.cs
+out_cpp_file_path = hero/hero_define.cpp
+out_lua_file_path = hero/hero_define.lua
+
+
+
+
