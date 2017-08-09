@@ -1,8 +1,8 @@
 import configparser
 import re
 import os
-import codecs
 from define import STRING_EMPTY
+from excel_list import ExcelDescript
 
 class Excel2CsvDescript(object):
     def __init__(self, owner, **kwargs):
@@ -14,6 +14,7 @@ class Excel2CsvDescript(object):
         self.out_cs_file_path = STRING_EMPTY
         self.out_cpp_file_path = STRING_EMPTY
         self.out_lua_file_path = STRING_EMPTY
+        self.excel_desc = None
         return super().__init__(**kwargs)
    
     @staticmethod
@@ -32,7 +33,9 @@ class Excel2CsvDescript(object):
         self.out_cs_file_path = Excel2CsvDescript._build_path(self._owner.out_code_dir, cfg_section["out_cs_file_path"])
         self.out_cpp_file_path = Excel2CsvDescript._build_path(self._owner.out_code_dir, cfg_section["out_cpp_file_path"])
         self.out_lua_file_path = Excel2CsvDescript._build_path(self._owner.out_code_dir, cfg_section["out_lua_file_path"])
-        return True
+        self.excel_desc = ExcelDescript.load(self.file_path, self.sheet_name)
+        return self.excel_desc != None
+
 
 class ConfigListDescript(object):
     ENV_SECTION = "env"
@@ -71,7 +74,7 @@ class ConfigListDescript(object):
     def load(file_path):
         env_desc = None
         if os.path.exists(file_path) and os.path.isfile(file_path): 
-            with codecs.open(file_path, "r") as f:
+            with open(file_path, "r") as f:
                 cfg_praser = configparser.ConfigParser()
                 cfg_praser.read_file(f)
                 env_desc = ConfigListDescript()
