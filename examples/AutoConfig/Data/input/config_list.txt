@@ -1,10 +1,11 @@
 [env]
-excel_dir = ./excel
-out_config_dir = ../output/config
-out_code_dir = ../output/code
+data_dir = F:\git-dir\lxl-python\examples\AutoConfig\Data
+excel_dir = input/excel
+out_config_dir = output/config
+out_code_dir = output/code
 
-[excel2csv-rank.define]
-file_path = rank/rank.txt
+[excel2csv-rank.rank-define]
+file_path = rank/rank.xlsx
 sheet_name = 排行榜定义
 out_csv_file_path = rank/rank_define.csv
 class_name = RankDefine
@@ -12,8 +13,17 @@ out_cs_file_path = rank/rank_define.cs
 out_cpp_file_path = rank/rank_define.cpp
 out_lua_file_path = rank/rank_define.lua
 
-[excel2csv-hero.define]
-file_path = hero/hero.txt
+[excel2csv-rank.rank-group]
+file_path = rank/rank.xlsx
+sheet_name = 排行榜分组
+out_csv_file_path = rank/rank_group.csv
+class_name = RankGroup
+out_cs_file_path = rank/rank_group.cs
+out_cpp_file_path = rank/rank_group.cpp
+out_lua_file_path = rank/rank_group.lua
+
+[excel2csv-hero.hero-define]
+file_path = hero/hero.xlsx
 sheet_name = 英雄定义
 out_csv_file_path = hero/hero_define.csv
 class_name = HeroDefine
