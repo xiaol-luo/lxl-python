@@ -9,8 +9,10 @@ class ExcelFiledNameDescript(object):
         self.name = STRING_EMPTY
         return super().__init__(**kwargs)
 
-    def init(self, excel_desc):
-        pass
+    def init(self, field_desc, name_str):
+        self.field_desc = field_desc
+        self.name = name_str
+        return True
 
 
 class ExcelFieldTypeDescript(object):
@@ -19,8 +21,10 @@ class ExcelFieldTypeDescript(object):
         self.type = STRING_EMPTY
         return super().__init__(**kwargs)
 
-    def init(self, excel_desc):
-        pass
+    def init(self, field_desc, type_str):
+        self.field_desc = field_desc
+        self.type = type_str
+        return True
 
 
 class ExcelFieldDescript(object):
@@ -32,7 +36,13 @@ class ExcelFieldDescript(object):
         return super().__init__(**kwargs)
 
     def init(self, excel_desc, column, name_str, type_str):
-        pass
+        self.column = column
+        self.name_desc = ExcelFiledNameDescript()
+        self.type_desc = ExcelFieldTypeDescript()
+        all_ok = True
+        all_ok = all_ok and self.name_desc.init(self, name_str)
+        all_ok = all_ok and self.type_desc.init(self, type_str)
+        return all_ok
 
 
 class ExcelDescript(object):
@@ -49,6 +59,7 @@ class ExcelDescript(object):
         self.start_row = int(sheet_data[excel_coordinate(1, 1)].value)
         if self.start_row <= 0: 
             return False
+        all_ok = True
         for name_cell, type_cell in self.sheet_data.iter_cols(min_row=self.start_row, max_row=self.start_row+1):
             if not name_cell.value or not type_cell.value:
                 if self.min_column < 0: continue
@@ -59,6 +70,10 @@ class ExcelDescript(object):
             field_desc = ExcelFieldDescript()
             if field_desc.init(self, name_cell.col_idx, name_cell.value, type_cell.value):
                 self.field_descs.append(field_desc)
+            else: 
+                all_ok = False
+                break
+        return all_ok and len(self.field_descs) > 0
             
     @staticmethod
     def load(file_path, sheet_name):
