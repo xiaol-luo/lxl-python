@@ -7,11 +7,13 @@ import collections
 class ExcelFiledNameDescript(object):
     def __init__(self, **kwargs):
         self.field_desc = None
+        self.orignal_str = STRING_EMPTY
         self.name = STRING_EMPTY
         return super().__init__(**kwargs)
 
     def init(self, field_desc, name_str):
         self.field_desc = field_desc
+        self.orignal_str = name_str
         self.name = name_str
         return True
 
@@ -19,11 +21,24 @@ class ExcelFiledNameDescript(object):
 class ExcelFieldTypeDescript(object):
     def __init__(self, **kwargs):
         self.field_desc = None
+        self.orignal_str = STRING_EMPTY
         self.type = STRING_EMPTY
         return super().__init__(**kwargs)
 
     def init(self, field_desc, type_str):
         self.field_desc = field_desc
+        self.orignal_str = type_str
+        return self.parse()
+
+    def parse(self):
+        segment_strs = self.orignal_str.strip().split(';')
+        if len(segment_strs) <= 0 or not segment_strs[0]:
+            return False
+        if not self.parse_type(segment_strs[0]):
+            return False
+        return True
+    
+    def parse_type(self, type_str):
         self.type = type_str
         return True
 
