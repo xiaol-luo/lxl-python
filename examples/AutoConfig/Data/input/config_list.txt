@@ -1,5 +1,5 @@
 [env]
-data_dir = D:\2017code\git-dir\try-python\examples\AutoConfig\Data
+data_dir = F:\git-dir\lxl-python\examples\AutoConfig\Data
 excel_dir = input/excel
 out_config_dir = output/config
 out_code_dir = output/code
@@ -30,6 +30,15 @@ class_name = HeroDefine
 out_cs_file_path = hero/hero_define.cs
 out_cpp_file_path = hero/hero_define.cpp
 out_lua_file_path = hero/hero_define.lua
+
+[excel2csv-config_base.config_base]
+file_path = config_base.xlsx
+sheet_name = ConfigBase
+out_csv_file_path = config_base.csv
+class_name = ConfigBase
+out_cs_file_path = config_base.cs
+out_cpp_file_path = config_base.cpp
+out_lua_file_path = config_base.lua
 
 
 
