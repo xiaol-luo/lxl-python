@@ -1,8 +1,7 @@
 import os
 import openpyxl
 from define import STRING_EMPTY, excel_column, excel_coordinate
-import collections
-
+import re
 
 class ExcelFiledNameDescript(object):
     def __init__(self, **kwargs):
@@ -18,11 +17,114 @@ class ExcelFiledNameDescript(object):
         return True
 
 
+class EnumFieldType:
+    Min = 0
+    Bool = 1
+    Int = 2
+    Long = 3
+    Float = 4
+    Base_Max = 5
+    String = 6
+    Vec = 7
+    Map = 8
+    VecVec = 9
+    MapVec = 10
+    Max = 11
+
+    Base_Type_Strs = {
+        "bool": Bool,
+        "int": Int,
+        "long": Long,
+        "float": Float
+        }
+
+    String_Str = "string"
+
+    @staticmethod
+    def is_base_type(field_type):
+        return field_type > EnumFieldType.Min and field_type < EnumFieldType.Base_Max
+
+    @staticmethod
+    def is_complex_type(field_type):
+        return field_type > EnumFieldType.Base_Max and field_type < EnumFieldType.Max
+
+    @staticmethod
+    def is_collection_type(field_type):
+        return EnumFieldType(field_type) and EnumFieldType.String != field_type
+
+    @staticmethod
+    def parse_type(type_str):
+        ret = False
+        field_type =  key_type = val_type = EnumFieldType.Min
+        type_str = type_str.strip()
+        if not ret:
+            ret, field_type = EnumFieldType._parse_base_type(type_str)
+        if not ret:
+            if type_str == EnumFieldType.String_Str:
+                ret = True
+                field_type = EnumFieldType.String
+        if not ret: # vecvec
+            m_ret = re.match(r"^\[\[(.*)\]\]$", type_str) 
+            if m_ret: 
+                sub_ret, sub_type = EnumFieldType._parse_base_type(m_ret.group(1))
+                if sub_ret and EnumFieldType.is_base_type(sub_type):
+                    field_type = EnumFieldType.VecVec
+                    val_type = sub_type
+                    ret = True
+        if not ret: # mapvec
+            m_ret = re.match(r"^<(.*), \[(.*)\]>$", type_str) 
+            if m_ret:
+                parse_succ = False
+                sub_ret, sub_type = EnumFieldType._parse_base_type(m_ret.group(1))
+                if sub_ret and EnumFieldType.is_base_type(sub_type):
+                    field_type = EnumFieldType.MapVec
+                    key_type = sub_type
+                    sub_ret, sub_type = EnumFieldType._parse_base_type(m_ret.group(2))
+                    if sub_ret and EnumFieldType.is_base_type(sub_type):
+                        val_type = sub_type
+                        parse_succ = True
+                        ret = True
+                if not parse_succ:
+                    field_type =  key_type = val_type = EnumFieldType.Min
+        if not ret: # vec
+            m_ret = re.match(r"^\[(.*)\]$", type_str) 
+            if m_ret: 
+                sub_ret, sub_type = EnumFieldType._parse_base_type(m_ret.group(1))
+                if sub_ret and EnumFieldType.is_base_type(sub_type):
+                    field_type = EnumFieldType.Vec
+                    val_type = sub_type
+                    ret = True
+        if not ret: # map
+            m_ret = re.match(r"^<(.*), (.*)>$", type_str) 
+            if m_ret:
+                parse_succ = False
+                sub_ret, sub_type  = EnumFieldType._parse_base_type(m_ret.group(1))
+                if sub_ret and EnumFieldType.is_base_type(sub_type):
+                    field_type = EnumFieldType.Map
+                    key_type = sub_type
+                    sub_ret, sub_type = EnumFieldType._parse_base_type(m_ret.group(2))
+                    if sub_ret and EnumFieldType.is_base_type(sub_type):
+                        val_type = sub_type
+                        parse_succ = True
+                        ret = True
+                if not parse_succ:
+                    field_type =  key_type = val_type = EnumFieldType.Min
+        return True, field_type, key_type, val_type
+
+    @staticmethod
+    def _parse_base_type(type_str):
+        if type_str in EnumFieldType.Base_Type_Strs:
+            return True, EnumFieldType.Base_Type_Strs[type_str]
+        return False, None
+
+
 class ExcelFieldTypeDescript(object):
     def __init__(self, **kwargs):
         self.field_desc = None
         self.orignal_str = STRING_EMPTY
-        self.type = STRING_EMPTY
+        self.field_type = EnumFieldType.Min
+        self.field_key_type = EnumFieldType.Min
+        self.field_val_type = EnumFieldType.Min
         return super().__init__(**kwargs)
 
     def init(self, field_desc, type_str):
@@ -34,13 +136,23 @@ class ExcelFieldTypeDescript(object):
         segment_strs = self.orignal_str.strip().split(';')
         if len(segment_strs) <= 0 or not segment_strs[0]:
             return False
-        if not self.parse_type(segment_strs[0]):
+        if not self._parse_type(segment_strs[0]):
             return False
+        if len(segment_strs) > 1:
+            for segment_str in segment_strs[1:-1]:
+                self._parse_key(segment_str)
+                self._parse_group(segment_str)
         return True
     
-    def parse_type(self, type_str):
-        self.type = type_str
-        return True
+    def _parse_type(self, type_str):
+        ret, self.field_type, self.field_key_type, self.field_val_type = EnumFieldType.parse_type(type_str)
+        return ret
+
+    def _parse_key(self, segment_str):
+        pass
+
+    def _parse_group(self, segment_str):
+        pass
 
 
 class ExcelFieldDescript(object):

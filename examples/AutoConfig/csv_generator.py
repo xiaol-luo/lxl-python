@@ -19,9 +19,9 @@ class CsvGenerator(object):
             csv_writer = csv.writer(csv_file)
             excel_desc = self.excel2csv_desc.excel_desc
             if csv_writer:
-                csv_row = [field_desc.name_desc.name for field_desc in excel_desc.field_descs]
+                csv_row = [field_desc.name_desc.orignal_str for field_desc in excel_desc.field_descs]
                 csv_writer.writerow(csv_row)
-                csv_row = [field_desc.type_desc.type for field_desc in excel_desc.field_descs]
+                csv_row = [field_desc.type_desc.orignal_str for field_desc in excel_desc.field_descs]
                 csv_writer.writerow(csv_row)
                 for row in excel_desc.sheet_data.iter_rows(
                     min_col=excel_desc.min_column, 

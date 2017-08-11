@@ -50,8 +50,6 @@ class ConfigListDescript(object):
         return super().__init__(**kwargs)
 
     def init(self, cfg_praser):
-        for section in cfg_praser.sections():
-            print("{0}".format(section))
         if not cfg_praser.has_section(ConfigListDescript.ENV_SECTION):
             return False
         env_section = cfg_praser[ConfigListDescript.ENV_SECTION]
@@ -65,7 +63,7 @@ class ConfigListDescript(object):
                 continue
             excel2csv_desc = Excel2CsvDescript(self)
             if not excel2csv_desc.init(cfg_praser[section_name]):
-                log.error("cfg_path - {0} {1} error {2}".format(cfg_path, section_name, cfg_praser.sections[section_name]))
+                print("cfg_path - {0} error {1}".format(section_name, cfg_praser.sections[section_name]))
             else:
                 self.excel2csv_descs.append(excel2csv_desc)
         return True

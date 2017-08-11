@@ -13,8 +13,6 @@ log = logging
 
 def run(cfg_path):
     cfg_list_desc = ConfigListDescript.load(cfg_path)  
-    log.debug(cfg_list_desc)
-
     for excel2csv_desc in cfg_list_desc.excel2csv_descs:
         csv_generator = CsvGenerator(excel2csv_desc)
         if not csv_generator.gen(log):
@@ -22,11 +20,13 @@ def run(cfg_path):
                 excel2csv_desc.file_path, 
                 excel2csv_desc.sheet_name, 
                 excel2csv_desc.out_csv_file_path)
+            return False
+    return True
 
 if __name__ == "__main__":
     log.basicConfig(level=logging.DEBUG)
     if len(sys.argv) < 2:
-        log.debug("")
         sys.exit(1)
-    cfg_file = sys.argv[1]
-    run(os.path.abspath(cfg_file))
+    if not run(os.path.abspath(sys.argv[1])):
+        sys.exit(2)
+    log.info("all ok")
