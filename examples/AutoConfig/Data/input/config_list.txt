@@ -1,5 +1,5 @@
 [env]
-data_dir = F:\git-dir\lxl-python\examples\AutoConfig\Data
+data_dir = D:/2017code/git-dir/try-python/examples/AutoConfig/Data
 excel_dir = input/excel
 out_config_dir = output/config
 out_code_dir = output/code
