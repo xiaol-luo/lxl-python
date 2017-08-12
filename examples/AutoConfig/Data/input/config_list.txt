@@ -1,6 +1,7 @@
 [env]
 data_dir = D:/2017code/git-dir/try-python/examples/AutoConfig/Data
 excel_dir = input/excel
+template_dir = input/template
 out_config_dir = output/config
 out_code_dir = output/code
 
@@ -9,36 +10,36 @@ file_path = rank/rank.xlsx
 sheet_name = 排行榜定义
 out_csv_file_path = rank/rank_define.csv
 class_name = RankDefine
-out_cs_file_path = rank/rank_define.cs
-out_cpp_file_path = rank/rank_define.cpp
-out_lua_file_path = rank/rank_define.lua
+out_cs_file_path = auto-config/rank/rank_define.cs
+out_cpp_file_path = auto-config/rank/rank_define
+out_lua_file_path = auto-config/rank/rank_define.lua
 
 [excel2csv-rank.rank-group]
 file_path = rank/rank.xlsx
 sheet_name = 排行榜分组
 out_csv_file_path = rank/rank_group.csv
 class_name = RankGroup
-out_cs_file_path = rank/rank_group.cs
-out_cpp_file_path = rank/rank_group.cpp
-out_lua_file_path = rank/rank_group.lua
+out_cs_file_path = auto-config/rank/rank_group.cs
+out_cpp_file_path = auto-config/rank/rank_group
+out_lua_file_path = auto-config/rank/rank_group.lua
 
 [excel2csv-hero.hero-define]
 file_path = hero/hero.xlsx
 sheet_name = 英雄定义
 out_csv_file_path = hero/hero_define.csv
 class_name = HeroDefine
-out_cs_file_path = hero/hero_define.cs
-out_cpp_file_path = hero/hero_define.cpp
-out_lua_file_path = hero/hero_define.lua
+out_cs_file_path = auto-config/hero/hero_define.cs
+out_cpp_file_path = auto-config/hero/hero_define
+out_lua_file_path = auto-config/hero/hero_define.lua
 
 [excel2csv-config_base.config_base]
 file_path = config_base.xlsx
 sheet_name = ConfigBase
 out_csv_file_path = config_base.csv
 class_name = ConfigBase
-out_cs_file_path = config_base.cs
-out_cpp_file_path = config_base.cpp
-out_lua_file_path = config_base.lua
+out_cs_file_path = auto-config/config_base.cs
+out_cpp_file_path = auto-config/config_base
+out_lua_file_path = auto-config/config_base.lua
 
 
 
