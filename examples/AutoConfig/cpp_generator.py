@@ -9,7 +9,7 @@ class _CppExtraField(object):
 
     @property
     def head_file(self):
-        return "/".join(self._field_desc.field_type)
+        return "{0}.h".format("/".join(self._field_desc.field_type))
 
     @property
     def field_type(self):
@@ -27,7 +27,7 @@ class _CppField(object):
         EnumFieldType.Int: "int",
         EnumFieldType.Long: "long",
         EnumFieldType.Float: "float",
-        EnumFieldType.String: "string"
+        EnumFieldType.String: "std::string"
     } 
 
     Collect_Type_Str_Format = {
