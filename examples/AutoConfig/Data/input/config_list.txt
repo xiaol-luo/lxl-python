@@ -1,6 +1,7 @@
 [env]
 data_dir = F:\git-dir\lxl-python\examples\AutoConfig\Data
 excel_dir = input/excel
+template_dir = input/template
 out_config_dir = output/config
 out_code_dir = output/code
 

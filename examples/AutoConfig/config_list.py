@@ -44,6 +44,7 @@ class ConfigListDescript(object):
     def __init__(self, **kwargs):
         self.data_dir = STRING_EMPTY
         self.excel_dir = STRING_EMPTY
+        self.template_dir = STRING_EMPTY
         self.out_config_dir = STRING_EMPTY
         self.out_code_dir = STRING_EMPTY
         self.excel2csv_descs = []
@@ -55,6 +56,7 @@ class ConfigListDescript(object):
         env_section = cfg_praser[ConfigListDescript.ENV_SECTION]
         self.data_dir = os.path.abspath(env_section["data_dir"])
         self.excel_dir = os.path.join(self.data_dir, env_section["excel_dir"])
+        self.template_dir = os.path.join(self.data_dir, env_section["template_dir"])
         self.out_config_dir = os.path.join(self.data_dir, env_section["out_config_dir"])
         self.out_code_dir = os.path.join(self.data_dir, env_section["out_code_dir"])
         self.excel2csv_descs = []

@@ -50,16 +50,25 @@ class EnumFieldType:
 
     @staticmethod
     def is_collection_type(field_type):
-        return EnumFieldType(field_type) and EnumFieldType.String != field_type
+        return EnumFieldType.is_complex_type(field_type) and EnumFieldType.String != field_type
+
+    def is_vec_collection_type(field_type):
+        if EnumFieldType.is_collection_type(field_type):
+            return EnumFieldType.Vec == field_type or EnumFieldType.VecVec == field_type
+    
+    def is_map_collection_type(field_type):
+        if EnumFieldType.is_collection_type(field_type):
+            return EnumFieldType.Map == field_type or EnumFieldType.MapVec == field_type
+    
 
     @staticmethod
     def parse_type(type_str):
         ret = False
         field_type =  key_type = val_type = EnumFieldType.Min
         type_str = type_str.strip()
-        if not ret:
+        if not ret: # base 
             ret, field_type = EnumFieldType._parse_base_type(type_str)
-        if not ret:
+        if not ret: # string
             if type_str == EnumFieldType.String_Str:
                 ret = True
                 field_type = EnumFieldType.String
@@ -125,6 +134,8 @@ class ExcelFieldTypeDescript(object):
         self.field_type = EnumFieldType.Min
         self.field_key_type = EnumFieldType.Min
         self.field_val_type = EnumFieldType.Min
+        self.is_key = False
+        self.is_group = False
         return super().__init__(**kwargs)
 
     def init(self, field_desc, type_str):
@@ -139,7 +150,7 @@ class ExcelFieldTypeDescript(object):
         if not self._parse_type(segment_strs[0]):
             return False
         if len(segment_strs) > 1:
-            for segment_str in segment_strs[1:-1]:
+            for segment_str in segment_strs[1:]:
                 self._parse_key(segment_str)
                 self._parse_group(segment_str)
         return True
@@ -149,10 +160,14 @@ class ExcelFieldTypeDescript(object):
         return ret
 
     def _parse_key(self, segment_str):
-        pass
+        if segment_str.lower() == "key" \
+        and not EnumFieldType.is_collection_type(self.field_type):
+            self.is_key = True
 
     def _parse_group(self, segment_str):
-        pass
+        if segment_str.lower() == "group" \
+            and not EnumFieldType.is_collection_type(self.field_type):
+            self.is_group = True
 
 
 class ExcelFieldDescript(object):
