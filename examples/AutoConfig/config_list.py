@@ -9,6 +9,7 @@ class Excel2CsvDescript(object):
         self._owner = owner
         self.file_path = STRING_EMPTY
         self.sheet_name = STRING_EMPTY
+        self.original_out_csv_file_path = STRING_EMPTY
         self.out_csv_file_path = STRING_EMPTY
         self.class_name = STRING_EMPTY
         self.out_cs_file_path = STRING_EMPTY
@@ -29,6 +30,7 @@ class Excel2CsvDescript(object):
     def init(self, cfg_section):
         self.file_path = Excel2CsvDescript._build_path(self._owner.excel_dir, cfg_section["file_path"])
         self.sheet_name = cfg_section["sheet_name"]
+        self.original_out_csv_file_path = cfg_section["out_csv_file_path"]
         self.out_csv_file_path = self._build_path(self._owner.out_config_dir, cfg_section["out_csv_file_path"])
         self.class_name = cfg_section["class_name"]
         self.out_cs_file_path = Excel2CsvDescript._build_path(self._owner.out_code_dir, cfg_section["out_cs_file_path"])
