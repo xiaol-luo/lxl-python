@@ -1,8 +1,8 @@
 import configparser
 import re
 import os
-from define import STRING_EMPTY
-from excel_list import ExcelDescript
+from .define import STRING_EMPTY
+from .excel_list import ExcelDescript
 
 class Excel2CsvDescript(object):
     def __init__(self, owner, **kwargs):

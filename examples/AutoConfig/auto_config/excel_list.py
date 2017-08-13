@@ -1,6 +1,6 @@
 import os
 import openpyxl
-from define import STRING_EMPTY, excel_column, excel_coordinate
+from .define import STRING_EMPTY, excel_column, excel_coordinate
 import re
 
 class ExcelFiledNameDescript(object):

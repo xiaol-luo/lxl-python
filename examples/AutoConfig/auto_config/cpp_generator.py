@@ -1,6 +1,6 @@
 import jinja2
 import os
-from excel_list import EnumFieldType
+from .excel_list import EnumFieldType
 
 class _CppExtraField(object):
     def __init__(self, field_desc, **kwargs):
@@ -39,15 +39,15 @@ class _CppField(object):
 
     Convert_Function_Strs = {
         EnumFieldType.Min: "",
-        EnumFieldType.Bool: "Str2BaseValue",
-        EnumFieldType.Int: "Str2BaseValue",
-        EnumFieldType.Long: "Str2BaseValue",
-        EnumFieldType.Float: "Str2BaseValue",
-        EnumFieldType.String: "Str2Str",
-        EnumFieldType.Vec: "Str2Vec",
-        EnumFieldType.Map: "Str2Map",
-        EnumFieldType.VecVec: "Str2VecVec",
-        EnumFieldType.MapVec: "Str2MapVec"
+        EnumFieldType.Bool: "ConfigUtil::Str2BaseValue",
+        EnumFieldType.Int: "ConfigUtil::Str2BaseValue",
+        EnumFieldType.Long: "ConfigUtil::Str2BaseValue",
+        EnumFieldType.Float: "ConfigUtil::Str2BaseValue",
+        EnumFieldType.String: "ConfigUtil::Str2Str",
+        EnumFieldType.Vec: "ConfigUtil::Str2Vec",
+        EnumFieldType.Map: "ConfigUtil::Str2Map",
+        EnumFieldType.VecVec: "ConfigUtil::Str2VecVec",
+        EnumFieldType.MapVec: "ConfigUtil::Str2MapVec"
     }
 
     def __init__(self, field_desc, class_name, **kwargs):

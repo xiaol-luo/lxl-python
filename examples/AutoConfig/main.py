@@ -3,13 +3,10 @@ import sys
 import configparser
 import re
 import logging
-from config_list import ConfigListDescript 
-from excel_list import ExcelDescript
-from csv_generator import CsvGenerator
-from cpp_generator import CppGenerator, CppLoaderGenerator
 import subprocess
 import shlex
 import jinja2
+from auto_config import *
 
 log = logging
 
