@@ -21,6 +21,14 @@ namespace Config
         return all_ok;
     }
 
+    {{ class_name }}Set::~{{ class_name }}Set()
+    {
+        for (auto cfg : cfg_vec)
+        {
+            delete cfg;
+        }
+    }
+
     bool {{ class_name }}Set::Load(std::string file_path)
     {
         io::CSVReader<{{ fields|length }}, io::trim_chars<' ', '\t'>, io::double_quote_escape<',', '\"'>, io::no_comment> csv_reader(file_path);

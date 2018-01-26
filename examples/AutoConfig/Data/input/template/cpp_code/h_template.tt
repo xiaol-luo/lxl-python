@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include <map>
-#include "Config/ConfigUtil.h"
+#include "Utils/ConfigUtil.h"
 
 {#- extra field inlcude head file #}
 {%- for  extra_field in extra_fields %}
@@ -28,6 +28,7 @@ namespace Config
 
     struct {{ class_name }}Set
     {
+        ~{{ class_name }}Set();
         ConfigCheckFunc cfg_check_fun = nullptr;
         ConfigSetCheckFunc cfg_set_check_fun = nullptr;
         bool Load(std::string file_path);

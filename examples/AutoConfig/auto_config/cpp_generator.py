@@ -1,6 +1,6 @@
 import jinja2
 import os
-from excel_list import EnumFieldType
+from .excel_list import EnumFieldType
 
 class _CppExtraField(object):
     def __init__(self, field_desc, **kwargs):
@@ -39,15 +39,15 @@ class _CppField(object):
 
     Convert_Function_Strs = {
         EnumFieldType.Min: "",
-        EnumFieldType.Bool: "Str2BaseValue",
-        EnumFieldType.Int: "Str2BaseValue",
-        EnumFieldType.Long: "Str2BaseValue",
-        EnumFieldType.Float: "Str2BaseValue",
-        EnumFieldType.String: "Str2Str",
-        EnumFieldType.Vec: "Str2Vec",
-        EnumFieldType.Map: "Str2Map",
-        EnumFieldType.VecVec: "Str2VecVec",
-        EnumFieldType.MapVec: "Str2MapVec"
+        EnumFieldType.Bool: "ConfigUtil::Str2BaseValue",
+        EnumFieldType.Int: "ConfigUtil::Str2BaseValue",
+        EnumFieldType.Long: "ConfigUtil::Str2BaseValue",
+        EnumFieldType.Float: "ConfigUtil::Str2BaseValue",
+        EnumFieldType.String: "ConfigUtil::Str2Str",
+        EnumFieldType.Vec: "ConfigUtil::Str2Vec",
+        EnumFieldType.Map: "ConfigUtil::Str2Map",
+        EnumFieldType.VecVec: "ConfigUtil::Str2VecVec",
+        EnumFieldType.MapVec: "ConfigUtil::Str2MapVec"
     }
 
     def __init__(self, field_desc, class_name, **kwargs):
@@ -173,4 +173,70 @@ class CppGenerator(object):
     @staticmethod
     def gen(excel2csv_desc, template_env, log=None):
         generator = CppGenerator(excel2csv_desc, template_env)
+        return generator.gen_file(log)
+
+class _CppLoadInfo(object):
+    def __init__(self, type_name, field_name, head_file_path, csv_file_path, **kwargs):
+        self.type_name = type_name
+        self.field_name = field_name
+        self.head_file_path = head_file_path
+        self.csv_file_path = csv_file_path
+        return super().__init__(**kwargs)
+
+class CppLoaderGenerator(object):
+    Cpp_Template_File = 'cpp_code/cpp_loader.tt'
+    H_Template_File = 'cpp_code/h_loader.tt'
+    Save_File_Name = 'csv_config_sets'
+    
+    def __init__(self, cfg_list, template_evn, **kwargs):
+        self._cfg_list = cfg_list
+        self._template_evn = template_evn
+        self.code_content = None
+        return super().__init__(**kwargs)
+
+    def gen_code(self, log=None):
+        cpp_template = self._template_evn.get_template(CppLoaderGenerator.Cpp_Template_File)
+        h_template = self._template_evn.get_template(CppLoaderGenerator.H_Template_File)
+        if not cpp_template or not h_template:
+            return None, None
+        load_infos = []
+        for excel2csv_desc in self._cfg_list.excel2csv_descs:
+            type_name = "{0}Set".format(excel2csv_desc.class_name)
+            field_name =  "csv_{0}".format(type_name)
+            head_file_path = "{0}.h".format(
+                excel2csv_desc.original_out_cpp_file_path.replace('\\', '/').strip('./'))
+            csv_file_path = excel2csv_desc.original_out_csv_file_path.replace('\\', '/').strip('./')
+            load_infos.append(_CppLoadInfo(type_name, field_name, head_file_path, csv_file_path))
+        render_dict = {
+            "load_infos": load_infos,
+            "save_file_name": CppLoaderGenerator.Save_File_Name
+        }
+        h_ret = h_template.render(render_dict)
+        cpp_ret = cpp_template.render(render_dict)
+        return h_ret, cpp_ret
+
+    def gen_file(self, log=None):
+        h_code, cpp_code = self.gen_code(log)
+        if not h_code or not cpp_code:
+            return False
+        out_h_file_path = os.path.join(
+            self._cfg_list.out_code_dir, "{0}.h".format(CppLoaderGenerator.Save_File_Name))
+        out_cpp_file_path = os.path.join(
+            self._cfg_list.out_code_dir, "{0}.cpp".format(CppLoaderGenerator.Save_File_Name))
+        file_paths = [out_h_file_path, out_cpp_file_path]
+        codes = [h_code, cpp_code]
+        for i in range(0, len(file_paths)):
+            code = codes[i]
+            file_path = file_paths[i]
+            if os.path.exists(file_path) and os.path.isfile(file_path):
+                os.remove(file_path)
+            if not os.path.exists(os.path.dirname(file_path)):
+                os.makedirs(os.path.dirname(file_path))
+            with open(file_path, 'a') as f:
+                f.write(code)
+        return True
+
+    @staticmethod
+    def gen(cfg_list, template_env, log=None):
+        generator = CppLoaderGenerator(cfg_list, template_env)
         return generator.gen_file(log)

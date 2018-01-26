@@ -1,4 +1,4 @@
-from config_list import *
+from .config_list import *
 import os
 import codecs
 import csv

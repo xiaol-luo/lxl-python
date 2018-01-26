@@ -3,13 +3,10 @@ import sys
 import configparser
 import re
 import logging
-from config_list import ConfigListDescript 
-from excel_list import ExcelDescript
-from csv_generator import CsvGenerator
-from cpp_generator import CppGenerator
 import subprocess
 import shlex
 import jinja2
+from auto_config import *
 
 log = logging
 
@@ -29,6 +26,9 @@ def run(cfg_path):
             log.error("CppGenerator gen fail, file %s:%s->%s", excel2csv_desc.file_path, 
                 excel2csv_desc.sheet_name, excel2csv_desc.out_csv_file_path)
             return False
+    if not CppLoaderGenerator.gen(cfg_list_desc, template_env, log):
+        log.error("CppLoaderGenerator.load fail")
+        return False
     return True
 
 if __name__ == "__main__":
