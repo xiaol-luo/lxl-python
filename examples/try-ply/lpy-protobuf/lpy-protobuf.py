@@ -76,7 +76,6 @@ expr                    : simple_keyword_expr
                         | enum_keyword_expr
                         | message_keyword_expr
 
-
 simple_keyword_expr     : KW_SYNTAX EQUAL STRING
                         | KW_OPTION ID EQUAL values
                         | KW_PACKAGE ID
@@ -92,10 +91,31 @@ enum_content            : ID EQUAL NUMBER SEMICOLON enum_content
 
 '''
 
+simple_keyword_map = {}
+KW_STR_SYNTAX = 'syntax'
+
+#define yacc rule
+def p_expr_simple_keyword(p):
+    'expr : simple_keyword_expr'
+    p[0] = p[1]
+
+'''
+def p_expr_enum_keyword(p):
+    'expr : enum_keyword_expr'
+    p[0] = p[1]
+'''
+
+def p_simple_keyword_expr_syntax(p):
+    'simple_keyword_expr : KW_SYNTAX EQUAL STRING SEMICOLON'
+    simple_keyword_map[KW_STR_SYNTAX] = p[3]
+
+
 if __name__ == "__main__":
     lexer = lex.lex(debug=1)
+    parser = yacc.yacc(debug=1)
     files = [
-        "F:/git-dir/Utopia/Tools/GenProtobuf/Proto/test.proto",
+        "F:/git-dir/Utopia/Tools/GenProtobuf/Proto/try.proto",
+        #"F:/git-dir/Utopia/Tools/GenProtobuf/Proto/test.proto",
         #"F:/git-dir/Utopia/Tools/GenProtobuf/Proto/BattleEnum.proto",
         #"F:/git-dir/Utopia/Tools/GenProtobuf/Proto/Battle.proto",
     ]
@@ -103,9 +123,12 @@ if __name__ == "__main__":
         print("+++++++++++{0}".format(file_path))
         with codecs.open(file_path, 'r', 'utf-8') as f:
             file_content = f.read()
-            lexer.input(file_content)
-            while True:
-                tok = lexer.token()
-                if not tok : break
-                print(tok)
+            ret = parser.parse(file_content)
+            print(ret)
+            if False:
+                lexer.input(file_content)
+                while True:
+                    tok = lexer.token()
+                    if not tok : break
+                    print(tok)
         print("---------------------------------------------")
