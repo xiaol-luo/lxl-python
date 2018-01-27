@@ -241,6 +241,7 @@ STR_EMPTY = ''
 
 class PbNode(object):
     def __init__(self):
+        self.path = STR_EMPTY
         self.name = STR_EMPTY
         self.parent = None
         self.children = {}
@@ -280,6 +281,23 @@ class YaccResult(object):
         self.options = {}
         self.ns = PbNode()
 
+def FindPbNode(pb_node, node_path, is_create):
+    if not pb_node:
+        return None
+    node_names = []
+    if node_path:
+        node_names = node_path.split('.')
+    ret_node = pb_node
+    for node_name in node_names:
+        if not ret_node: break
+        finded_node = ret_node.children.get(node_name, None)
+        if is_create and not finded_node:
+            finded_node = PbNode()
+            finded_node.name = node_name
+            finded_node.parent = ret_node
+            ret_node.children[finded_node.name] = finded_node
+        ret_node = finded_node
+    return ret_node
 
 pb_root = None
 yacc_ret = None
@@ -301,12 +319,16 @@ if __name__ == "__main__":
             yacc_parse_error = 0
             yacc_ret = YaccResult()
             file_content = f.read()
-            parser.parse(file_content, debug=True)
+            pb_nodes = parser.parse(file_content, debug=True)
             if yacc_parse_error > 0:
                 print("parse file {0} fail ".format(file_path))
                 break
-            # so some thing to pb_root
+            package_node = FindPbNode(pb_root, yacc_ret.package, True)
+            for pb_node in pb_nodes:
+                package_node.children[pb_node.name] = pb_node
+                pb_node.parent = package_node        
         print("---------------------------------------------")
+    # at last  we process pb_root tree
     pb_root = None
     yacc_ret = None
     yacc_parse_error = 0
