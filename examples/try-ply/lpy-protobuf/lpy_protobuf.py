@@ -1,9 +1,11 @@
-
 import ply.lex as lex
 import ply.yacc as yacc
 import codecs
 import sys
 import logging as log
+import pickle
+from lpy_define import *
+import os
 
 log.basicConfig(level=log.DEBUG)
 
@@ -25,6 +27,7 @@ tokens = [
     'SEMICOLON',
     'QUOTATION',
     'D_QUATION',
+    'DOT',
     'NUMBER',
     'BOOL',
     'STRING',
@@ -40,6 +43,7 @@ t_EQUAL = r'='
 t_SEMICOLON = r';'
 t_QUOTATION = r'\''
 t_D_QUATION = r'\"'
+t_DOT = r'\.'
 
 def t_STRING(t):
     r'([\"][^\"]*[\"])|[\'][^\']*[\']'
@@ -80,11 +84,14 @@ expr                    : expr simple_keyword_expr
 
 simple_keyword_expr     : KW_SYNTAX EQUAL STRING
                         | KW_OPTION ID EQUAL values
-                        | KW_PACKAGE ID
+                        | KW_PACKAGE package_name
                         | KW_IMPORT STRING
 
 values                  : BOOL
                         | NUMBER
+                        | ID
+
+package_name            : package_name DOT ID
                         | ID
 
 enum_keyword_expr       : KW_ENUM ID L_BRACE enum_content R_BRACE
@@ -138,7 +145,7 @@ def p_simple_keyword_expr_option(p):
     yacc_ret.options[p[2]] = p[4]
 
 def p_simple_keyword_expr_package(p):
-    'simple_keyword_expr : KW_PACKAGE ID SEMICOLON'
+    'simple_keyword_expr : KW_PACKAGE package_name SEMICOLON'
     yacc_ret.package = p[2]
 
 def p_simple_keyword_expr_import(p):
@@ -157,6 +164,21 @@ def p_values_number(p):
 def p_values_string(p):
     'values : STRING'
     p[0] = p[1]
+
+#rule for package_name
+def p_package_name_composite(p):
+    'package_name : package_name DOT ID'
+    child_node = PbNode()
+    child_node.name = p[3]
+    root_node = p[1]
+    child_node.parent = root_node
+    p[0] = "{0}.{1}".format(p[1], p[3])
+
+def p_package_name_id(p):
+    'package_name : ID'
+    node = PbNode()
+    node.name = p[1]
+    p[0] =  p[1]
 
 # rule for enum_keyword_expr
 def p_enum_keyword_expr(p):
@@ -211,9 +233,9 @@ def p_message_content_repeated(p):
     ret = p[1] or []
     msg_field = PbClassField()
     msg_field.is_array = True
-    msg_field.type = p[2]
-    msg_field.name = p[3]
-    msg_field.filed_id = p[5]
+    msg_field.type = p[3]
+    msg_field.name = p[4]
+    msg_field.filed_id = p[6]
     ret.append(msg_field)
     p[0] = ret
 
@@ -237,68 +259,6 @@ def p_error(p):
     print("Syntax error in input")
     yacc_parse_error = yacc_parse_error + 1
 
-STR_EMPTY = ''
-
-class PbNode(object):
-    def __init__(self):
-        self.path = STR_EMPTY
-        self.name = STR_EMPTY
-        self.parent = None
-        self.children = {}
-
-
-class PbClass(PbNode):
-    def __init__(self):
-        PbNode.__init__(self)
-        self.search_packages = []
-        self.fields = []
-
-class PbClassField(object):
-    def __init__(self):
-        self.is_array = False
-        self.type = STR_EMPTY
-        self.name = STR_EMPTY
-        self.filed_id = -1
-
-class PbEnum(PbNode):
-    def __init__(self):
-        PbNode.__init__(self)
-        self.fields = []
-
-
-class PbEnumField(PbNode):
-    def __init__(self):
-        PbNode.__init__(self)
-        self.name = STR_EMPTY
-        self.value = -1
-
-
-class YaccResult(object):
-    def __init__(self):
-        self.syntax = STR_EMPTY
-        self.package = STR_EMPTY
-        self.imports = set()
-        self.options = {}
-        self.ns = PbNode()
-
-def FindPbNode(pb_node, node_path, is_create):
-    if not pb_node:
-        return None
-    node_names = []
-    if node_path:
-        node_names = node_path.split('.')
-    ret_node = pb_node
-    for node_name in node_names:
-        if not ret_node: break
-        finded_node = ret_node.children.get(node_name, None)
-        if is_create and not finded_node:
-            finded_node = PbNode()
-            finded_node.name = node_name
-            finded_node.parent = ret_node
-            ret_node.children[finded_node.name] = finded_node
-        ret_node = finded_node
-    return ret_node
-
 pb_root = None
 yacc_ret = None
 yacc_parse_error = 0
@@ -313,8 +273,14 @@ if __name__ == "__main__":
         #"F:/git-dir/Utopia/Tools/GenProtobuf/Proto/BattleEnum.proto",
         #"F:/git-dir/Utopia/Tools/GenProtobuf/Proto/Battle.proto",
     ]
+
+    INTERNAL_PACKAGE = 'google.protobuf'
+
     for file_path in files:
         print("+++++++++++{0}".format(file_path))
+        proto_name = os.path.basename(file_path)
+        proto_name = os.path.splitext(proto_name)[0]
+
         with codecs.open(file_path, 'r', 'utf-8') as f:
             yacc_parse_error = 0
             yacc_ret = YaccResult()
@@ -326,9 +292,53 @@ if __name__ == "__main__":
             package_node = FindPbNode(pb_root, yacc_ret.package, True)
             for pb_node in pb_nodes:
                 package_node.children[pb_node.name] = pb_node
-                pb_node.parent = package_node        
+                pb_node.parent = package_node
+                if isinstance(pb_node, (PbClass, PbEnum)):
+                    pb_node.belong_package = yacc_ret.package
+                    pb_node.proto_name = proto_name
+                    for field in pb_node.fields:
+                        field.owner = pb_node
         print("---------------------------------------------")
     # at last  we process pb_root tree
+
+    lpy_ret = LpyResult()
+
+    internal_types = ['double', 'float', 'int32', 'int64', 'uint32', 'uint64', 'sint32', 'sint64', 'fixed32', 'sfixed64', 'bool', 'string', 'bytes']
+    package_node = FindPbNode(pb_root, INTERNAL_PACKAGE, True)
+    for internal_type in internal_types:
+        pb_node = PbClass()
+        pb_node.parent = package_node
+        pb_node.belong_package = INTERNAL_PACKAGE
+        pb_node.name = internal_type
+        pb_node.path = "{}.{}".format(INTERNAL_PACKAGE, internal_type)
+        package_node.children[pb_node.name] = pb_node
+        lpy_ret.internal_type_paths.add(pb_node.path)
+
+    path_node_map = {}
+    wait_process_nodes = [pb_root]
+    while len(wait_process_nodes) > 0:
+        curr_node = wait_process_nodes[0]
+        wait_process_nodes.pop(0)
+        parent_path = STR_EMPTY
+        if curr_node.parent and curr_node.parent.path:
+            parent_path = curr_node.parent.path
+        curr_node.path = parent_path and "{0}.{1}".format(parent_path, curr_node.name) or curr_node.name
+        path_node_map[curr_node.path] = curr_node
+        if isinstance(curr_node, PbClass):
+            curr_node.search_packages.add(curr_node.path)
+            curr_node.search_packages.add(parent_path)
+            curr_node.search_packages.add(yacc_ret.package)                    
+            curr_node.search_packages = curr_node.search_packages.union(yacc_ret.imports)
+            curr_node.search_packages.add(INTERNAL_PACKAGE)
+            curr_node.search_packages.add(STR_EMPTY)
+        wait_process_nodes.extend(curr_node.children.values())
+    
+    lpy_ret.Internal_Package = INTERNAL_PACKAGE
+    lpy_ret.path_node_map = path_node_map
+    with open("yacc_ret.txt", 'wb') as f:
+        pickle.dump(lpy_ret, f)
     pb_root = None
     yacc_ret = None
     yacc_parse_error = 0
+
+    
