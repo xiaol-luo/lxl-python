@@ -1,0 +1,597 @@
+Created by PLY version 3.10 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    QUOTATION
+    D_QUATION
+    COMMENT
+
+Grammar
+
+Rule 0     S' -> begin
+Rule 1     begin -> expr
+Rule 2     expr -> <empty>
+Rule 3     expr -> expr simple_keyword_expr
+Rule 4     expr -> expr enum_keyword_expr
+Rule 5     expr -> expr message_keyword_expr
+Rule 6     simple_keyword_expr -> KW_SYNTAX EQUAL STRING SEMICOLON
+Rule 7     simple_keyword_expr -> KW_OPTION ID EQUAL values SEMICOLON
+Rule 8     simple_keyword_expr -> KW_PACKAGE package_name SEMICOLON
+Rule 9     simple_keyword_expr -> KW_IMPORT STRING SEMICOLON
+Rule 10    values -> BOOL
+Rule 11    values -> NUMBER
+Rule 12    values -> STRING
+Rule 13    package_name -> package_name DOT ID
+Rule 14    package_name -> ID
+Rule 15    enum_keyword_expr -> KW_ENUM ID L_BRACE enum_content R_BRACE
+Rule 16    enum_content -> enum_content ID EQUAL NUMBER SEMICOLON
+Rule 17    enum_content -> <empty>
+Rule 18    message_keyword_expr -> KW_MESSAGE ID L_BRACE message_content R_BRACE
+Rule 19    message_content -> message_content ID ID EQUAL NUMBER SEMICOLON
+Rule 20    message_content -> message_content KW_REPEATED ID ID EQUAL NUMBER SEMICOLON
+Rule 21    message_content -> <empty>
+Rule 22    message_content -> message_content message_keyword_expr
+Rule 23    message_content -> message_content enum_keyword_expr
+
+Terminals, with rules where they appear
+
+BOOL                 : 10
+COMMENT              : 
+DOT                  : 13
+D_QUATION            : 
+EQUAL                : 6 7 16 19 20
+ID                   : 7 13 14 15 16 18 19 19 20 20
+KW_ENUM              : 15
+KW_IMPORT            : 9
+KW_MESSAGE           : 18
+KW_OPTION            : 7
+KW_PACKAGE           : 8
+KW_REPEATED          : 20
+KW_SYNTAX            : 6
+L_BRACE              : 15 18
+NUMBER               : 11 16 19 20
+QUOTATION            : 
+R_BRACE              : 15 18
+SEMICOLON            : 6 7 8 9 16 19 20
+STRING               : 6 9 12
+error                : 
+
+Nonterminals, with rules where they appear
+
+begin                : 0
+enum_content         : 15 16
+enum_keyword_expr    : 4 23
+expr                 : 1 3 4 5
+message_content      : 18 19 20 22 23
+message_keyword_expr : 5 22
+package_name         : 8 13
+simple_keyword_expr  : 3
+values               : 7
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . begin
+    (1) begin -> . expr
+    (2) expr -> .
+    (3) expr -> . expr simple_keyword_expr
+    (4) expr -> . expr enum_keyword_expr
+    (5) expr -> . expr message_keyword_expr
+
+    KW_SYNTAX       reduce using rule 2 (expr -> .)
+    KW_OPTION       reduce using rule 2 (expr -> .)
+    KW_PACKAGE      reduce using rule 2 (expr -> .)
+    KW_IMPORT       reduce using rule 2 (expr -> .)
+    KW_ENUM         reduce using rule 2 (expr -> .)
+    KW_MESSAGE      reduce using rule 2 (expr -> .)
+    $end            reduce using rule 2 (expr -> .)
+
+    begin                          shift and go to state 1
+    expr                           shift and go to state 2
+
+state 1
+
+    (0) S' -> begin .
+
+
+
+state 2
+
+    (1) begin -> expr .
+    (3) expr -> expr . simple_keyword_expr
+    (4) expr -> expr . enum_keyword_expr
+    (5) expr -> expr . message_keyword_expr
+    (6) simple_keyword_expr -> . KW_SYNTAX EQUAL STRING SEMICOLON
+    (7) simple_keyword_expr -> . KW_OPTION ID EQUAL values SEMICOLON
+    (8) simple_keyword_expr -> . KW_PACKAGE package_name SEMICOLON
+    (9) simple_keyword_expr -> . KW_IMPORT STRING SEMICOLON
+    (15) enum_keyword_expr -> . KW_ENUM ID L_BRACE enum_content R_BRACE
+    (18) message_keyword_expr -> . KW_MESSAGE ID L_BRACE message_content R_BRACE
+
+    $end            reduce using rule 1 (begin -> expr .)
+    KW_SYNTAX       shift and go to state 6
+    KW_OPTION       shift and go to state 7
+    KW_PACKAGE      shift and go to state 8
+    KW_IMPORT       shift and go to state 9
+    KW_ENUM         shift and go to state 10
+    KW_MESSAGE      shift and go to state 11
+
+    simple_keyword_expr            shift and go to state 3
+    enum_keyword_expr              shift and go to state 4
+    message_keyword_expr           shift and go to state 5
+
+state 3
+
+    (3) expr -> expr simple_keyword_expr .
+
+    KW_SYNTAX       reduce using rule 3 (expr -> expr simple_keyword_expr .)
+    KW_OPTION       reduce using rule 3 (expr -> expr simple_keyword_expr .)
+    KW_PACKAGE      reduce using rule 3 (expr -> expr simple_keyword_expr .)
+    KW_IMPORT       reduce using rule 3 (expr -> expr simple_keyword_expr .)
+    KW_ENUM         reduce using rule 3 (expr -> expr simple_keyword_expr .)
+    KW_MESSAGE      reduce using rule 3 (expr -> expr simple_keyword_expr .)
+    $end            reduce using rule 3 (expr -> expr simple_keyword_expr .)
+
+
+state 4
+
+    (4) expr -> expr enum_keyword_expr .
+
+    KW_SYNTAX       reduce using rule 4 (expr -> expr enum_keyword_expr .)
+    KW_OPTION       reduce using rule 4 (expr -> expr enum_keyword_expr .)
+    KW_PACKAGE      reduce using rule 4 (expr -> expr enum_keyword_expr .)
+    KW_IMPORT       reduce using rule 4 (expr -> expr enum_keyword_expr .)
+    KW_ENUM         reduce using rule 4 (expr -> expr enum_keyword_expr .)
+    KW_MESSAGE      reduce using rule 4 (expr -> expr enum_keyword_expr .)
+    $end            reduce using rule 4 (expr -> expr enum_keyword_expr .)
+
+
+state 5
+
+    (5) expr -> expr message_keyword_expr .
+
+    KW_SYNTAX       reduce using rule 5 (expr -> expr message_keyword_expr .)
+    KW_OPTION       reduce using rule 5 (expr -> expr message_keyword_expr .)
+    KW_PACKAGE      reduce using rule 5 (expr -> expr message_keyword_expr .)
+    KW_IMPORT       reduce using rule 5 (expr -> expr message_keyword_expr .)
+    KW_ENUM         reduce using rule 5 (expr -> expr message_keyword_expr .)
+    KW_MESSAGE      reduce using rule 5 (expr -> expr message_keyword_expr .)
+    $end            reduce using rule 5 (expr -> expr message_keyword_expr .)
+
+
+state 6
+
+    (6) simple_keyword_expr -> KW_SYNTAX . EQUAL STRING SEMICOLON
+
+    EQUAL           shift and go to state 12
+
+
+state 7
+
+    (7) simple_keyword_expr -> KW_OPTION . ID EQUAL values SEMICOLON
+
+    ID              shift and go to state 13
+
+
+state 8
+
+    (8) simple_keyword_expr -> KW_PACKAGE . package_name SEMICOLON
+    (13) package_name -> . package_name DOT ID
+    (14) package_name -> . ID
+
+    ID              shift and go to state 15
+
+    package_name                   shift and go to state 14
+
+state 9
+
+    (9) simple_keyword_expr -> KW_IMPORT . STRING SEMICOLON
+
+    STRING          shift and go to state 16
+
+
+state 10
+
+    (15) enum_keyword_expr -> KW_ENUM . ID L_BRACE enum_content R_BRACE
+
+    ID              shift and go to state 17
+
+
+state 11
+
+    (18) message_keyword_expr -> KW_MESSAGE . ID L_BRACE message_content R_BRACE
+
+    ID              shift and go to state 18
+
+
+state 12
+
+    (6) simple_keyword_expr -> KW_SYNTAX EQUAL . STRING SEMICOLON
+
+    STRING          shift and go to state 19
+
+
+state 13
+
+    (7) simple_keyword_expr -> KW_OPTION ID . EQUAL values SEMICOLON
+
+    EQUAL           shift and go to state 20
+
+
+state 14
+
+    (8) simple_keyword_expr -> KW_PACKAGE package_name . SEMICOLON
+    (13) package_name -> package_name . DOT ID
+
+    SEMICOLON       shift and go to state 21
+    DOT             shift and go to state 22
+
+
+state 15
+
+    (14) package_name -> ID .
+
+    SEMICOLON       reduce using rule 14 (package_name -> ID .)
+    DOT             reduce using rule 14 (package_name -> ID .)
+
+
+state 16
+
+    (9) simple_keyword_expr -> KW_IMPORT STRING . SEMICOLON
+
+    SEMICOLON       shift and go to state 23
+
+
+state 17
+
+    (15) enum_keyword_expr -> KW_ENUM ID . L_BRACE enum_content R_BRACE
+
+    L_BRACE         shift and go to state 24
+
+
+state 18
+
+    (18) message_keyword_expr -> KW_MESSAGE ID . L_BRACE message_content R_BRACE
+
+    L_BRACE         shift and go to state 25
+
+
+state 19
+
+    (6) simple_keyword_expr -> KW_SYNTAX EQUAL STRING . SEMICOLON
+
+    SEMICOLON       shift and go to state 26
+
+
+state 20
+
+    (7) simple_keyword_expr -> KW_OPTION ID EQUAL . values SEMICOLON
+    (10) values -> . BOOL
+    (11) values -> . NUMBER
+    (12) values -> . STRING
+
+    BOOL            shift and go to state 28
+    NUMBER          shift and go to state 29
+    STRING          shift and go to state 30
+
+    values                         shift and go to state 27
+
+state 21
+
+    (8) simple_keyword_expr -> KW_PACKAGE package_name SEMICOLON .
+
+    KW_SYNTAX       reduce using rule 8 (simple_keyword_expr -> KW_PACKAGE package_name SEMICOLON .)
+    KW_OPTION       reduce using rule 8 (simple_keyword_expr -> KW_PACKAGE package_name SEMICOLON .)
+    KW_PACKAGE      reduce using rule 8 (simple_keyword_expr -> KW_PACKAGE package_name SEMICOLON .)
+    KW_IMPORT       reduce using rule 8 (simple_keyword_expr -> KW_PACKAGE package_name SEMICOLON .)
+    KW_ENUM         reduce using rule 8 (simple_keyword_expr -> KW_PACKAGE package_name SEMICOLON .)
+    KW_MESSAGE      reduce using rule 8 (simple_keyword_expr -> KW_PACKAGE package_name SEMICOLON .)
+    $end            reduce using rule 8 (simple_keyword_expr -> KW_PACKAGE package_name SEMICOLON .)
+
+
+state 22
+
+    (13) package_name -> package_name DOT . ID
+
+    ID              shift and go to state 31
+
+
+state 23
+
+    (9) simple_keyword_expr -> KW_IMPORT STRING SEMICOLON .
+
+    KW_SYNTAX       reduce using rule 9 (simple_keyword_expr -> KW_IMPORT STRING SEMICOLON .)
+    KW_OPTION       reduce using rule 9 (simple_keyword_expr -> KW_IMPORT STRING SEMICOLON .)
+    KW_PACKAGE      reduce using rule 9 (simple_keyword_expr -> KW_IMPORT STRING SEMICOLON .)
+    KW_IMPORT       reduce using rule 9 (simple_keyword_expr -> KW_IMPORT STRING SEMICOLON .)
+    KW_ENUM         reduce using rule 9 (simple_keyword_expr -> KW_IMPORT STRING SEMICOLON .)
+    KW_MESSAGE      reduce using rule 9 (simple_keyword_expr -> KW_IMPORT STRING SEMICOLON .)
+    $end            reduce using rule 9 (simple_keyword_expr -> KW_IMPORT STRING SEMICOLON .)
+
+
+state 24
+
+    (15) enum_keyword_expr -> KW_ENUM ID L_BRACE . enum_content R_BRACE
+    (16) enum_content -> . enum_content ID EQUAL NUMBER SEMICOLON
+    (17) enum_content -> .
+
+    R_BRACE         reduce using rule 17 (enum_content -> .)
+    ID              reduce using rule 17 (enum_content -> .)
+
+    enum_content                   shift and go to state 32
+
+state 25
+
+    (18) message_keyword_expr -> KW_MESSAGE ID L_BRACE . message_content R_BRACE
+    (19) message_content -> . message_content ID ID EQUAL NUMBER SEMICOLON
+    (20) message_content -> . message_content KW_REPEATED ID ID EQUAL NUMBER SEMICOLON
+    (21) message_content -> .
+    (22) message_content -> . message_content message_keyword_expr
+    (23) message_content -> . message_content enum_keyword_expr
+
+    R_BRACE         reduce using rule 21 (message_content -> .)
+    ID              reduce using rule 21 (message_content -> .)
+    KW_REPEATED     reduce using rule 21 (message_content -> .)
+    KW_MESSAGE      reduce using rule 21 (message_content -> .)
+    KW_ENUM         reduce using rule 21 (message_content -> .)
+
+    message_content                shift and go to state 33
+
+state 26
+
+    (6) simple_keyword_expr -> KW_SYNTAX EQUAL STRING SEMICOLON .
+
+    KW_SYNTAX       reduce using rule 6 (simple_keyword_expr -> KW_SYNTAX EQUAL STRING SEMICOLON .)
+    KW_OPTION       reduce using rule 6 (simple_keyword_expr -> KW_SYNTAX EQUAL STRING SEMICOLON .)
+    KW_PACKAGE      reduce using rule 6 (simple_keyword_expr -> KW_SYNTAX EQUAL STRING SEMICOLON .)
+    KW_IMPORT       reduce using rule 6 (simple_keyword_expr -> KW_SYNTAX EQUAL STRING SEMICOLON .)
+    KW_ENUM         reduce using rule 6 (simple_keyword_expr -> KW_SYNTAX EQUAL STRING SEMICOLON .)
+    KW_MESSAGE      reduce using rule 6 (simple_keyword_expr -> KW_SYNTAX EQUAL STRING SEMICOLON .)
+    $end            reduce using rule 6 (simple_keyword_expr -> KW_SYNTAX EQUAL STRING SEMICOLON .)
+
+
+state 27
+
+    (7) simple_keyword_expr -> KW_OPTION ID EQUAL values . SEMICOLON
+
+    SEMICOLON       shift and go to state 34
+
+
+state 28
+
+    (10) values -> BOOL .
+
+    SEMICOLON       reduce using rule 10 (values -> BOOL .)
+
+
+state 29
+
+    (11) values -> NUMBER .
+
+    SEMICOLON       reduce using rule 11 (values -> NUMBER .)
+
+
+state 30
+
+    (12) values -> STRING .
+
+    SEMICOLON       reduce using rule 12 (values -> STRING .)
+
+
+state 31
+
+    (13) package_name -> package_name DOT ID .
+
+    SEMICOLON       reduce using rule 13 (package_name -> package_name DOT ID .)
+    DOT             reduce using rule 13 (package_name -> package_name DOT ID .)
+
+
+state 32
+
+    (15) enum_keyword_expr -> KW_ENUM ID L_BRACE enum_content . R_BRACE
+    (16) enum_content -> enum_content . ID EQUAL NUMBER SEMICOLON
+
+    R_BRACE         shift and go to state 36
+    ID              shift and go to state 35
+
+
+state 33
+
+    (18) message_keyword_expr -> KW_MESSAGE ID L_BRACE message_content . R_BRACE
+    (19) message_content -> message_content . ID ID EQUAL NUMBER SEMICOLON
+    (20) message_content -> message_content . KW_REPEATED ID ID EQUAL NUMBER SEMICOLON
+    (22) message_content -> message_content . message_keyword_expr
+    (23) message_content -> message_content . enum_keyword_expr
+    (18) message_keyword_expr -> . KW_MESSAGE ID L_BRACE message_content R_BRACE
+    (15) enum_keyword_expr -> . KW_ENUM ID L_BRACE enum_content R_BRACE
+
+    R_BRACE         shift and go to state 38
+    ID              shift and go to state 37
+    KW_REPEATED     shift and go to state 39
+    KW_MESSAGE      shift and go to state 11
+    KW_ENUM         shift and go to state 10
+
+    message_keyword_expr           shift and go to state 40
+    enum_keyword_expr              shift and go to state 41
+
+state 34
+
+    (7) simple_keyword_expr -> KW_OPTION ID EQUAL values SEMICOLON .
+
+    KW_SYNTAX       reduce using rule 7 (simple_keyword_expr -> KW_OPTION ID EQUAL values SEMICOLON .)
+    KW_OPTION       reduce using rule 7 (simple_keyword_expr -> KW_OPTION ID EQUAL values SEMICOLON .)
+    KW_PACKAGE      reduce using rule 7 (simple_keyword_expr -> KW_OPTION ID EQUAL values SEMICOLON .)
+    KW_IMPORT       reduce using rule 7 (simple_keyword_expr -> KW_OPTION ID EQUAL values SEMICOLON .)
+    KW_ENUM         reduce using rule 7 (simple_keyword_expr -> KW_OPTION ID EQUAL values SEMICOLON .)
+    KW_MESSAGE      reduce using rule 7 (simple_keyword_expr -> KW_OPTION ID EQUAL values SEMICOLON .)
+    $end            reduce using rule 7 (simple_keyword_expr -> KW_OPTION ID EQUAL values SEMICOLON .)
+
+
+state 35
+
+    (16) enum_content -> enum_content ID . EQUAL NUMBER SEMICOLON
+
+    EQUAL           shift and go to state 42
+
+
+state 36
+
+    (15) enum_keyword_expr -> KW_ENUM ID L_BRACE enum_content R_BRACE .
+
+    KW_SYNTAX       reduce using rule 15 (enum_keyword_expr -> KW_ENUM ID L_BRACE enum_content R_BRACE .)
+    KW_OPTION       reduce using rule 15 (enum_keyword_expr -> KW_ENUM ID L_BRACE enum_content R_BRACE .)
+    KW_PACKAGE      reduce using rule 15 (enum_keyword_expr -> KW_ENUM ID L_BRACE enum_content R_BRACE .)
+    KW_IMPORT       reduce using rule 15 (enum_keyword_expr -> KW_ENUM ID L_BRACE enum_content R_BRACE .)
+    KW_ENUM         reduce using rule 15 (enum_keyword_expr -> KW_ENUM ID L_BRACE enum_content R_BRACE .)
+    KW_MESSAGE      reduce using rule 15 (enum_keyword_expr -> KW_ENUM ID L_BRACE enum_content R_BRACE .)
+    $end            reduce using rule 15 (enum_keyword_expr -> KW_ENUM ID L_BRACE enum_content R_BRACE .)
+    R_BRACE         reduce using rule 15 (enum_keyword_expr -> KW_ENUM ID L_BRACE enum_content R_BRACE .)
+    ID              reduce using rule 15 (enum_keyword_expr -> KW_ENUM ID L_BRACE enum_content R_BRACE .)
+    KW_REPEATED     reduce using rule 15 (enum_keyword_expr -> KW_ENUM ID L_BRACE enum_content R_BRACE .)
+
+
+state 37
+
+    (19) message_content -> message_content ID . ID EQUAL NUMBER SEMICOLON
+
+    ID              shift and go to state 43
+
+
+state 38
+
+    (18) message_keyword_expr -> KW_MESSAGE ID L_BRACE message_content R_BRACE .
+
+    KW_SYNTAX       reduce using rule 18 (message_keyword_expr -> KW_MESSAGE ID L_BRACE message_content R_BRACE .)
+    KW_OPTION       reduce using rule 18 (message_keyword_expr -> KW_MESSAGE ID L_BRACE message_content R_BRACE .)
+    KW_PACKAGE      reduce using rule 18 (message_keyword_expr -> KW_MESSAGE ID L_BRACE message_content R_BRACE .)
+    KW_IMPORT       reduce using rule 18 (message_keyword_expr -> KW_MESSAGE ID L_BRACE message_content R_BRACE .)
+    KW_ENUM         reduce using rule 18 (message_keyword_expr -> KW_MESSAGE ID L_BRACE message_content R_BRACE .)
+    KW_MESSAGE      reduce using rule 18 (message_keyword_expr -> KW_MESSAGE ID L_BRACE message_content R_BRACE .)
+    $end            reduce using rule 18 (message_keyword_expr -> KW_MESSAGE ID L_BRACE message_content R_BRACE .)
+    R_BRACE         reduce using rule 18 (message_keyword_expr -> KW_MESSAGE ID L_BRACE message_content R_BRACE .)
+    ID              reduce using rule 18 (message_keyword_expr -> KW_MESSAGE ID L_BRACE message_content R_BRACE .)
+    KW_REPEATED     reduce using rule 18 (message_keyword_expr -> KW_MESSAGE ID L_BRACE message_content R_BRACE .)
+
+
+state 39
+
+    (20) message_content -> message_content KW_REPEATED . ID ID EQUAL NUMBER SEMICOLON
+
+    ID              shift and go to state 44
+
+
+state 40
+
+    (22) message_content -> message_content message_keyword_expr .
+
+    R_BRACE         reduce using rule 22 (message_content -> message_content message_keyword_expr .)
+    ID              reduce using rule 22 (message_content -> message_content message_keyword_expr .)
+    KW_REPEATED     reduce using rule 22 (message_content -> message_content message_keyword_expr .)
+    KW_MESSAGE      reduce using rule 22 (message_content -> message_content message_keyword_expr .)
+    KW_ENUM         reduce using rule 22 (message_content -> message_content message_keyword_expr .)
+
+
+state 41
+
+    (23) message_content -> message_content enum_keyword_expr .
+
+    R_BRACE         reduce using rule 23 (message_content -> message_content enum_keyword_expr .)
+    ID              reduce using rule 23 (message_content -> message_content enum_keyword_expr .)
+    KW_REPEATED     reduce using rule 23 (message_content -> message_content enum_keyword_expr .)
+    KW_MESSAGE      reduce using rule 23 (message_content -> message_content enum_keyword_expr .)
+    KW_ENUM         reduce using rule 23 (message_content -> message_content enum_keyword_expr .)
+
+
+state 42
+
+    (16) enum_content -> enum_content ID EQUAL . NUMBER SEMICOLON
+
+    NUMBER          shift and go to state 45
+
+
+state 43
+
+    (19) message_content -> message_content ID ID . EQUAL NUMBER SEMICOLON
+
+    EQUAL           shift and go to state 46
+
+
+state 44
+
+    (20) message_content -> message_content KW_REPEATED ID . ID EQUAL NUMBER SEMICOLON
+
+    ID              shift and go to state 47
+
+
+state 45
+
+    (16) enum_content -> enum_content ID EQUAL NUMBER . SEMICOLON
+
+    SEMICOLON       shift and go to state 48
+
+
+state 46
+
+    (19) message_content -> message_content ID ID EQUAL . NUMBER SEMICOLON
+
+    NUMBER          shift and go to state 49
+
+
+state 47
+
+    (20) message_content -> message_content KW_REPEATED ID ID . EQUAL NUMBER SEMICOLON
+
+    EQUAL           shift and go to state 50
+
+
+state 48
+
+    (16) enum_content -> enum_content ID EQUAL NUMBER SEMICOLON .
+
+    R_BRACE         reduce using rule 16 (enum_content -> enum_content ID EQUAL NUMBER SEMICOLON .)
+    ID              reduce using rule 16 (enum_content -> enum_content ID EQUAL NUMBER SEMICOLON .)
+
+
+state 49
+
+    (19) message_content -> message_content ID ID EQUAL NUMBER . SEMICOLON
+
+    SEMICOLON       shift and go to state 51
+
+
+state 50
+
+    (20) message_content -> message_content KW_REPEATED ID ID EQUAL . NUMBER SEMICOLON
+
+    NUMBER          shift and go to state 52
+
+
+state 51
+
+    (19) message_content -> message_content ID ID EQUAL NUMBER SEMICOLON .
+
+    R_BRACE         reduce using rule 19 (message_content -> message_content ID ID EQUAL NUMBER SEMICOLON .)
+    ID              reduce using rule 19 (message_content -> message_content ID ID EQUAL NUMBER SEMICOLON .)
+    KW_REPEATED     reduce using rule 19 (message_content -> message_content ID ID EQUAL NUMBER SEMICOLON .)
+    KW_MESSAGE      reduce using rule 19 (message_content -> message_content ID ID EQUAL NUMBER SEMICOLON .)
+    KW_ENUM         reduce using rule 19 (message_content -> message_content ID ID EQUAL NUMBER SEMICOLON .)
+
+
+state 52
+
+    (20) message_content -> message_content KW_REPEATED ID ID EQUAL NUMBER . SEMICOLON
+
+    SEMICOLON       shift and go to state 53
+
+
+state 53
+
+    (20) message_content -> message_content KW_REPEATED ID ID EQUAL NUMBER SEMICOLON .
+
+    R_BRACE         reduce using rule 20 (message_content -> message_content KW_REPEATED ID ID EQUAL NUMBER SEMICOLON .)
+    ID              reduce using rule 20 (message_content -> message_content KW_REPEATED ID ID EQUAL NUMBER SEMICOLON .)
+    KW_REPEATED     reduce using rule 20 (message_content -> message_content KW_REPEATED ID ID EQUAL NUMBER SEMICOLON .)
+    KW_MESSAGE      reduce using rule 20 (message_content -> message_content KW_REPEATED ID ID EQUAL NUMBER SEMICOLON .)
+    KW_ENUM         reduce using rule 20 (message_content -> message_content KW_REPEATED ID ID EQUAL NUMBER SEMICOLON .)
+

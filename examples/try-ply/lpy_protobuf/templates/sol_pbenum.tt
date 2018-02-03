@@ -1,0 +1,26 @@
+namespace TryUserType
+{
+    {{ data.tt_bind_fn }}
+	{
+		struct PBMsg 
+		{
+			static void DoLuaBind(lua_State *L, const std::string &name_space, const std::string &name)
+			{
+				assert(!name.empty());
+				sol::state_view lua(L);
+				sol::table ns_table = GetOrNewLuaNameSpaceTable(lua, name_space);
+				{
+					sol::optional<sol::object> opt_object = ns_table[name];
+					assert(!opt_object);
+				}
+				ns_table.new_enum(name,
+                {%- for field in data.fields %}
+					"{{ field.tt_name }}", {{ data.tt_full_type }}::{{ field.tt_name }},
+                {%- endfor %}
+				);
+			}
+		};
+		AddLuaBindUserTypeFn([](lua_State *L) {PBMsg::DoLuaBind(L, "{{ data.tt_name_space }}", "{{ data.tt_type }}"); });
+	}
+}
+ 	
