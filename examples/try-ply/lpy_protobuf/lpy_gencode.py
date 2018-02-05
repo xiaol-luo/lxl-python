@@ -13,7 +13,7 @@ if __name__ == "__main__":
     yacc_ret_file = "yacc_ret.txt"
     if len(sys.argv) >= 2:
         yacc_ret_file = sys.argv[1]
-    out_dir = STR_EMPTY
+    out_dir = "."
     if len(sys.argv) >= 3:
         out_dir = sys.argv[2]
     with open(yacc_ret_file, 'rb') as f:

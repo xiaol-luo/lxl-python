@@ -1,3 +1,7 @@
+#include "UserType/TryUserTypeUtil.h"
+#include <sol.hpp>
+#include "{{ data.tt_head_file }}"
+
 namespace TryUserType
 {
     {{ data.tt_bind_fn }}
@@ -15,12 +19,14 @@ namespace TryUserType
 				}
 				ns_table.new_enum(name,
                 {%- for field in data.fields %}
-					"{{ field.tt_name }}", {{ data.tt_full_type }}::{{ field.tt_name }},
+					"{{ field.tt_name }}", {{ data.tt_full_type }}::{{ field.tt_enum_name }}
+					{%- if data.fields|last != field %}, {%- endif %}
                 {%- endfor %}
 				);
 			}
 		};
-		AddLuaBindUserTypeFn([](lua_State *L) {PBMsg::DoLuaBind(L, "{{ data.tt_name_space }}", "{{ data.tt_type }}"); });
+		
+		PBMsg::DoLuaBind(L, "{{ data.tt_name_space }}", "{{ data.tt_type }}"); 
 	}
 }
  	

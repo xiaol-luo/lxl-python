@@ -1,0 +1,40 @@
+#include <sol.hpp>
+#include "protobuf/ProtobufLuaBindRepeated.h"
+#include "protobuf/ProtobufLuaBindRepeatedPtr.h"
+
+{%- for item in  head_files %}
+#include "{{ item }}"
+{%- endfor %}
+
+namespace TryUserType 
+{
+
+{%- for item in  declare_fns %}
+	extern {{ item }};
+{%- endfor %}
+
+	void SolLuaBindProtobuf(lua_State *L)
+	{
+		PBLuaBindRepeatedField<double>(L, "", "google_protobuf_double");
+		PBLuaBindRepeatedField<float>(L, "", "google_protobuf_float");
+		PBLuaBindRepeatedField<google::protobuf::int32>(L, "", "google_protobuf_int32");
+		PBLuaBindRepeatedField<google::protobuf::int64>(L, "", "google_protobuf_int64");
+		PBLuaBindRepeatedField<google::protobuf::uint32>(L, "", "google_protobuf_uint32");
+		PBLuaBindRepeatedField<google::protobuf::uint64>(L, "", "google_protobuf_uint64");
+		PBLuaBindRepeatedField<bool>(L, "", "google_protobuf_bool");
+		PBLuaBindRepeatedField<google::protobuf::string>(L, "", "google_protobuf_string");
+		PBLuaBindRepeatedField<unsigned char>(L, "", "google_protobuf_uchar");
+		PBLuaBindRepeatedField<char>(L, "", "google_protobuf_char");
+		PBLuaBindRepeatedPtrField<std::string>(L, "", "google_protobuf_string");
+
+
+{%- for item in  execute_fns %}
+		{{ item }}
+{%- endfor %}
+
+{%- for item in  msgs %}
+		{{ item.tt_RepeatedFieldExecuteFn }}
+{%- endfor %}
+
+	}
+}

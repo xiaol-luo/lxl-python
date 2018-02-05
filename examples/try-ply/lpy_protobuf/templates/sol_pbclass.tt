@@ -1,2 +1,37 @@
-123145
-<>
+#include "UserType/TryUserTypeUtil.h"
+#include <sol.hpp>
+#include "{{ data.tt_head_file }}"
+
+namespace TryUserType
+{
+    {{ data.tt_bind_fn }}
+	{
+		struct PBMsg
+		{
+			static void PBMsg::DoLuaBind(lua_State * L, const std::string & name_space, const std::string & name)
+			{
+				assert(!name.empty());
+				sol::usertype<{{ data.tt_full_type }}> meta_table(
+					sol::constructors<{{ data.tt_full_type }}(), {{ data.tt_full_type }}({{ data.tt_full_type }} &)>(),
+                    
+				{%- for field in data.fields %}
+                    {%- if field.IsArray or (not field.IsInternalType and not field.IsEnum ) %}
+                        "{{ field.tt_name }}", sol::property([]({{ data.tt_full_type }} &self) { return self.mutable_{{ field.tt_name }}(); })
+                    {%- else %}
+                        {%- if  field.IsString  %}
+                        "{{ field.tt_name }}", sol::property(&{{ data.tt_full_type }}::{{ field.tt_name }}, []({{ data.tt_full_type }} &self, std::string v){self.set_{{ field.tt_name }}(v);}) 
+                        {%- else %}
+                        "{{ field.tt_name }}", sol::property(&{{ data.tt_full_type }}::{{ field.tt_name }}, &{{ data.tt_full_type }}::set_{{ field.tt_name }}) 
+                        {%- endif %}
+                    {%- endif %}
+                    {%- if data.fields|last != field %}, {%- endif %}
+                {%- endfor %}
+				);
+
+				BindLuaUserType(sol::state_view(L), meta_table, name, name_space);
+			}
+		};
+
+		PBMsg::DoLuaBind(L, "{{ data.tt_name_space }}", "{{ data.tt_type }}"); 
+	}
+}
