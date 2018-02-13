@@ -43,6 +43,8 @@ with g_app:
     #@bottle.route('/login', method='GET')
     def login_get():
         xx = bottle.jinja2_template('login')
+        cookies_key = bottle.request.get_cookie("cookies_key", "")
+        print("cookies_key", cookies_key)
         return xx
         return '''
         <form action='/login' method='post'>
@@ -55,6 +57,7 @@ with g_app:
     @bottle.post('/login')
     #bottle.route('/login', method='POST')
     def login_post():
+        cookies_key = bottle.request.get_cookie("cookies_key", "")
         username = bottle.request.forms.get('username')
         password = bottle.request.forms.get('password')
         user_dict = {
@@ -75,6 +78,15 @@ with g_app:
     @bottle.route('/file/<filename:path>')
     def get_file(filename):
         return bottle.static_file(filename, os.curdir, download=True)
+
+    @bottle.route('/json')
+    def get_json():
+        ret = {
+            "int": 1,
+            "float": 2.0,
+            "array": [3, 4]
+        }
+        return ret
 
 if __name__ == "__main__":
     ws_dir = os.path.abspath(os.path.dirname(sys.argv[0]))

@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <script type="text/javascript">            
+            var timer_fns = {};
+            function trigger_timers()
+            {
+                for (id in timer_fns)
+                {
+                    timer_fns[id]();
+                }
+            }
+            window.setInterval(trigger_timers, 1000);
+            function query_cmd_ret()
+            {
+                var content_div = document.getElementById('excute_result')
+                var next_idx = content_div.innerText.length
+                var xhr = new XMLHttpRequest()
+                xhr.open('GET', '/query_cmd_ret?next_idx=' + next_idx, true)
+                xhr.onreadystatechange = function()
+                {
+                    if (4 == xhr.readyState && 200 == xhr.status)
+                    {
+                        var ret = JSON.parse(xhr.responseText)
+                        content_div.innerText = content_div.innerText.substr(0, ret.index) + ret.ret;
+                        if (!ret.running)
+                            delete timer_fns['query_ret'];
+                    }
+                }
+                xhr.send()
+            }
+
+            function excute_cmd()
+            {
+                var xhr = new XMLHttpRequest()
+                xhr.open('GET', '/excute_cmd', true)
+                xhr.onreadystatechange = function()
+                {
+                    if (4 == xhr.readyState && 200 == xhr.status)
+                    {
+                        document.getElementById('my_div').innerHTML = xhr.responseText;
+                        timer_fns['query_ret'] = query_cmd_ret;
+                        document.getElementById('excute_result').textContent = ""
+                    }
+                }
+                xhr.send()
+            }
+
+        </script>
+    </head>
+    <body>
+        <div id='my_div'><h3>let ajax change this text. </h3></div>
+        <button type='button' onclick="excute_cmd()" >change content</button>
+        <div id='excute_result'>
+
+        </div>
+    </body>
+</html>
