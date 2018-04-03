@@ -1,0 +1,42 @@
+#include "UserType/TryUserTypeUtil.h"
+#include <sol.hpp>
+#include "AutoBind/AutoHead.h"
+
+namespace TryUserType
+{
+	void LuaBind_{{ meta_data.full_path|replace(".", "_") }}(lua_State *L)
+	{
+		struct LuaBindImpl
+		{
+			static void DoLuaBind(lua_State *L)
+			{
+				std::string name_space = "{{ meta_data.space_path }}";
+
+				sol::state_view lua(L);
+
+				sol::table ns_table = GetOrNewLuaNameSpaceTable(lua, name_space);
+			
+			{%- for item in meta_data.vars %}				
+				{
+					std::string name = "{{ item.spelling }}";
+					sol::object obj = ns_table.raw_get_or(name, sol::nil);
+					assert(!obj.valid());
+					ns_table.set(name, {{ item.full_path|replace(".", "::") }});
+				}
+			{%- endfor %}
+			
+			{%- for item in meta_data.fns %}				
+				{
+					std::string name = "{{ item.spelling }}";
+					sol::object obj = ns_table.raw_get_or(name, sol::nil);
+					assert(!obj.valid());
+					ns_table.set_function(name, {{ item.full_path|replace(".", "::") }});
+				}
+			{%- endfor %}
+			
+			}
+		};
+
+		LuaBindImpl::DoLuaBind(L);
+	}
+}

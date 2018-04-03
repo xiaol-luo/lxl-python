@@ -40,19 +40,27 @@ def get_cursor_id(cursor, cursor_list = []):
     return len(cursor_list) - 1
 
 def get_info(node, depth=0):
+    usr = node.get_usr()
     if node.kind == CursorKind.CXX_METHOD:
         tmp = node.type.kind
         tmp = node.type.argument_types()
         tmp = node.type.get_typedef_name()
         tmp = node.type.get_address_space()
+        tmp = node.type.get_result()
+        tmp = node.type.get_result()
+    if node.raw_comment:
+        tmp = node.type.kind
+    if node.get_definition():
+        tmp = node.get_definition()
 
     children = [get_info(c, depth+1)
                 for c in node.get_children()]
     return [ {'id' : get_cursor_id(node)},
-             {'kind' : node.kind},
+             {'cursor_kind' : node.kind},
              {'type_kind' : node.type.kind},
              {'usr' : node.get_usr()},
              {'spelling' : node.spelling},
+             {'displayname' : node.displayname},
              {'location' : node.location},
              {'extent.start' : node.extent.start},
              {'extent.end' : node.extent.end},
@@ -62,6 +70,7 @@ def get_info(node, depth=0):
 
 def main():
     from clang.cindex import Index
+    from clang.cindex import TranslationUnit
     from pprint import pprint
 
     from optparse import OptionParser, OptionGroup
@@ -83,12 +92,22 @@ def main():
 
     import os
     index = Index.create()
-    tu = index.parse("./examples/cindex/TryOwnType.h", ['-x', 'c++', '-std=c++11', '-D__CODE_GENERATOR__'])
+    tu = index.parse("./examples/cindex/TryOwnType.h", ['-x', 'c++', '-std=c++11', '-D__CODE_GENERATOR__'], \
+        options= 0 + \
+            + TranslationUnit.PARSE_INCLUDE_BRIEF_COMMENTS_IN_CODE_COMPLETION \
+            + TranslationUnit.PARSE_SKIP_FUNCTION_BODIES \
+            + TranslationUnit.PARSE_INCOMPLETE \
+            + TranslationUnit.PARSE_CACHE_COMPLETION_RESULTS \
+            )
     if not tu:
         parser.error("unable to load input")
 
+    tokens = tu.get_tokens()
     pprint(('diags', map(get_diag_info, tu.diagnostics)))
     pprint(('nodes', get_info(tu.cursor)))
+    
+
+
 
 if __name__ == '__main__':
     main()

@@ -1,0 +1,255 @@
+from clang.cindex import CursorKind, AccessSpecifier
+
+
+class base_enum(object):
+    """
+    Common base class for named enumerations .
+
+    Subclasses must define their own _kinds and _name_map members, as:
+    _kinds = []
+    _name_map = None
+    These values hold the per-subclass instances and value-to-name mappings,
+    respectively.
+
+    """
+
+    def __init__(self, value):
+        if value >= len(self.__class__._kinds):
+            self.__class__._kinds += [None] * (value - len(self.__class__._kinds) + 1)
+        if self.__class__._kinds[value] is not None:
+            raise ValueError('{0} value {1} already loaded'.format(
+                str(self.__class__), value))
+        self.value = value
+        self.__class__._kinds[value] = self
+        self.__class__._name_map = None
+
+    def from_param(self):
+        return self.value
+
+    @property
+    def name(self):
+        """Get the enumeration name of this cursor kind."""
+        if self._name_map is None:
+            self._name_map = {}
+            for key, value in self.__class__.__dict__.items():
+                if isinstance(value, self.__class__):
+                    self._name_map[value] = key
+        return self._name_map[self]
+
+    @classmethod
+    def from_id(cls, id):
+        if id >= len(cls._kinds) or cls._kinds[id] is None:
+            raise ValueError('Unknown template argument kind %d' % id)
+        return cls._kinds[id]
+
+    def __repr__(self):
+        return '%s.%s' % (self.__class__, self.name,)
+
+
+### descript type enum ###
+class enum_descript_type(base_enum):
+    # The required base_enum declarations.
+    _kinds = []
+    _name_map = None
+
+enum_descript_type.invalid = enum_descript_type(0)
+enum_descript_type.namespace = enum_descript_type(1)
+enum_descript_type.struct = enum_descript_type(2)
+enum_descript_type.function = enum_descript_type(3)
+enum_descript_type.variable = enum_descript_type(4)
+enum_descript_type.param = enum_descript_type(5)
+enum_descript_type.enum = enum_descript_type(6)
+
+
+class descript_base(object):
+    def __init__(self, _desc_type):
+        self.parent = None
+        self.desc_type = _desc_type
+        self.spelling = ""
+        self.type_name = ""
+        self.cursor = None
+
+    @property
+    def space_path(self):
+        ret = ""
+        p = self.parent
+        while p and isinstance(p, descript_namespace_base):
+            ret = "{}.{}".format(p.spelling, ret)
+            p = p.parent
+        ret = ret.strip('.')
+        return ret 
+
+    @property
+    def full_path(self):
+        ret = "{}.{}".format(self.space_path, self.spelling).strip('.')
+        return ret
+    
+    @staticmethod
+    def try_parse_child_ast(cursor, parent_desc, parse_files=None):
+        for child_cursor in cursor.get_children():
+            if parse_files and child_cursor.location.file.name.replace('\\', '/') not in parse_files:
+                    continue
+            cursor_kind = child_cursor.kind
+            if not cursor_kind.is_declaration():
+                continue
+            if False:
+                pass
+            elif CursorKind.NAMESPACE == cursor_kind:
+                descript_namespace.parse_ast(child_cursor, parent_desc)
+            elif CursorKind.STRUCT_DECL == cursor_kind or CursorKind.CLASS_DECL == cursor_kind:
+                descript_struct.parse_ast(child_cursor, parent_desc)
+            elif CursorKind.FIELD_DECL == cursor_kind or CursorKind.VAR_DECL == cursor_kind:
+                descript_variable.parse_ast(child_cursor, parent_desc)
+            elif CursorKind.FUNCTION_DECL == cursor_kind or CursorKind.CXX_METHOD == cursor_kind :
+                descript_function.parse_ast(child_cursor, parent_desc)
+            elif CursorKind.PARM_DECL == cursor_kind:
+                descript_function_param.parse_ast(child_cursor, parent_desc)
+            elif CursorKind.ENUM_DECL == cursor_kind:
+                descript_enum.parse_ast(child_cursor, parent_desc)
+
+    def fill_common_fields(self, cursor):
+        self.spelling = cursor.spelling
+        self.type_name = cursor.type.spelling
+        self.cursor = cursor
+
+
+class descript_enum(descript_base):
+    def __init__(self):
+        super(__class__, self).__init__(enum_descript_type.enum)
+        self.items = []
+
+    @staticmethod
+    def parse_ast(cursor, parent_desc):
+        elem = descript_enum()
+        elem.parent = parent_desc
+        if parent_desc:
+            assert(isinstance(parent_desc, descript_namespace_base))
+            parent_desc.enums.append(elem)
+        elem.fill_common_fields(cursor)
+        for child_cursor in cursor.get_children():
+            if CursorKind.ENUM_CONSTANT_DECL != child_cursor.kind:
+                continue
+            elem.items.append({"name": child_cursor.spelling, "value": child_cursor.enum_value})
+        return elem
+    
+class descript_variable(descript_base):
+    def __init__(self):
+        super(__class__, self).__init__(enum_descript_type.variable)
+        self.is_const = False
+
+    @staticmethod
+    def parse_ast(cursor, parent_desc):
+        if parent_desc \
+            and isinstance(parent_desc, descript_struct) \
+            and AccessSpecifier.PUBLIC != cursor.access_specifier:
+            return
+        elem = descript_variable()
+        elem.parent = parent_desc
+        if parent_desc:
+            assert(isinstance(parent_desc, descript_namespace_base))
+            parent_desc.vars.append(elem)
+        elem.fill_common_fields(cursor)
+        elem.is_const = cursor.type.is_const_qualified()
+        return elem
+
+
+class descript_function_param(descript_base):
+    def __init__(self):
+        super(__class__, self).__init__(enum_descript_type.param)
+    
+    @staticmethod
+    def parse_ast(cursor, parent_desc):
+        elem = descript_function()
+        elem.parent = parent_desc
+        if parent_desc:
+            assert(isinstance(parent_desc, descript_function))
+            parent_desc.params.append(elem)
+        elem.fill_common_fields(cursor)
+        return elem
+
+class descript_function(descript_base):
+    def __init__(self):
+        super(__class__, self).__init__(enum_descript_type.function)
+        self.params = []
+        self.return_type = None
+        self.is_static = False
+        self.is_constructor = False
+        self.is_virtual = False
+
+    @staticmethod
+    def parse_ast(cursor, parent_desc):
+        if parent_desc \
+            and isinstance(parent_desc, descript_struct) \
+            and AccessSpecifier.PUBLIC != cursor.access_specifier:
+            return
+        elem = descript_function()
+        elem.parent = parent_desc
+        if parent_desc:
+            assert(isinstance(parent_desc, descript_namespace_base))
+            parent_desc.funcs.append(elem)
+        elem.fill_common_fields(cursor)
+        #to do something
+        elem.return_type = cursor.type.get_result().spelling
+        elem.is_static = cursor.is_static_method()
+        elem.is_constructor = cursor.is_converting_constructor() \
+                            or cursor.is_copy_constructor() \
+                            or cursor.is_default_constructor()
+        elem.is_virtual = cursor.is_pure_virtual_method() or cursor.is_virtual_method()
+        descript_base.try_parse_child_ast(cursor, elem)
+        return elem
+        
+
+
+class descript_namespace_base(descript_base):
+    def __init__(self, _desc_type):
+        super(__class__, self).__init__(_desc_type)
+        self.funcs = []
+        self.vars = []
+        self.structs = {}
+        self.enums = []
+
+
+class descript_struct(descript_namespace_base):
+    def __init__(self):
+        super(__class__, self).__init__(enum_descript_type.struct)
+        self.bases = []
+
+    @staticmethod
+    def parse_ast(cursor, parent_desc):
+        elem = descript_struct()
+        elem.parent = parent_desc
+        old_elem = None
+        if parent_desc:
+            assert(isinstance(parent_desc, descript_namespace_base))
+            old_elem = parent_desc.structs.get(cursor.spelling, None)
+            parent_desc.structs[cursor.spelling] = elem
+        elem.fill_common_fields(cursor)
+        descript_base.try_parse_child_ast(cursor, elem)
+        for child_cursor in cursor.get_children(): #identify base classes
+            if CursorKind.CXX_BASE_SPECIFIER == child_cursor.kind:
+                elem.bases.append(child_cursor.type.spelling) 
+        if old_elem:
+            old_weight = len(old_elem.funcs) + len(old_elem.vars) + len(old_elem.structs) + len(old_elem.enums) + len(old_elem.bases)
+            new_weight = len(elem.funcs) + len(elem.vars) + len(elem.structs) + len(elem.enums) + len(elem.bases)
+            assert(0 == old_weight or 0 == new_weight)
+            if old_weight > new_weight:
+                parent_desc.structs[old_elem.spelling] = old_elem
+        return elem        
+
+
+class descript_namespace(descript_namespace_base):
+    def __init__(self):
+        self.namespaces = []
+        super(__class__, self).__init__(enum_descript_type.namespace)
+
+    @staticmethod
+    def parse_ast(cursor, parent_desc):
+        elem = descript_namespace()
+        elem.parent = parent_desc
+        if parent_desc:
+            assert(isinstance(parent_desc, descript_namespace))
+            parent_desc.namespaces.append(elem)
+        elem.fill_common_fields(cursor)
+        descript_base.try_parse_child_ast(cursor, elem)
+        return elem
+
