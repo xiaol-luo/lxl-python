@@ -16,7 +16,6 @@ namespace TryUserType
 				{
 					sol::usertype<NoneSpaceClass> meta_table(
 						sol::constructors<\
-						OK::OuterClass() \
 						>()				
 						,"iVal", &NoneSpaceClass::iVal				
 						,"Test", &NoneSpaceClass::Test

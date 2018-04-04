@@ -77,7 +77,20 @@ class struct_meta(base_meta):
 
     @property
     def construct_fn_strs(self):
-        return []
+        ret = []
+        for fn in self.desc.funcs:
+            if not fn.is_constructor:
+                continue
+            fn_str = self.desc.full_path.replace(".", "::")
+            fn_str += "("
+            param_count = len(fn.params)
+            for i in range(0, param_count):
+                fn_str += fn.params[i].type_name
+                if i < param_count - 1:
+                    fn_str += ", "
+            fn_str += ")"
+            ret.append(fn_str)
+        return ret
         
     @property
     def fns(self):

@@ -15,8 +15,9 @@ namespace TryUserType
 
 				{
 					sol::usertype<OK::OuterClass> meta_table(
-						sol::constructors<\
-						OK::OuterClass() \
+						sol::constructors<\				
+						OK::OuterClass(), \				
+						OK::OuterClass(int) \
 						>()				
 						,"inClass", &OK::OuterClass::inClass				
 						,"fval", &OK::OuterClass::fval				

@@ -16,7 +16,6 @@ namespace TryUserType
 				{
 					sol::usertype<{{ meta_data.full_path|replace(".", "::") }}> meta_table(
 						sol::constructors<\
-						OK::OuterClass() \
 					{%- for item in meta_data.construct_fn_strs %}				
 						{{ item }} {%- if meta_data.construct_fn_strs|last != item %},{%- endif %} \
 					{%- endfor %}

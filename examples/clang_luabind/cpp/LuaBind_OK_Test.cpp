@@ -16,7 +16,6 @@ namespace TryUserType
 				{
 					sol::usertype<OK::Test> meta_table(
 						sol::constructors<\
-						OK::OuterClass() \
 						>()				
 						,"a", &OK::Test::a
 					);

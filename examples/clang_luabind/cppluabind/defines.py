@@ -100,7 +100,7 @@ class descript_base(object):
                 descript_struct.parse_ast(child_cursor, parent_desc)
             elif CursorKind.FIELD_DECL == cursor_kind or CursorKind.VAR_DECL == cursor_kind:
                 descript_variable.parse_ast(child_cursor, parent_desc)
-            elif CursorKind.FUNCTION_DECL == cursor_kind or CursorKind.CXX_METHOD == cursor_kind :
+            elif CursorKind.FUNCTION_DECL == cursor_kind or CursorKind.CXX_METHOD == cursor_kind or CursorKind.CONSTRUCTOR == cursor_kind:
                 descript_function.parse_ast(child_cursor, parent_desc)
             elif CursorKind.PARM_DECL == cursor_kind:
                 descript_function_param.parse_ast(child_cursor, parent_desc)
@@ -193,7 +193,9 @@ class descript_function(descript_base):
         elem.is_static = cursor.is_static_method()
         elem.is_constructor = cursor.is_converting_constructor() \
                             or cursor.is_copy_constructor() \
-                            or cursor.is_default_constructor()
+                            or cursor.is_default_constructor() \
+                            or cursor.is_move_constructor()
+        elem.is_constructor = CursorKind.CONSTRUCTOR == cursor.kind
         elem.is_virtual = cursor.is_pure_virtual_method() or cursor.is_virtual_method()
         descript_base.try_parse_child_ast(cursor, elem)
         return elem

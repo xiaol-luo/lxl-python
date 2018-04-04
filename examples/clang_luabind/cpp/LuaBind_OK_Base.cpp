@@ -16,7 +16,6 @@ namespace TryUserType
 				{
 					sol::usertype<OK::Base> meta_table(
 						sol::constructors<\
-						OK::OuterClass() \
 						>()
 					);
 					BindLuaUserType(sol::state_view(L), meta_table, name, name_space);

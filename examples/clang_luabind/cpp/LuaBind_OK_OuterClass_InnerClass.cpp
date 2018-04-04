@@ -16,7 +16,6 @@ namespace TryUserType
 				{
 					sol::usertype<OK::OuterClass::InnerClass> meta_table(
 						sol::constructors<\
-						OK::OuterClass() \
 						>()				
 						,"ival", &OK::OuterClass::InnerClass::ival				
 						,"TestInnerFunc", &OK::OuterClass::InnerClass::TestInnerFunc

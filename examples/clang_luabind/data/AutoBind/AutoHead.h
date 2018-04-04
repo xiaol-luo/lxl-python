@@ -21,6 +21,7 @@ namespace OK
 
 	public:
 		OuterClass() {}
+		OuterClass(int a) {}
 
 		InnerClass inClass;
 		const float fval = 2;
