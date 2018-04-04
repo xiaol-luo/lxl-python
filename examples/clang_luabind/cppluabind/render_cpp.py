@@ -4,6 +4,7 @@ import os
 import codecs
 from clang.cindex import CursorKind
 
+
 class base_meta(object):
     def __init__(self, _desc):
         super(__class__, self).__init__()
@@ -26,6 +27,7 @@ class base_meta(object):
 
     def out_file_name(self):
         return "{}/{}_{}.cpp".format(base_meta.FILE_DIR, base_meta.FILE_PREFIX, self.full_path.replace('.', '_'))
+
 
 class enum_meta(base_meta):
     def __init__(self, _desc):
@@ -145,7 +147,6 @@ render_actions = {
     enum_descript_type.namespace: do_render_namespace,
     enum_descript_type.struct: do_render_struct,
 }
-
 
 def do_render(desc_root, outdir):
     template_env = jinja2.Environment(loader=jinja2.ChoiceLoader([
