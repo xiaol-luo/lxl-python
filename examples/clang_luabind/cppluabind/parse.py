@@ -67,19 +67,29 @@ def find_all_files(abspath):
     return ret
 
 
-def do_parse_ex(out_dir, cpp_include_dir, parse_paths, exclude_paths):
-    for item in cpp_include_dir:
+def do_parse_ex(out_dir, cpp_include_sets, parse_sets, exclude_sets):
+    for item in cpp_include_sets:
         item.gen_path_map()
-    for item in parse_paths:
-        item.gen_path_map()
-    for item in exclude_paths:
+    for item in parse_sets:
         item.gen_path_map()
     
+    exclude_paths = set()
+    for item in exclude_sets:
+        item.gen_path_map()
+        for abspath in item.abspaths:
+            exclude_paths.add(abspath)
     parse_files = set()
-    for parse_path in parse_paths:
-        for item in parse_path.abspaths:
+    for parse_set in parse_sets:
+        for item in parse_set.abspaths:
             files = find_all_files(item)
-            parse_files = parse_files.union(set(files))
+            parse_files = parse_files.union(set(files)) 
+    remove_files = []
+    for parse_item in parse_files:
+        for exclude_item in exclude_paths:
+            if parse_item.startswith(exclude_item):
+                remove_files.append(parse_item)
+                break    
+    
 
 
 

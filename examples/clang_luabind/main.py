@@ -12,7 +12,12 @@ def main():
     ps = path_set()
     ps.root = curr_dir
     ps.paths.append("data")
-    do_parse_ex(curr_dir, [], [ps], [])
+
+    eps = path_set()
+    eps.root = curr_dir
+    eps.paths.append("data/AutoBind")
+    
+    do_parse_ex(curr_dir, [], [ps], [eps])
 
     do_parse(file_path, 
         ['-x', 'c++', '-std=c++11', '-D__CODE_GENERATOR__', "-I{0}".format(include_dir)], 
