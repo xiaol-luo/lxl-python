@@ -1,0 +1,57 @@
+{
+	"opts": ["-x", "c++", "-std=c++11", "-D__CODE_GENERATOR__"],
+	"out_dir" : "E:/try_gen",
+	
+	"include_paths" : [
+		[
+			"E:/git-dir/Utopia/Code/Server", 
+			[
+				".",
+				"Libs/3rdpartLibs",
+				"Libs/OwnLibs",
+				"Libs/3rdpartLibs/Libevent/include",
+				"Libs/3rdpartLibs/protobuf/include",
+				"Logic",
+				"Logic/ShareCode",
+				"Logic/ShareCode/Config/AutoCsvCode",
+				"Logic/LogicModules",
+				"Libs/3rdpartLibs/lua/include",
+				"Libs/3rdpartLibs/sol",
+				"Libs/3rdpartLibs/behaviac/include",
+				"Libs/3rdpartLibs/recastnavigation/DebugUtils/Include",
+				"Libs/3rdpartLibs/recastnavigation/Detour/Include",
+				"Libs/3rdpartLibs/recastnavigation/DetourCrowd/Include",
+				"Libs/3rdpartLibs/recastnavigation/DetourTileCache/Include",
+				"Libs/3rdpartLibs/recastnavigation/Recast/Include",
+				"Libs/3rdpartLibs/recastnavigation/RecastDemo/Include"
+			]		
+		]
+	],
+	
+	"parse_paths" : [
+		[
+			"E:/git-dir/Utopia/Code/Server/Logic/ShareCode", 
+			[
+				"Config",
+				"Common"
+			]
+		],
+		[
+			"E:/git-dir/Utopia/Code/Server/Logic", 
+			[
+				"CommonModules",
+				"LogicModules",
+				"ModuleDef",
+				"ServerLogics"
+			]
+		]
+		
+	],
+	
+	"exclude_paths" : [
+	],
+	
+	"parse_subfixs" : [
+		".h", ".hpp"
+	]
+}
