@@ -1,8 +1,9 @@
-#include "UserType/TryUserTypeUtil.h"
+#include "SolLuaBindUtils.h"
 #include <sol.hpp>
-#include "AutoBind/AutoHead.h"
 
-namespace TryUserType
+#include "{{ meta_data.locate_file }}"
+
+namespace SolLuaBind
 {
 	void LuaBind_{{ meta_data.full_path|replace(".", "_") }}(lua_State *L)
 	{
@@ -14,7 +15,7 @@ namespace TryUserType
 				std::string name_space = "{{ meta_data.space_path }}";
 
 				sol::state_view lua(L);
-				sol::table ns_table = GetOrNewLuaNameSpaceTable(lua, name_space);
+				sol::table ns_table = SolLuaBindUtils::GetOrNewLuaNameSpaceTable(lua, name_space);
 				{
 					sol::optional<sol::object> opt_object = ns_table[name];
 					assert(!opt_object);

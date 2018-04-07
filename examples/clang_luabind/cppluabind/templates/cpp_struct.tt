@@ -1,8 +1,9 @@
-#include "UserType/TryUserTypeUtil.h"
+#include "SolLuaBindUtils.h"
 #include <sol.hpp>
-#include "AutoBind/AutoHead.h"
 
-namespace TryUserType
+#include "{{ meta_data.locate_file }}"
+
+namespace SolLuaBind
 {
 	void LuaBind_{{ meta_data.full_path|replace(".", "_") }}(lua_State *L)
 	{
@@ -15,12 +16,15 @@ namespace TryUserType
 
 				{
 					sol::usertype<{{ meta_data.full_path|replace(".", "::") }}> meta_table(
-						sol::constructors<\
+				{%- if meta_data.construct_fn_strs|length > 0 %}
+						sol::constructors<
 					{%- for item in meta_data.construct_fn_strs %}				
 						{{ item }} {%- if meta_data.construct_fn_strs|last != item %},{%- endif %} \
 					{%- endfor %}
-						>()
-						
+						>(),
+				{%-endif %}
+					"__StructName__", sol::property([]() {return "{{ meta_data.spelling }}"; })
+
 					{%- for item in meta_data.fields %}				
 						,"{{ item.spelling }}", &{{ item.full_path|replace(".", "::") }}
 					{%- endfor %}
@@ -31,17 +35,17 @@ namespace TryUserType
 						
 				{%- if meta_data.base_classes|length > 0 %}	
 					{%- for item in meta_data.base_classes %}				
-						, sol::base_classes, sol::bases<\
+						, sol::base_classes, sol::bases<
 							{{ item }} {%- if meta_data.base_classes|last != item %},{%- endif %} \
-						\>()
+						>()
 					{%- endfor %}
 				{%- endif %}
 					);
-					BindLuaUserType(sol::state_view(L), meta_table, name, name_space);
+					SolLuaBindUtils::BindLuaUserType(sol::state_view(L), meta_table, name, name_space);
 				}
             
 				{
-					sol::table ns_table = GetOrNewLuaNameSpaceTable(sol::state_view(L), name_space)[name];
+					sol::table ns_table = SolLuaBindUtils::GetOrNewLuaNameSpaceTable(sol::state_view(L), name_space)[name];
 				{%- for item in meta_data.vars %}				
 					ns_table.set("siVal", {{ item.full_path|replace(".", "::") }});
 				{%- endfor %}				

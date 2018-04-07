@@ -1,0 +1,15 @@
+#include <sol.hpp>
+
+namespace SolLuaBind 
+{
+    {%- for item in descs %}
+        extern void LuaBind_{{ item.full_path|replace(".", "_") }}(lua_State *L);
+    {%- endfor %}
+
+	void SolLuaBind(lua_State *L)
+	{
+        {%- for item in descs %}
+            LuaBind_{{ item.full_path|replace(".", "_") }}(L);
+        {%- endfor %}
+	}
+}

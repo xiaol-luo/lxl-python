@@ -1,0 +1,29 @@
+{
+	"opts": ["-x", "c++", "-std=c++11", "-D__CODE_GENERATOR__"],
+	"out_dir" : "C:/data/gitcode/Utopia/Code/TrySol/AutoGenLuaBindCode",
+	
+	"include_paths" : [
+		[
+			"C:/data/gitcode/Utopia/Code/TrySol", 
+			[
+				"."
+			]
+		]
+	],
+	
+	"parse_paths" : [
+		[
+			"C:/data/gitcode/Utopia/Code/TrySol", 
+			[
+				"AutoBind"
+			]
+		]
+	],
+	
+	"exclude_paths" : [
+	],
+	
+	"parse_subfixs" : [
+		".h", ".hpp"
+	]
+}

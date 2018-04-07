@@ -107,6 +107,12 @@ class descript_base(object):
             elif CursorKind.ENUM_DECL == cursor_kind:
                 descript_enum.parse_ast(child_cursor, parent_desc)
 
+    @property
+    def locate_file(self):
+        if self.cursor.location.file:
+            return self.cursor.location.file.name.replace('\\', '/')
+        return ""
+
     def fill_common_fields(self, cursor):
         self.spelling = cursor.spelling
         self.type_name = cursor.type.spelling
@@ -137,6 +143,13 @@ class descript_variable(descript_base):
         super(__class__, self).__init__(enum_descript_type.variable)
         self.is_const = False
 
+    def is_same(self, other):
+        if self.spelling != other.spelling:
+            return False
+        if self.type_name != other.type_name:
+            return False
+        return True
+
     @staticmethod
     def parse_ast(cursor, parent_desc):
         if parent_desc \
@@ -150,6 +163,13 @@ class descript_variable(descript_base):
             parent_desc.vars.append(elem)
         elem.fill_common_fields(cursor)
         elem.is_const = cursor.type.is_const_qualified()
+        #remove same function declare
+        if parent_desc:
+            for item in parent_desc.vars:
+                if item != elem:
+                    if item.is_same(elem):
+                        parent_desc.vars.remove(elem)
+                        break
         return elem
 
 
@@ -157,6 +177,10 @@ class descript_function_param(descript_base):
     def __init__(self):
         super(__class__, self).__init__(enum_descript_type.param)
     
+    def is_same(self, other):
+        return self.type_name != other.type_name
+
+
     @staticmethod
     def parse_ast(cursor, parent_desc):
         elem = descript_function()
@@ -175,6 +199,16 @@ class descript_function(descript_base):
         self.is_static = False
         self.is_constructor = False
         self.is_virtual = False
+
+    def is_same(self, other):
+        if self.spelling != other.spelling:
+            return False
+        if len(self.params) != len(other.params):
+            return False
+        for i in range(0, len(self.params)):
+            if not self.params[i].is_same(other.params[i]):
+                return False
+        return True
 
     @staticmethod
     def parse_ast(cursor, parent_desc):
@@ -198,6 +232,13 @@ class descript_function(descript_base):
         elem.is_constructor = CursorKind.CONSTRUCTOR == cursor.kind
         elem.is_virtual = cursor.is_pure_virtual_method() or cursor.is_virtual_method()
         descript_base.try_parse_child_ast(cursor, elem)
+        #remove same function declare
+        if parent_desc:
+            for item in parent_desc.funcs:
+                if item != elem:
+                    if item.is_same(elem):
+                        parent_desc.funcs.remove(elem)
+                        break
         return elem
         
 
@@ -248,10 +289,17 @@ class descript_namespace(descript_namespace_base):
     def parse_ast(cursor, parent_desc):
         elem = descript_namespace()
         elem.parent = parent_desc
+        elem.fill_common_fields(cursor)
         if parent_desc:
             assert(isinstance(parent_desc, descript_namespace))
-            parent_desc.namespaces.append(elem)
-        elem.fill_common_fields(cursor)
+            is_find = False
+            for item in parent_desc.namespaces:
+                if item.spelling == elem.spelling:
+                    elem = item
+                    is_find = False
+                    break
+            if not is_find:
+                parent_desc.namespaces.append(elem)
         descript_base.try_parse_child_ast(cursor, elem)
         return elem
 

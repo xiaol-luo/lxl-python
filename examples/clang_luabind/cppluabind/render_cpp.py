@@ -4,6 +4,12 @@ import os
 import codecs
 from clang.cindex import CursorKind
 
+_abspath_relative_path_map = {}
+
+def _get_relate_path(abspath):
+    global _abspath_relative_path_map
+    return _abspath_relative_path_map.get(abspath)
+
 
 class base_meta(object):
     def __init__(self, _desc):
@@ -24,6 +30,11 @@ class base_meta(object):
     @property 
     def full_path(self):
         return self.desc.full_path
+
+    @property 
+    def locate_file(self):
+        ret = _get_relate_path(self.desc.locate_file)
+        return ret
 
     def out_file_name(self):
         return "{}/{}_{}.cpp".format(base_meta.FILE_DIR, base_meta.FILE_PREFIX, self.full_path.replace('.', '_'))
@@ -49,8 +60,72 @@ class namespace_meta(base_meta):
     
     @property 
     def fns(self):
-        ret = self.desc.funcs
+        fn_map = {}
+        for item in self.desc.funcs:
+            fn_map_item = fn_map.get(item.spelling)
+            if not fn_map_item:
+                fn_map_item = []
+                fn_map[item.spelling] = fn_map_item  
+            fn_map_item.append(item)
+        ret = []
+        ret.extend(self.desc.funcs)
+        for name, vals in fn_map.items():
+            if len(vals) > 1:
+                for fn in vals:
+                    ret.remove(fn)
         return ret
+
+    @property
+    def overload_fns(self):
+        fn_map = {}
+        for item in self.desc.funcs:
+            fn_map_item = fn_map.get(item.spelling)
+            if not fn_map_item:
+                fn_map_item = []
+                fn_map[item.spelling] = fn_map_item  
+            fn_map_item.append(item)
+        remove_name = []
+        for name, vals in fn_map.items():
+            if len(vals) <= 1:
+                remove_name.append(name)
+        for item in remove_name:
+            fn_map.pop(item, None)
+        ret = []
+        for name, vals in fn_map.items():
+            fn_str = ""
+            for i in range(0, len(vals)):
+                fn_elem = vals[i]
+                #fn_content = "[]({0}){1},"
+                input_str = ""
+                excute_str = ""
+                for j in range(0, len(fn_elem.params)):
+                    param_elem = fn_elem.params[j]
+                    input_str += "{} p{},".format(param_elem.type_name, j)
+                    excute_str += "p{},".format(j)
+                input_str = input_str.strip(',')
+                excute_str = excute_str.strip(',')
+                excute_fn = fn_elem.full_path.replace(".", "::")
+                fn_str += "[]({}){} {}({}); {},".format(input_str, "{",  excute_fn, excute_str, "}")
+            fn_str = fn_str.strip(',')
+            overload_str = "sol::overload({})".format(fn_str)
+            ret.append({"name": name, "fn_str": overload_str})
+        return ret
+
+    @property
+    def relate_files(self):
+        ret = set()
+        if self.locate_file:
+            ret.add(self.locate_file)
+        for item in self.desc.funcs:
+            relate_path = _get_relate_path(item.locate_file)
+            if  relate_path:
+                ret.add(relate_path)
+        for item in self.desc.vars:
+            relate_path = _get_relate_path(item.locate_file)
+            if  relate_path:
+                ret.add(relate_path)
+        return ret
+        
         
 
 class struct_meta(base_meta):
@@ -148,12 +223,14 @@ render_actions = {
     enum_descript_type.struct: do_render_struct,
 }
 
-def do_render(desc_root, outdir):
+def do_render(desc_root, abspath_relative_path_map, outdir):
+    global _abspath_relative_path_map
+    _abspath_relative_path_map = abspath_relative_path_map
     template_env = jinja2.Environment(loader=jinja2.ChoiceLoader([
         jinja2.PackageLoader(__package__, package_path='templates')
         #jinja2.FileSystemLoader("")
     ]))
-
+    gen_descs = []
     desc_queue = []
     desc_queue.append(desc_root)
     while len(desc_queue) > 0:
@@ -161,10 +238,22 @@ def do_render(desc_root, outdir):
         render_action = render_actions.get(desc.desc_type, None)
         if render_action:
             render_action(desc, template_env, outdir)
+            gen_descs.append(desc)
         
         if isinstance(desc, descript_namespace_base):
             desc_queue.extend(desc.structs.values())
             desc_queue.extend(desc.enums)
         if isinstance(desc, descript_namespace):
             desc_queue.extend(desc.namespaces)
+    # gen bind function
+    tt = template_env.get_template("cpp_bind.tt")
+    ret = tt.render({
+        "descs": gen_descs
+    })
+    out_file_path = os.path.join(outdir, "{}/{}".format(base_meta.FILE_DIR, "SolBindCommon.cpp"))
+    if os.path.exists(out_file_path):
+        os.remove(out_file_path)
+    os.makedirs(os.path.dirname(out_file_path), exist_ok=True)
+    with codecs.open(out_file_path, 'w', encoding='utf-8') as f:
+        f.write(ret)
         
