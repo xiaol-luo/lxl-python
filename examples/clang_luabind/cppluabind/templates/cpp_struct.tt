@@ -29,9 +29,14 @@ namespace SolLuaBind
 						,"{{ item.spelling }}", &{{ item.full_path|replace(".", "::") }}
 					{%- endfor %}
 					
-					{%- for item in meta_data.fns %}				
+					{%- for item in meta_data.member_fns %}				
 						,"{{ item.spelling }}", &{{ item.full_path|replace(".", "::") }}
 					{%- endfor %}
+					
+					{%- for item in meta_data.member_overload_fns %}				
+						,"{{ item.name }}", {{ item.fn_str }}
+					{%- endfor %}
+					
 						
 				{%- if meta_data.base_classes|length > 0 %}	
 					{%- for item in meta_data.base_classes %}				
@@ -47,8 +52,19 @@ namespace SolLuaBind
 				{
 					sol::table ns_table = SolLuaBindUtils::GetOrNewLuaNameSpaceTable(sol::state_view(L), name_space)[name];
 				{%- for item in meta_data.vars %}				
-					ns_table.set("siVal", {{ item.full_path|replace(".", "::") }});
-				{%- endfor %}				
+					ns_table.set("{{ item.spelling }}", {{ item.full_path|replace(".", "::") }});
+				{%- endfor %}
+				
+				{%- for item in meta_data.static_fns %}				
+					ns_table.set_function("{{ item.spelling }}", {{ item.full_path|replace(".", "::") }});
+				{%- endfor %}	
+				
+				{%- for item in meta_data.static_overload_fns %}				
+					ns_table.set_function("{{ item.name }}", {{ item.fn_str }});
+				{%- endfor %}	
+
+
+				
 				}
 			}
 		};

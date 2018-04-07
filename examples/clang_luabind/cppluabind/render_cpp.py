@@ -105,7 +105,7 @@ class namespace_meta(base_meta):
                 input_str = input_str.strip(',')
                 excute_str = excute_str.strip(',')
                 excute_fn = fn_elem.full_path.replace(".", "::")
-                fn_str += "[]({}){} {}({}); {},".format(input_str, "{",  excute_fn, excute_str, "}")
+                fn_str += "[]({}){} return {}({}); {},".format(input_str, "{",  excute_fn, excute_str, "}")
             fn_str = fn_str.strip(',')
             overload_str = "sol::overload({})".format(fn_str)
             ret.append({"name": name, "fn_str": overload_str})
@@ -169,12 +169,92 @@ class struct_meta(base_meta):
             ret.append(fn_str)
         return ret
         
+    def _collect_fns(self, is_static, is_overload):
+        fns_map = {}
+        for fn in self.desc.funcs:
+            if fn.is_constructor:
+                continue
+            if fn.is_static != is_static:
+                continue
+            fns = fns_map.get(fn.spelling, None)
+            if not fns:
+                fns = []
+                fns_map[fn.spelling] = fns
+            fns.append(fn)
+        remove_names = []
+        for name, fns in fns_map.items():
+            fns_len = len(fns)
+            if is_overload and fns_len <= 1 or not is_overload and fns_len > 1:
+                remove_names.append(name)
+        for name in remove_names:
+            fns_map.pop(name)
+        return fns_map
+
     @property
     def fns(self):
+        fns_map = self._collect_fns(True, False)
+        return fns_map.values()
+
+    @property
+    def static_overload_fns(self):
         ret = []
-        for fn in self.desc.funcs:
-            if not fn.is_constructor:
-                ret.append(fn)
+        fns_map = self._collect_fns(True, True)
+        for name, fns in fns_map.items():
+            fn_str = ""
+            for i in range(0, len(fns)):
+                fn_elem = fns[i]
+                input_str = ""
+                excute_str = ""
+                for j in range(0, len(fn_elem.params)):
+                    param_elem = fn_elem.params[j]
+                    input_str += "{} p{},".format(param_elem.type_name, j)
+                    excute_str += "p{},".format(j)
+                input_str = input_str.strip(',')
+                excute_str = excute_str.strip(',')
+                excute_fn = fn_elem.full_path.replace(".", "::")
+                fn_str += "[]({}){} return {}({}); {},".format(input_str, "{",  excute_fn, excute_str, "}")
+            fn_str = fn_str.strip(',')
+            overload_str = "sol::overload({})".format(fn_str)
+            ret.append({"name": name, "fn_str": overload_str})
+        return ret
+    
+    @property
+    def static_fns(self):
+        fns_map =self._collect_fns(True, False)
+        ret = []
+        for fns in fns_map.values():
+            ret.append(fns[0])
+        return ret
+    
+    @property 
+    def member_fns(self):
+        fns_map =self._collect_fns(False, False)
+        ret = []
+        for fns in fns_map.values():
+            ret.append(fns[0])
+        return ret
+    
+    @property
+    def member_overload_fns(self):
+        ret = []
+        fns_map = self._collect_fns(False, True)
+        for name, fns in fns_map.items():
+            fn_str = ""
+            for i in range(0, len(fns)):
+                fn_elem = fns[i]
+                input_str = ""
+                excute_str = ""
+                for j in range(0, len(fn_elem.params)):
+                    param_elem = fn_elem.params[j]
+                    input_str += "{} p{},".format(param_elem.type_name, j)
+                    excute_str += "p{},".format(j)
+                input_str = input_str.strip(',')
+                excute_str = excute_str.strip(',')
+                fn_str += "[]({} &cls, {}){} return cls.{}({}); {},".format(
+                    fn_elem.space_path.replace(".", "::"), input_str, "{",  fn_elem.spelling, excute_str, "}")
+            fn_str = fn_str.strip(',')
+            overload_str = "sol::overload({})".format(fn_str)
+            ret.append({"name": name, "fn_str": overload_str})
         return ret
 
 
