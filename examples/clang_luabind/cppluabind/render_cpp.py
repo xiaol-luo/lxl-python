@@ -4,12 +4,17 @@ import os
 import codecs
 from clang.cindex import CursorKind
 
-_abspath_relative_path_map = {}
+_abspath_relative_path_map = None
+_hfile_struct_define_hfile_map = None
 
 def _get_relate_path(abspath):
     global _abspath_relative_path_map
     return _abspath_relative_path_map.get(abspath)
 
+def _get_hfile_struct_define_hfile_paths(hfile_path):
+    global _hfile_struct_define_hfile_map
+    ret = _hfile_struct_define_hfile_map.get(hfile_path)
+    return ret or []
 
 class base_meta(object):
     def __init__(self, _desc):
@@ -116,14 +121,23 @@ class namespace_meta(base_meta):
         ret = set()
         if self.locate_file:
             ret.add(self.locate_file)
+        if self.desc.locate_file:
+            for item in _get_hfile_struct_define_hfile_paths(self.desc.locate_file):
+                ret.add(_get_relate_path(item))
         for item in self.desc.funcs:
             relate_path = _get_relate_path(item.locate_file)
-            if  relate_path:
+            if relate_path:
                 ret.add(relate_path)
+            if item.locate_file:
+                for path in _get_hfile_struct_define_hfile_paths(item.locate_file):
+                    ret.add(_get_relate_path(path))
         for item in self.desc.vars:
             relate_path = _get_relate_path(item.locate_file)
-            if  relate_path:
+            if relate_path:
                 ret.add(relate_path)
+            if item.locate_file:
+                for path in _get_hfile_struct_define_hfile_paths(item.locate_file):
+                    ret.add(_get_relate_path(path))
         return ret
         
         
@@ -259,6 +273,16 @@ class struct_meta(base_meta):
             ret.append({"name": fn_name, "bind": fn_bind, "fn_wraps": fn_wraps})
         return ret
 
+    @property
+    def relate_files(self):
+        ret = set()
+        if self.locate_file:
+            ret.add(self.locate_file)
+        if self.desc.locate_file:
+            for item in _get_hfile_struct_define_hfile_paths(self.desc.locate_file):
+                ret.add(_get_relate_path(item))
+        return ret
+
 
 def do_render_enum(desc, template_env, outdir):
     tt = template_env.get_template("cpp_enum.tt")
@@ -305,9 +329,11 @@ render_actions = {
     enum_descript_type.struct: do_render_struct,
 }
 
-def do_render(desc_root, abspath_relative_path_map, outdir):
+def do_render(desc_root, abspath_relative_path_map, hfile_struct_define_hfile_map, outdir):
     global _abspath_relative_path_map
     _abspath_relative_path_map = abspath_relative_path_map
+    global _hfile_struct_define_hfile_map
+    _hfile_struct_define_hfile_map = hfile_struct_define_hfile_map
     template_env = jinja2.Environment(loader=jinja2.ChoiceLoader([
         jinja2.PackageLoader(__package__, package_path='templates')
         #jinja2.FileSystemLoader("")

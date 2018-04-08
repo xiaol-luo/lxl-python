@@ -1,7 +1,9 @@
 #include "SolLuaBindUtils.h"
 #include <sol.hpp>
 
-#include "{{ meta_data.locate_file }}"
+{%- for item in meta_data.relate_files %}	
+#include "{{ item }}"
+{%- endfor %}
 
 namespace SolLuaBind
 {

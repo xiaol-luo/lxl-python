@@ -265,6 +265,8 @@ class descript_struct(descript_namespace_base):
 
     @staticmethod
     def parse_ast(cursor, parent_desc):
+        if not cursor.is_definition():
+            return None
         elem = descript_struct()
         elem.parent = parent_desc
         old_elem = None

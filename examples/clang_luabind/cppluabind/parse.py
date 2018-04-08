@@ -6,6 +6,7 @@ from clang.cindex import TranslationUnit
 import jinja2
 import os
 import codecs
+import collections
 
 def do_parse(file_path, opts, parse_files, outdir):
     index = cindex.Index.create()
@@ -67,6 +68,22 @@ def find_all_files(abspath, subfixs):
                 ret.append(file_path)
     return ret  
 
+def find_struct_define_hfile_path(root_cursor, usr):
+    waiting_cursors = collections.deque()
+    waiting_cursors.append(root_cursor)
+    while waiting_cursors:
+        curr_cursor = waiting_cursors.pop()
+        waiting_cursors.extend(curr_cursor.get_children())
+        if usr != curr_cursor.get_usr():
+            continue
+        if not curr_cursor.is_definition():
+            continue
+        if not curr_cursor.location.file:
+            continue
+        file_path = curr_cursor.location.file.name.replace('\\', '/')
+        return file_path
+    return None
+
 def do_parse_ex(opts, out_dir, cpp_include_sets, parse_sets, parse_subfixs=set([".h", ".hpp"]), exclude_sets=[]):
     include_paths = set()
     for item in cpp_include_sets:
@@ -114,21 +131,44 @@ def do_parse_ex(opts, out_dir, cpp_include_sets, parse_sets, parse_subfixs=set([
             + TranslationUnit.PARSE_INCOMPLETE \
             # + TranslationUnit.PARSE_CACHE_COMPLETION_RESULTS \
             )
-
-    json_file = os.path.join(out_dir, fake_h_name)
-    with codecs.open(json_file, 'w', encoding='utf-8') as f:
-        f.write(fake_h_content)
-    idx = 0
-    for c1 in list(tu.cursor.get_children()):
-        for c2 in list(c1.get_children()):
-            for c3 in list(c2.get_children()):
-                idx = idx + 1
-
+    
+    hfile_undeclare_struct_map = {}
+    undefine_structs = set()
+    waiting_cursors = collections.deque()
+    waiting_cursors.append(tu.cursor)
+    while waiting_cursors:
+        curr_cursor = waiting_cursors.pop()
+        waiting_cursors.extend(curr_cursor.get_children())
+        if CursorKind.STRUCT_DECL != curr_cursor.kind and CursorKind.CLASS_DECL != curr_cursor.kind:
+            continue
+        if curr_cursor.is_definition():
+            continue
+        if not curr_cursor.location.file:
+            continue
+        file_path = curr_cursor.location.file.name.replace('\\', '/')
+        if file_path not in  parse_files:
+            continue
+        struct_usrs = hfile_undeclare_struct_map.get(file_path, None)
+        if not struct_usrs:
+            struct_usrs = set()
+            hfile_undeclare_struct_map[file_path] = struct_usrs
+        struct_usrs.add(curr_cursor.get_usr())
+        undefine_structs.add(curr_cursor.get_usr())
+    struct_usr_locate_path_map = {}
+    for usr in undefine_structs:
+        locate_path = find_struct_define_hfile_path(tu.cursor, usr)
+        assert(locate_path)
+        struct_usr_locate_path_map[usr] = locate_path
+    hfile_struct_define_hfile_map = {}
+    for hfile, struct_usrs in hfile_undeclare_struct_map.items():
+        hfile_struct_define_hfile_map[hfile] = []
+        for usr in struct_usrs:
+            hfile_struct_define_hfile_map[hfile].append(struct_usr_locate_path_map[usr])
 
     root_ns = descript_namespace()
     root_ns.cursor = tu.cursor
     descript_base.try_parse_child_ast(tu.cursor, root_ns, parse_files)
-    render_cpp.do_render(root_ns, abspath_relative_path_map, out_dir)
+    render_cpp.do_render(root_ns, abspath_relative_path_map, hfile_struct_define_hfile_map, out_dir)
 
 
 
