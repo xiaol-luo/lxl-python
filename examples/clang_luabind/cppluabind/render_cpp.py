@@ -215,6 +215,9 @@ class struct_meta(base_meta):
         ret = []
         fns_map = self._collect_fns(True)
         for name, fns in fns_map.items():
+            #暂时不处理运算符也overload的情况，如果考虑运算符的话需要考虑的东西蛮多的
+            if name.startswith("operator"): 
+                continue
             fn_name = name
             fn_bind = ""
             fn_wraps = []
@@ -228,14 +231,19 @@ class struct_meta(base_meta):
                     param_id = param_id + 1
                     input_str += "{} p{}, ".format(param_elem.type_name, param_id)
                     excute_str += "p{}, ".format(param_id)
-                input_str = input_str.strip(" ,")
                 excute_str = excute_str.strip(' ,')
-                fn_declare = "static {} {}{}({}{}{})".format(
+                cls_str = ""
+                if not fn_elem.is_static:
+                    cls_str = "{}{} &cls, ".format(
+                        fn_elem.is_const and "const " or "", 
+                        fn_elem.space_path.replace(".", "::")
+                    )
+                input_str = cls_str + input_str
+                input_str = input_str.strip(" ,")
+                fn_declare = "static {} {}{}({})".format(
                     fn_elem.return_type,
                     fn_name, 
                     fn_id,
-                    fn_elem.is_const and "const " or "",
-                    fn_elem.is_static and "" or "{} &cls, ".format(fn_elem.space_path.replace(".", "::")),
                     input_str
                 )
                 fn_body = "return {}({});".format(

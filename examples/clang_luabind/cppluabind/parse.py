@@ -5,6 +5,7 @@ from clang import cindex
 from clang.cindex import TranslationUnit
 import jinja2
 import os
+import codecs
 
 def do_parse(file_path, opts, parse_files, outdir):
     index = cindex.Index.create()
@@ -113,6 +114,17 @@ def do_parse_ex(opts, out_dir, cpp_include_sets, parse_sets, parse_subfixs=set([
             + TranslationUnit.PARSE_INCOMPLETE \
             # + TranslationUnit.PARSE_CACHE_COMPLETION_RESULTS \
             )
+
+    json_file = os.path.join(out_dir, fake_h_name)
+    with codecs.open(json_file, 'w', encoding='utf-8') as f:
+        f.write(fake_h_content)
+    idx = 0
+    for c1 in list(tu.cursor.get_children()):
+        for c2 in list(c1.get_children()):
+            for c3 in list(c2.get_children()):
+                idx = idx + 1
+
+
     root_ns = descript_namespace()
     root_ns.cursor = tu.cursor
     descript_base.try_parse_child_ast(tu.cursor, root_ns, parse_files)

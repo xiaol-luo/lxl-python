@@ -1,10 +1,10 @@
 {
 	"opts": ["-x", "c++", "-std=c++11", "-D__CODE_GENERATOR__"],
-	"out_dir" : "F:/git-dir/Utopia/Code/TrySol/AutoGenLuaBindCode",
+	"out_dir" : "E:/git-dir/Utopia/Code/TrySol/AutoGenLuaBindCode",
 	
 	"include_paths" : [
 		[
-			"F:/git-dir/Utopia/Code/TrySol", 
+			"E:/git-dir/Utopia/Code/TrySol", 
 			[
 				"."
 			]
@@ -13,9 +13,9 @@
 	
 	"parse_paths" : [
 		[
-			"F:/git-dir/Utopia/Code/TrySol", 
+			"E:/git-dir/Utopia/Code/TrySol", 
 			[
-				"AutoBind"
+				"AutoBind/Geometry"
 			]
 		]
 	],

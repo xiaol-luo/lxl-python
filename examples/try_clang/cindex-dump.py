@@ -17,7 +17,6 @@ Library.
 
 from clang.cindex import Config
 Config.set_compatibility_check(False)
-Config.set_library_path("D:/Tools/LLVM/bin")
 from clang.cindex import TypeKind, CursorKind
 
 def get_diag_info(diag):
@@ -92,7 +91,7 @@ def main():
 
     import os
     index = Index.create()
-    tu = index.parse("./examples/cindex/TryOwnType.h", ['-x', 'c++', '-std=c++11', '-D__CODE_GENERATOR__'], \
+    tu = index.parse("E:/git-dir/Utopia/Code/TrySol/AutoBind/fake.h", ['-x', 'c++', '-std=c++11', '-D__CODE_GENERATOR__', "-IE:/git-dir/Utopia/Code/TrySol"], \
         options= 0 + \
             + TranslationUnit.PARSE_INCLUDE_BRIEF_COMMENTS_IN_CODE_COMPLETION \
             + TranslationUnit.PARSE_SKIP_FUNCTION_BODIES \

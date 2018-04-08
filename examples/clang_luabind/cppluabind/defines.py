@@ -183,7 +183,7 @@ class descript_function_param(descript_base):
 
     @staticmethod
     def parse_ast(cursor, parent_desc):
-        elem = descript_function()
+        elem = descript_function_param()
         elem.parent = parent_desc
         if parent_desc:
             assert(isinstance(parent_desc, descript_function))
