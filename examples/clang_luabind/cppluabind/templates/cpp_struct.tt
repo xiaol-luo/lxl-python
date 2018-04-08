@@ -9,6 +9,18 @@ namespace SolLuaBind
 	{
 		struct LuaBindImpl
 		{
+			struct ForOverloadFns
+			{
+			{%- for overload_fn in meta_data.overload_fns %}
+			{%- for item in overload_fn.fn_wraps%}
+				{{ item.declare }}
+				{
+					{{ item.body }}
+				}
+			{%- endfor %}
+			{%- endfor %}
+			};
+
 			static void DoLuaBind(lua_State *L)
 			{
                 std::string name = "{{ meta_data.spelling }}";
@@ -19,7 +31,7 @@ namespace SolLuaBind
 				{%- if meta_data.construct_fn_strs|length > 0 %}
 						sol::constructors<
 					{%- for item in meta_data.construct_fn_strs %}				
-						{{ item }} {%- if meta_data.construct_fn_strs|last != item %},{%- endif %} \
+						{{ item }} {%- if meta_data.construct_fn_strs|last != item %},{%- endif %} 
 					{%- endfor %}
 						>(),
 				{%-endif %}
@@ -29,19 +41,19 @@ namespace SolLuaBind
 						,"{{ item.spelling }}", &{{ item.full_path|replace(".", "::") }}
 					{%- endfor %}
 					
-					{%- for item in meta_data.member_fns %}				
+					{%- for item in meta_data.fns %}				
 						,"{{ item.spelling }}", &{{ item.full_path|replace(".", "::") }}
 					{%- endfor %}
 					
-					{%- for item in meta_data.member_overload_fns %}				
-						,"{{ item.name }}", {{ item.fn_str }}
+					{%- for item in meta_data.overload_fns %}				
+						,"{{ item.name }}", {{ item.bind }}
 					{%- endfor %}
 					
 						
 				{%- if meta_data.base_classes|length > 0 %}	
 					{%- for item in meta_data.base_classes %}				
 						, sol::base_classes, sol::bases<
-							{{ item }} {%- if meta_data.base_classes|last != item %},{%- endif %} \
+							{{ item }} {%- if meta_data.base_classes|last != item %},{%- endif %} 
 						>()
 					{%- endfor %}
 				{%- endif %}
@@ -54,17 +66,6 @@ namespace SolLuaBind
 				{%- for item in meta_data.vars %}				
 					ns_table.set("{{ item.spelling }}", {{ item.full_path|replace(".", "::") }});
 				{%- endfor %}
-				
-				{%- for item in meta_data.static_fns %}				
-					ns_table.set_function("{{ item.spelling }}", {{ item.full_path|replace(".", "::") }});
-				{%- endfor %}	
-				
-				{%- for item in meta_data.static_overload_fns %}				
-					ns_table.set_function("{{ item.name }}", {{ item.fn_str }});
-				{%- endfor %}	
-
-
-				
 				}
 			}
 		};

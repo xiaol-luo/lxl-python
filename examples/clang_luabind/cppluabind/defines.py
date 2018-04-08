@@ -178,7 +178,7 @@ class descript_function_param(descript_base):
         super(__class__, self).__init__(enum_descript_type.param)
     
     def is_same(self, other):
-        return self.type_name != other.type_name
+        return self.type_name == other.type_name
 
 
     @staticmethod
@@ -199,23 +199,28 @@ class descript_function(descript_base):
         self.is_static = False
         self.is_constructor = False
         self.is_virtual = False
+        self.is_const = False
 
     def is_same(self, other):
         if self.spelling != other.spelling:
             return False
         if len(self.params) != len(other.params):
             return False
+        if self.is_const != other.is_const:
+            return False
         for i in range(0, len(self.params)):
             if not self.params[i].is_same(other.params[i]):
                 return False
         return True
 
+    @property
+    def is_public(self):
+        if not self.parent or not isinstance(self.parent, descript_struct):
+            return True
+        return AccessSpecifier.PUBLIC == self.cursor.access_specifier
+
     @staticmethod
     def parse_ast(cursor, parent_desc):
-        if parent_desc \
-            and isinstance(parent_desc, descript_struct) \
-            and AccessSpecifier.PUBLIC != cursor.access_specifier:
-            return
         elem = descript_function()
         elem.parent = parent_desc
         if parent_desc:
@@ -231,6 +236,7 @@ class descript_function(descript_base):
                             or cursor.is_move_constructor()
         elem.is_constructor = CursorKind.CONSTRUCTOR == cursor.kind
         elem.is_virtual = cursor.is_pure_virtual_method() or cursor.is_virtual_method()
+        elem.is_const = cursor.is_const_method()
         descript_base.try_parse_child_ast(cursor, elem)
         #remove same function declare
         if parent_desc:
@@ -274,6 +280,8 @@ class descript_struct(descript_namespace_base):
         if old_elem:
             old_weight = len(old_elem.funcs) + len(old_elem.vars) + len(old_elem.structs) + len(old_elem.enums) + len(old_elem.bases)
             new_weight = len(elem.funcs) + len(elem.vars) + len(elem.structs) + len(elem.enums) + len(elem.bases)
+            if new_weight > 0 and old_weight > 0:
+                assert(False)
             assert(0 == old_weight or 0 == new_weight)
             if old_weight > new_weight:
                 parent_desc.structs[old_elem.spelling] = old_elem

@@ -169,12 +169,10 @@ class struct_meta(base_meta):
             ret.append(fn_str)
         return ret
         
-    def _collect_fns(self, is_static, is_overload):
+    def _collect_fns(self, is_overload):
         fns_map = {}
         for fn in self.desc.funcs:
             if fn.is_constructor:
-                continue
-            if fn.is_static != is_static:
                 continue
             fns = fns_map.get(fn.spelling, None)
             if not fns:
@@ -188,73 +186,69 @@ class struct_meta(base_meta):
                 remove_names.append(name)
         for name in remove_names:
             fns_map.pop(name)
-        return fns_map
-
-    @property
-    def fns(self):
-        fns_map = self._collect_fns(True, False)
-        return fns_map.values()
-
-    @property
-    def static_overload_fns(self):
-        ret = []
-        fns_map = self._collect_fns(True, True)
+        #remove not public function
+        remove_fns_map = {}
         for name, fns in fns_map.items():
-            fn_str = ""
-            for i in range(0, len(fns)):
-                fn_elem = fns[i]
-                input_str = ""
-                excute_str = ""
-                for j in range(0, len(fn_elem.params)):
-                    param_elem = fn_elem.params[j]
-                    input_str += "{} p{},".format(param_elem.type_name, j)
-                    excute_str += "p{},".format(j)
-                input_str = input_str.strip(',')
-                excute_str = excute_str.strip(',')
-                excute_fn = fn_elem.full_path.replace(".", "::")
-                fn_str += "[]({}){} return {}({}); {},".format(input_str, "{",  excute_fn, excute_str, "}")
-            fn_str = fn_str.strip(',')
-            overload_str = "sol::overload({})".format(fn_str)
-            ret.append({"name": name, "fn_str": overload_str})
-        return ret
-    
-    @property
-    def static_fns(self):
-        fns_map =self._collect_fns(True, False)
-        ret = []
-        for fns in fns_map.values():
-            ret.append(fns[0])
-        return ret
+            remove_fns = []
+            for fn in fns:
+                if not fn.is_public:
+                    remove_fns.append(fn)
+            remove_fns_map[name] = remove_fns
+        for name, fns in remove_fns_map.items():
+            if len(fns) >= len(fns_map[name]):
+                fns_map.pop(name)
+                continue
+            for fn in fns:
+                fns_map[name].remove(fn)
+        return fns_map
     
     @property 
-    def member_fns(self):
-        fns_map =self._collect_fns(False, False)
+    def fns(self):
+        fns_map =self._collect_fns(False)
         ret = []
         for fns in fns_map.values():
             ret.append(fns[0])
         return ret
     
     @property
-    def member_overload_fns(self):
+    def overload_fns(self):
         ret = []
-        fns_map = self._collect_fns(False, True)
+        fns_map = self._collect_fns(True)
         for name, fns in fns_map.items():
-            fn_str = ""
-            for i in range(0, len(fns)):
-                fn_elem = fns[i]
+            fn_name = name
+            fn_bind = ""
+            fn_wraps = []
+            fn_id = 0
+            for fn_elem in fns:
+                fn_id = fn_id + 1
                 input_str = ""
                 excute_str = ""
-                for j in range(0, len(fn_elem.params)):
-                    param_elem = fn_elem.params[j]
-                    input_str += "{} p{},".format(param_elem.type_name, j)
-                    excute_str += "p{},".format(j)
-                input_str = input_str.strip(',')
-                excute_str = excute_str.strip(',')
-                fn_str += "[]({} &cls, {}){} return cls.{}({}); {},".format(
-                    fn_elem.space_path.replace(".", "::"), input_str, "{",  fn_elem.spelling, excute_str, "}")
-            fn_str = fn_str.strip(',')
-            overload_str = "sol::overload({})".format(fn_str)
-            ret.append({"name": name, "fn_str": overload_str})
+                param_id = 0
+                for param_elem in fn_elem.params:
+                    param_id = param_id + 1
+                    input_str += "{} p{}, ".format(param_elem.type_name, param_id)
+                    excute_str += "p{}, ".format(param_id)
+                input_str = input_str.strip(" ,")
+                excute_str = excute_str.strip(' ,')
+                fn_declare = "static {} {}{}({}{}{})".format(
+                    fn_elem.return_type,
+                    fn_name, 
+                    fn_id,
+                    fn_elem.is_const and "const " or "",
+                    fn_elem.is_static and "" or "{} &cls, ".format(fn_elem.space_path.replace(".", "::")),
+                    input_str
+                )
+                fn_body = "return {}({});".format(
+                    fn_elem.is_static and fn_elem.full_path.replace(".", "::") or "cls.{}".format(fn_elem.spelling),
+                    excute_str
+                )
+                fn_wraps.append({"declare": fn_declare, "body": fn_body})
+                fn_bind += "ForOverloadFns::{}{}, ".format(
+                    fn_name,
+                    fn_id
+                )
+            fn_bind = "sol::overload({})".format(fn_bind.strip(", "))
+            ret.append({"name": fn_name, "bind": fn_bind, "fn_wraps": fn_wraps})
         return ret
 
 
