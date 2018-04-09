@@ -132,12 +132,15 @@ def do_parse_ex(opts, out_dir, cpp_include_sets, parse_sets, parse_subfixs=set([
             # + TranslationUnit.PARSE_CACHE_COMPLETION_RESULTS \
             )
     
+    struct_usr_locate_path_map = {}
     hfile_undeclare_struct_map = {}
-    undefine_structs = set()
     waiting_cursors = collections.deque()
     waiting_cursors.append(tu.cursor)
     while waiting_cursors:
         curr_cursor = waiting_cursors.pop()
+        if curr_cursor.is_definition() and curr_cursor.location.file:
+            file_path = curr_cursor.location.file.name.replace('\\', '/')
+            struct_usr_locate_path_map[curr_cursor.get_usr()] = file_path
         waiting_cursors.extend(curr_cursor.get_children())
         if CursorKind.STRUCT_DECL != curr_cursor.kind and CursorKind.CLASS_DECL != curr_cursor.kind:
             continue
@@ -153,18 +156,13 @@ def do_parse_ex(opts, out_dir, cpp_include_sets, parse_sets, parse_subfixs=set([
             struct_usrs = set()
             hfile_undeclare_struct_map[file_path] = struct_usrs
         struct_usrs.add(curr_cursor.get_usr())
-        undefine_structs.add(curr_cursor.get_usr())
-    struct_usr_locate_path_map = {}
-    for usr in undefine_structs:
-        locate_path = find_struct_define_hfile_path(tu.cursor, usr)
-        if locate_path:
-            struct_usr_locate_path_map[usr] = locate_path
     hfile_struct_define_hfile_map = {}
     for hfile, struct_usrs in hfile_undeclare_struct_map.items():
         hfile_struct_define_hfile_map[hfile] = []
         for usr in struct_usrs:
-            hfile_struct_define_hfile_map[hfile].append(struct_usr_locate_path_map[usr])
-
+            relate_path = struct_usr_locate_path_map.get(usr)
+            if relate_path:
+                hfile_struct_define_hfile_map[hfile].append(relate_path)
     root_ns = descript_namespace()
     root_ns.cursor = tu.cursor
     descript_base.try_parse_child_ast(tu.cursor, root_ns, parse_files)
