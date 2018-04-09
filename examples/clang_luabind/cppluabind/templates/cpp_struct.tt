@@ -30,7 +30,7 @@ namespace SolLuaBind
 
 				{
 					sol::usertype<{{ meta_data.full_path|replace(".", "::") }}> meta_table(
-				{%- if meta_data.construct_fn_strs|length > 0 %}
+				{%- if meta_data.construct_fn_strs|length > 0 and not meta_data.is_abstract_struct %}
 						sol::constructors<
 					{%- for item in meta_data.construct_fn_strs %}				
 						{{ item }} {%- if meta_data.construct_fn_strs|last != item %},{%- endif %} 

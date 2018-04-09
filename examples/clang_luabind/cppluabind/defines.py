@@ -68,6 +68,7 @@ class descript_base(object):
         self.spelling = ""
         self.type_name = ""
         self.cursor = None
+        self.usr = None
 
     @property
     def space_path(self):
@@ -122,6 +123,7 @@ class descript_base(object):
         self.spelling = cursor.spelling
         self.type_name = cursor.type.spelling
         self.cursor = cursor
+        self.usr = cursor.get_usr()
 
 
 class descript_enum(descript_base):
@@ -205,6 +207,7 @@ class descript_function(descript_base):
         self.is_constructor = False
         self.is_virtual = False
         self.is_const = False
+        self.is_pure = False
 
     def is_same(self, other):
         if self.spelling != other.spelling:
@@ -212,6 +215,8 @@ class descript_function(descript_base):
         if len(self.params) != len(other.params):
             return False
         if self.is_const != other.is_const:
+            return False
+        if self.is_static != other.is_static:
             return False
         for i in range(0, len(self.params)):
             if not self.params[i].is_same(other.params[i]):
@@ -233,6 +238,7 @@ class descript_function(descript_base):
             parent_desc.funcs.append(elem)
         elem.fill_common_fields(cursor)
         #to do something
+        result_cursor = cursor.type.get_result()
         elem.return_type = cursor.type.get_result().spelling
         elem.is_static = cursor.is_static_method()
         elem.is_constructor = cursor.is_converting_constructor() \
@@ -242,6 +248,7 @@ class descript_function(descript_base):
         elem.is_constructor = CursorKind.CONSTRUCTOR == cursor.kind
         elem.is_virtual = cursor.is_pure_virtual_method() or cursor.is_virtual_method()
         elem.is_const = cursor.is_const_method()
+        elem.is_pure = cursor.is_pure_virtual_method()
         descript_base.try_parse_child_ast(cursor, elem)
         #remove same function declare
         if parent_desc:
@@ -267,6 +274,7 @@ class descript_struct(descript_namespace_base):
     def __init__(self):
         super(__class__, self).__init__(enum_descript_type.struct)
         self.bases = []
+        self.base_usrs = []
 
     @property
     def is_public(self):
@@ -295,7 +303,9 @@ class descript_struct(descript_namespace_base):
         descript_base.try_parse_child_ast(cursor, elem)
         for child_cursor in cursor.get_children(): #identify base classes
             if CursorKind.CXX_BASE_SPECIFIER == child_cursor.kind:
-                elem.bases.append(child_cursor.type.spelling) 
+                if AccessSpecifier.PUBLIC == child_cursor.access_specifier:
+                    elem.bases.append(child_cursor.type.spelling) 
+                elem.base_usrs.append(child_cursor.get_definition().get_usr())
         if old_elem:
             old_weight = len(old_elem.funcs) + len(old_elem.vars) + len(old_elem.structs) + len(old_elem.enums) + len(old_elem.bases)
             new_weight = len(elem.funcs) + len(elem.vars) + len(elem.structs) + len(elem.enums) + len(elem.bases)

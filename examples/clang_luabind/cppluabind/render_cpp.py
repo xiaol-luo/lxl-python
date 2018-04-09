@@ -6,6 +6,22 @@ from clang.cindex import CursorKind
 
 _abspath_relative_path_map = None
 _hfile_struct_define_hfile_map = None
+_desc_root = None
+
+def find_struct_by_usr(usr):
+    global _desc_root
+    desc_queue = []
+    desc_queue.append(_desc_root)
+    while len(desc_queue) > 0:
+        desc = desc_queue.pop(0)
+        if isinstance(desc, descript_namespace_base):
+            desc_queue.extend(desc.structs.values())
+            desc_queue.extend(desc.enums)
+        if isinstance(desc, descript_namespace):
+            desc_queue.extend(desc.namespaces)
+        if desc.usr == usr and isinstance(desc, descript_struct):
+            return desc
+    return None
 
 def _get_relate_path(abspath):
     global _abspath_relative_path_map
@@ -141,10 +157,56 @@ class namespace_meta(base_meta):
         return ret
         
         
-
 class struct_meta(base_meta):
     def __init__(self, _desc):
         super(__class__, self).__init__(_desc)
+
+    @property
+    def is_abstract_struct(self):
+        relate_usrs = set()
+        wait_check_usrs = [self.desc.usr]
+        while wait_check_usrs:
+            usr = wait_check_usrs.pop(0)
+            relate_usrs.add(usr)
+            struct_desc = find_struct_by_usr(usr)
+            if struct_desc:
+                for item in struct_desc.base_usrs:
+                    if item not in relate_usrs:
+                        wait_check_usrs.append(item)        
+        pure_fns = []
+        not_pure_fns = []
+        for usr in relate_usrs:
+            struct_desc = find_struct_by_usr(usr)
+            if not struct_desc:
+                continue
+            for fn in struct_desc.funcs:
+                if fn.is_constructor:
+                    continue
+                if fn.is_pure:
+                    is_append = True
+                    for pure_fn in pure_fns:
+                        if fn.is_same(pure_fn):
+                            is_append = False
+                            break
+                    if is_append:
+                        pure_fns.append(fn)
+                else:
+                    is_append = True
+                    for not_pure_fn in not_pure_fns:
+                        if fn.is_same(not_pure_fn):
+                            is_append = False
+                            break
+                    if is_append:
+                        not_pure_fns.append(fn)
+        for not_pure_fn in not_pure_fns:
+            hit_pure_fn = None
+            for pure_fn in pure_fns:
+                if not_pure_fn.is_same(pure_fn):
+                    hit_pure_fn = pure_fn
+                    break
+            if hit_pure_fn:
+                pure_fns.remove(hit_pure_fn)
+        return len(pure_fns) > 0
 
     @property
     def vars(self):
@@ -296,6 +358,7 @@ def do_render_enum(desc, template_env, outdir):
     os.makedirs(os.path.dirname(out_file_path), exist_ok=True)
     with codecs.open(out_file_path, 'w', encoding='utf-8') as f:
         f.write(ret)
+    return True
 
 def do_render_namespace(desc, template_env, outdir):
     meta_data = namespace_meta(desc)
@@ -309,9 +372,12 @@ def do_render_namespace(desc, template_env, outdir):
     os.makedirs(os.path.dirname(out_file_path), exist_ok=True)
     with codecs.open(out_file_path, 'w', encoding='utf-8') as f:
         f.write(ret)
+    return True
 
 def do_render_struct(desc, template_env, outdir):
     meta_data = struct_meta(desc)
+    #if meta_data.is_abstract_struct():
+    #    return False
     tt = template_env.get_template("cpp_struct.tt")
     ret = tt.render({
         "meta_data": meta_data
@@ -322,6 +388,7 @@ def do_render_struct(desc, template_env, outdir):
     os.makedirs(os.path.dirname(out_file_path), exist_ok=True)
     with codecs.open(out_file_path, 'w', encoding='utf-8') as f:
         f.write(ret)
+    return True
 
 render_actions = {
     enum_descript_type.enum: do_render_enum,
@@ -334,6 +401,8 @@ def do_render(desc_root, abspath_relative_path_map, hfile_struct_define_hfile_ma
     _abspath_relative_path_map = abspath_relative_path_map
     global _hfile_struct_define_hfile_map
     _hfile_struct_define_hfile_map = hfile_struct_define_hfile_map
+    global _desc_root
+    _desc_root = desc_root
     template_env = jinja2.Environment(loader=jinja2.ChoiceLoader([
         jinja2.PackageLoader(__package__, package_path='templates')
         #jinja2.FileSystemLoader("")
@@ -345,9 +414,8 @@ def do_render(desc_root, abspath_relative_path_map, hfile_struct_define_hfile_ma
         desc = desc_queue.pop(0)
         render_action = render_actions.get(desc.desc_type, None)
         if render_action:
-            render_action(desc, template_env, outdir)
-            gen_descs.append(desc)
-        
+            if render_action(desc, template_env, outdir):
+                gen_descs.append(desc)
         if isinstance(desc, descript_namespace_base):
             desc_queue.extend(desc.structs.values())
             desc_queue.extend(desc.enums)
