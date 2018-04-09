@@ -86,10 +86,15 @@ class descript_base(object):
     
     @staticmethod
     def try_parse_child_ast(cursor, parent_desc, parse_files=None):
+        is_public = True
         for child_cursor in cursor.get_children():
             if parse_files and child_cursor.location.file.name.replace('\\', '/') not in parse_files:
                     continue
             cursor_kind = child_cursor.kind
+            if  CursorKind.CXX_ACCESS_SPEC_DECL == cursor_kind:
+                is_public = AccessSpecifier.PUBLIC == child_cursor.access_specifier
+            if not is_public:
+                continue
             if not cursor_kind.is_declaration():
                 continue
             if False:
@@ -263,12 +268,24 @@ class descript_struct(descript_namespace_base):
         super(__class__, self).__init__(enum_descript_type.struct)
         self.bases = []
 
+    @property
+    def is_public(self):
+        if AccessSpecifier.PROTECTED == self.cursor.access_specifier or \
+            AccessSpecifier.PRIVATE == self.cursor.access_specifier:
+            return False
+        if self.parent and isinstance(self.parent, descript_struct):
+            return self.parent.is_public
+        return True 
+    
     @staticmethod
     def parse_ast(cursor, parent_desc):
         if not cursor.is_definition():
             return None
         elem = descript_struct()
         elem.parent = parent_desc
+        elem.cursor = cursor
+        if not elem.is_public:
+            return None
         old_elem = None
         if parent_desc:
             assert(isinstance(parent_desc, descript_namespace_base))

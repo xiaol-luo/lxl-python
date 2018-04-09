@@ -157,8 +157,8 @@ def do_parse_ex(opts, out_dir, cpp_include_sets, parse_sets, parse_subfixs=set([
     struct_usr_locate_path_map = {}
     for usr in undefine_structs:
         locate_path = find_struct_define_hfile_path(tu.cursor, usr)
-        assert(locate_path)
-        struct_usr_locate_path_map[usr] = locate_path
+        if locate_path:
+            struct_usr_locate_path_map[usr] = locate_path
     hfile_struct_define_hfile_map = {}
     for hfile, struct_usrs in hfile_undeclare_struct_map.items():
         hfile_struct_define_hfile_map[hfile] = []

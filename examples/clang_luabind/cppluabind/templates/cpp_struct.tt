@@ -37,7 +37,7 @@ namespace SolLuaBind
 					{%- endfor %}
 						>(),
 				{%-endif %}
-					"__StructName__", sol::property([]() {return "{{ meta_data.spelling }}"; })
+						"__StructName__", sol::property([]() {return "{{ meta_data.spelling }}"; })
 
 					{%- for item in meta_data.fields %}				
 						,"{{ item.spelling }}", &{{ item.full_path|replace(".", "::") }}
