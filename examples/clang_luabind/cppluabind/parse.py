@@ -127,7 +127,9 @@ def do_parse_ex(opts, out_dir, cpp_include_sets, parse_sets, fake_sets, parse_su
         fake_files_relative_path_map[fake_file] = relative_path
     fake_h_name = "fake.h"
     fake_h_content = ""
-    for item in fake_files_relative_path_map.values():
+    all_fake_paths = list(fake_files_relative_path_map.values())
+    all_fake_paths.sort()
+    for item in all_fake_paths:
         fake_h_content += "#include <{0}>\n".format(item)
     for item in include_paths:
         opts.append("-I{0}".format(item))
@@ -169,11 +171,15 @@ def do_parse_ex(opts, out_dir, cpp_include_sets, parse_sets, fake_sets, parse_su
             relate_path = struct_usr_locate_path_map.get(usr)
             if relate_path:
                 hfile_struct_define_hfile_map[hfile].append(relate_path)
+    for hfile in hfile_struct_define_hfile_map.keys():
+        hfile_struct_define_hfile_map[hfile].sort()
     root_ns = descript_namespace()
     root_ns.cursor = tu.cursor
     descript_base.try_parse_child_ast(tu.cursor, root_ns, parse_files)
     abspath_relative_path_map = {}
-    for parse_item in parse_files.union(fake_files):
+    all_abspath_files = list(parse_files.union(fake_files))
+    all_abspath_files.sort()
+    for parse_item in all_abspath_files:
         relative_path = ""
         for include_item in include_paths:
             if parse_item.startswith(include_item):

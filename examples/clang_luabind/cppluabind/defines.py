@@ -66,7 +66,7 @@ class descript_base(object):
         self.parent = None
         self.desc_type = _desc_type
         self.spelling = ""
-        self.type_name = ""
+        self._type_name = ""
         self.cursor = None
         self.usr = None
 
@@ -121,9 +121,13 @@ class descript_base(object):
             return self.cursor.location.file.name.replace('\\', '/')
         return ""
 
+    @property
+    def type_name(self):
+        return self.cursor.type.get_canonical().spelling
+
     def fill_common_fields(self, cursor):
         self.spelling = cursor.spelling
-        self.type_name = cursor.type.get_canonical().spelling
+        self._type_name = cursor.type.get_canonical().spelling
         self.cursor = cursor
         self.usr = cursor.get_usr()
 
@@ -311,7 +315,7 @@ class descript_struct(descript_namespace_base):
         for child_cursor in cursor.get_children(): #identify base classes
             if CursorKind.CXX_BASE_SPECIFIER == child_cursor.kind:
                 if AccessSpecifier.PUBLIC == child_cursor.access_specifier:
-                    elem.bases.append(child_cursor.type.spelling) 
+                    elem.bases.append(child_cursor.type.get_canonical().spelling)
                 elem.base_usrs.append(child_cursor.get_definition().get_usr())
         if old_elem:
             old_weight = len(old_elem.funcs) + len(old_elem.vars) + len(old_elem.structs) + len(old_elem.enums) + len(old_elem.bases)

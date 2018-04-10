@@ -122,7 +122,7 @@ class namespace_meta(base_meta):
 
     @property
     def overload_fns(self):
-        fn_map =collect_fns(self, False)
+        fn_map =collect_fns(self, True)
         ret = []
         for name, vals in fn_map.items():
             fn_str = ""
