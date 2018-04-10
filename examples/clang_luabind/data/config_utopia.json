@@ -30,24 +30,30 @@
 	
 	"parse_paths" : [
 		[
-			"F:/git-dir/Utopia/Code/Server/Logic/ShareCode", 
+			"F:/git-dir/Utopia/Code/Server/Logic/LogicModules/GameLogic", 
 			[
-				"Config",
-				"Common"
-			]
-		],
-		[
-			"F:/git-dir/Utopia/Code/Server/Logic", 
-			[
-				"CommonModules",
-				"LogicModules",
-				"ModuleDef",
-				"ServerLogics"
+				"Scene"
 			]
 		]
 	],
 	
 	"exclude_paths" : [
+		[
+			"F:/git-dir/Utopia/Code/Server/Logic", 
+			[
+				"CommonModules/Network",
+				"LogicModules/GameLogic/AI"
+			]
+		]
+	],
+
+	"fake_paths" : [
+		[
+			"F:/git-dir/Utopia/Code/Server", 
+			[
+				"."
+			]
+		]
 	],
 	
 	"parse_subfixs" : [

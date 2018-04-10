@@ -84,7 +84,13 @@ def find_struct_define_hfile_path(root_cursor, usr):
         return file_path
     return None
 
-def do_parse_ex(opts, out_dir, cpp_include_sets, parse_sets, parse_subfixs=set([".h", ".hpp"]), exclude_sets=[]):
+def do_parse_ex(opts, out_dir, cpp_include_sets, parse_sets, fake_sets, parse_subfixs=set([".h", ".hpp"]), exclude_sets=[]):
+    fake_files = set()
+    for item in fake_sets:
+        item.gen_path_map()
+        for abspath in item.abspaths:
+            files = find_all_files(abspath, parse_subfixs)
+            fake_files = fake_files.union(set(files))
     include_paths = set()
     for item in cpp_include_sets:
         item.gen_path_map()
@@ -101,6 +107,7 @@ def do_parse_ex(opts, out_dir, cpp_include_sets, parse_sets, parse_subfixs=set([
         for item in parse_set.abspaths:
             files = find_all_files(item, parse_subfixs)
             parse_files = parse_files.union(set(files)) 
+    fake_files = fake_files.union(parse_files)
     remove_files = []
     for parse_item in parse_files:
         for exclude_item in exclude_paths:
@@ -109,21 +116,21 @@ def do_parse_ex(opts, out_dir, cpp_include_sets, parse_sets, parse_subfixs=set([
                 break    
     for item in remove_files:
         parse_files.discard(item)
-    abspath_relative_path_map = {}
-    for parse_item in parse_files:
+    fake_files_relative_path_map = {}
+    for fake_file in fake_files:
         relative_path = ""
         for include_item in include_paths:
-            if parse_item.startswith(include_item):
-                relative_path = parse_item[len(include_item):].strip('/')
+            if fake_file.startswith(include_item):
+                relative_path = fake_file[len(include_item):].strip('/')
                 break
         assert(relative_path)
-        abspath_relative_path_map[parse_item] = relative_path
+        fake_files_relative_path_map[fake_file] = relative_path
     fake_h_name = "fake.h"
     fake_h_content = ""
+    for item in fake_files_relative_path_map.values():
+        fake_h_content += "#include <{0}>\n".format(item)
     for item in include_paths:
         opts.append("-I{0}".format(item))
-    for item in abspath_relative_path_map.values():
-        fake_h_content += "#include <{0}>\n".format(item)
     tu = TranslationUnit.from_source(fake_h_name, opts, [(fake_h_name, fake_h_content)], \
         options= 0 + \
             #+ TranslationUnit.PARSE_INCLUDE_BRIEF_COMMENTS_IN_CODE_COMPLETION \
@@ -131,7 +138,6 @@ def do_parse_ex(opts, out_dir, cpp_include_sets, parse_sets, parse_subfixs=set([
             + TranslationUnit.PARSE_INCOMPLETE \
             # + TranslationUnit.PARSE_CACHE_COMPLETION_RESULTS \
             )
-    
     struct_usr_locate_path_map = {}
     hfile_undeclare_struct_map = {}
     waiting_cursors = collections.deque()
@@ -166,6 +172,15 @@ def do_parse_ex(opts, out_dir, cpp_include_sets, parse_sets, parse_subfixs=set([
     root_ns = descript_namespace()
     root_ns.cursor = tu.cursor
     descript_base.try_parse_child_ast(tu.cursor, root_ns, parse_files)
+    abspath_relative_path_map = {}
+    for parse_item in parse_files.union(fake_files):
+        relative_path = ""
+        for include_item in include_paths:
+            if parse_item.startswith(include_item):
+                relative_path = parse_item[len(include_item):].strip('/')
+                break
+        assert(relative_path)
+        abspath_relative_path_map[parse_item] = relative_path
     render_cpp.do_render(root_ns, abspath_relative_path_map, hfile_struct_define_hfile_map, out_dir)
 
 

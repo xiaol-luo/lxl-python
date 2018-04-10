@@ -106,7 +106,9 @@ class descript_base(object):
                 descript_struct.parse_ast(child_cursor, parent_desc)
             elif CursorKind.FIELD_DECL == cursor_kind or CursorKind.VAR_DECL == cursor_kind:
                 descript_variable.parse_ast(child_cursor, parent_desc)
-            elif CursorKind.FUNCTION_DECL == cursor_kind or CursorKind.CXX_METHOD == cursor_kind or CursorKind.CONSTRUCTOR == cursor_kind:
+            elif CursorKind.FUNCTION_DECL == cursor_kind or CursorKind.CXX_METHOD == cursor_kind \
+                    or CursorKind.CONSTRUCTOR == cursor_kind \
+                    or CursorKind.FUNCTION_TEMPLATE == cursor_kind:
                 descript_function.parse_ast(child_cursor, parent_desc)
             elif CursorKind.PARM_DECL == cursor_kind:
                 descript_function_param.parse_ast(child_cursor, parent_desc)
@@ -208,6 +210,7 @@ class descript_function(descript_base):
         self.is_virtual = False
         self.is_const = False
         self.is_pure = False
+        self.is_template = False
 
     def is_same(self, other):
         if self.spelling != other.spelling:
@@ -217,6 +220,8 @@ class descript_function(descript_base):
         if self.is_const != other.is_const:
             return False
         if self.is_static != other.is_static:
+            return False
+        if self.is_template != other.is_template:
             return False
         for i in range(0, len(self.params)):
             if not self.params[i].is_same(other.params[i]):
@@ -249,6 +254,7 @@ class descript_function(descript_base):
         elem.is_virtual = cursor.is_pure_virtual_method() or cursor.is_virtual_method()
         elem.is_const = cursor.is_const_method()
         elem.is_pure = cursor.is_pure_virtual_method()
+        elem.is_template = CursorKind.FUNCTION_TEMPLATE == cursor.kind
         descript_base.try_parse_child_ast(cursor, elem)
         #remove same function declare
         if parent_desc:
@@ -291,7 +297,9 @@ class descript_struct(descript_namespace_base):
             return None
         elem = descript_struct()
         elem.parent = parent_desc
-        elem.cursor = cursor
+        elem.fill_common_fields(cursor)
+        if not elem.spelling:
+            return None
         if not elem.is_public:
             return None
         old_elem = None
@@ -299,7 +307,6 @@ class descript_struct(descript_namespace_base):
             assert(isinstance(parent_desc, descript_namespace_base))
             old_elem = parent_desc.structs.get(cursor.spelling, None)
             parent_desc.structs[cursor.spelling] = elem
-        elem.fill_common_fields(cursor)
         descript_base.try_parse_child_ast(cursor, elem)
         for child_cursor in cursor.get_children(): #identify base classes
             if CursorKind.CXX_BASE_SPECIFIER == child_cursor.kind:
@@ -327,13 +334,15 @@ class descript_namespace(descript_namespace_base):
         elem = descript_namespace()
         elem.parent = parent_desc
         elem.fill_common_fields(cursor)
+        if not elem.spelling:
+            return None
         if parent_desc:
             assert(isinstance(parent_desc, descript_namespace))
             is_find = False
             for item in parent_desc.namespaces:
                 if item.spelling == elem.spelling:
                     elem = item
-                    is_find = False
+                    is_find = True
                     break
             if not is_find:
                 parent_desc.namespaces.append(elem)

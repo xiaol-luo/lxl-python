@@ -15,14 +15,23 @@
 		[
 			"F:/git-dir/Utopia/Code/TrySol", 
 			[
-				"AutoBind/EventDispatcher"
+				"AutoBind/Test"
 			]
 		]
 	],
 	
 	"exclude_paths" : [
 	],
-	
+
+	"fake_paths" : [
+		[
+			"F:/git-dir/Utopia/Code/TrySol", 
+			[
+				"AutoBind/Test"
+			]
+		]
+	],
+
 	"parse_subfixs" : [
 		".h", ".hpp"
 	]
