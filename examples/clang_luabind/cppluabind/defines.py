@@ -121,7 +121,7 @@ class descript_base(object):
 
     def fill_common_fields(self, cursor):
         self.spelling = cursor.spelling
-        self.type_name = cursor.type.spelling
+        self.type_name = cursor.type.get_canonical().spelling
         self.cursor = cursor
         self.usr = cursor.get_usr()
 
@@ -238,8 +238,8 @@ class descript_function(descript_base):
             parent_desc.funcs.append(elem)
         elem.fill_common_fields(cursor)
         #to do something
-        result_cursor = cursor.type.get_result()
-        elem.return_type = cursor.type.get_result().spelling
+        result_type = cursor.type.get_result()
+        elem.return_type = cursor.type.get_result().get_canonical().spelling
         elem.is_static = cursor.is_static_method()
         elem.is_constructor = cursor.is_converting_constructor() \
                             or cursor.is_copy_constructor() \
