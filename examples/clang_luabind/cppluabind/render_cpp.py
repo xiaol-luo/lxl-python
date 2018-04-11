@@ -54,7 +54,7 @@ def collect_fns(self, is_overload):
     for name, fns in fns_map.items():
         remove_fns = []
         for fn in fns:
-            if not fn.is_public or fn.is_template:
+            if not fn.is_public or fn.is_template or fn.is_ignore():
                 remove_fns.append(fn)
         remove_fns_map[name] = remove_fns
     for name, fns in remove_fns_map.items():
@@ -109,7 +109,11 @@ class namespace_meta(base_meta):
 
     @property
     def vars(self):
-        ret = self.desc.vars
+        ret = []
+        for item in self.desc.vars:
+            if item.is_ignore():
+                continue
+            ret.append(item)
         return ret
     
     @property 
@@ -123,6 +127,8 @@ class namespace_meta(base_meta):
     @property
     def overload_fns(self):
         ret = []
+        alias_type_id = 0
+        alias_type_prefix = "TypeAlias_"
         fns_map = collect_fns(self, True)
         for name, fns in fns_map.items():
             #暂时不处理运算符也overload的情况，如果考虑运算符的话需要考虑的东西蛮多的
@@ -132,8 +138,6 @@ class namespace_meta(base_meta):
             fn_bind = ""
             fn_wraps = []
             fn_id = 0
-            alias_type_id = 0
-            alias_type_prefix = "TypeAlias_"
             for fn_elem in fns:
                 fn_id = fn_id + 1
                 input_str = ""
@@ -257,14 +261,18 @@ class struct_meta(base_meta):
     def vars(self):
         ret = []
         for item in self.desc.vars:
+            if item.is_ignore():
+                continue
             if CursorKind.VAR_DECL == item.cursor.kind:
                 ret.append(item)
         return ret
     
     @property
     def fields(self):
-        ret = []
+        ret = []            
         for item in self.desc.vars:
+            if item.is_ignore():
+                continue
             if CursorKind.VAR_DECL != item.cursor.kind:
                 ret.append(item)
         return ret
@@ -301,6 +309,8 @@ class struct_meta(base_meta):
     @property
     def overload_fns(self):
         ret = []
+        alias_type_id = 0
+        alias_type_prefix = "TypeAlias_"
         fns_map = collect_fns(self, True)
         for name, fns in fns_map.items():
             #暂时不处理运算符也overload的情况，如果考虑运算符的话需要考虑的东西蛮多的
@@ -310,8 +320,6 @@ class struct_meta(base_meta):
             fn_bind = ""
             fn_wraps = []
             fn_id = 0
-            alias_type_id = 0
-            alias_type_prefix = "TypeAlias_"
             for fn_elem in fns:
                 fn_id = fn_id + 1
                 input_str = ""
@@ -436,6 +444,8 @@ def do_render(desc_root, abspath_relative_path_map, hfile_struct_define_hfile_ma
     desc_queue.append(desc_root)
     while len(desc_queue) > 0:
         desc = desc_queue.pop(0)
+        if desc.is_ignore():
+            continue
         render_action = render_actions.get(desc.desc_type, None)
         if render_action:
             if render_action(desc, template_env, outdir):

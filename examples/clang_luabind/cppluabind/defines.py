@@ -66,9 +66,10 @@ class descript_base(object):
         self.parent = None
         self.desc_type = _desc_type
         self.spelling = ""
-        self._type_name = ""
+        self.type_name = ""
         self.cursor = None
         self.usr = None
+        self.brief_comment = None
 
     @property
     def space_path(self):
@@ -94,8 +95,6 @@ class descript_base(object):
             cursor_kind = child_cursor.kind
             if  CursorKind.CXX_ACCESS_SPEC_DECL == cursor_kind:
                 is_public = AccessSpecifier.PUBLIC == child_cursor.access_specifier
-            if not is_public:
-                continue
             if not cursor_kind.is_declaration():
                 continue
             if False:
@@ -121,15 +120,21 @@ class descript_base(object):
             return self.cursor.location.file.name.replace('\\', '/')
         return ""
 
-    @property
-    def type_name(self):
-        return self.cursor.type.get_canonical().spelling
-
     def fill_common_fields(self, cursor):
         self.spelling = cursor.spelling
-        self._type_name = cursor.type.get_canonical().spelling
+        self.type_name = cursor.type.get_canonical().spelling
         self.cursor = cursor
         self.usr = cursor.get_usr()
+        self.brief_comment = cursor.brief_comment
+        if self.brief_comment:
+            self.brief_comment = self.brief_comment.strip(" ")
+
+    def is_ignore(self):
+        if not self.brief_comment:
+            return False
+        if self.brief_comment != "sol_ignore":
+            return False
+        return True
 
 
 class descript_enum(descript_base):
@@ -168,13 +173,14 @@ class descript_variable(descript_base):
         if parent_desc \
             and isinstance(parent_desc, descript_struct) \
             and AccessSpecifier.PUBLIC != cursor.access_specifier:
-            return
+            return False
         elem = descript_variable()
+        elem.fill_common_fields(cursor)
         elem.parent = parent_desc
+        
         if parent_desc:
             assert(isinstance(parent_desc, descript_namespace_base))
             parent_desc.vars.append(elem)
-        elem.fill_common_fields(cursor)
         elem.is_const = cursor.type.is_const_qualified()
         #remove same function declare
         if parent_desc:
