@@ -122,25 +122,53 @@ class namespace_meta(base_meta):
 
     @property
     def overload_fns(self):
-        fn_map =collect_fns(self, True)
         ret = []
-        for name, vals in fn_map.items():
-            fn_str = ""
-            for i in range(0, len(vals)):
-                fn_elem = vals[i]
+        fns_map = collect_fns(self, True)
+        for name, fns in fns_map.items():
+            #暂时不处理运算符也overload的情况，如果考虑运算符的话需要考虑的东西蛮多的
+            if name.startswith("operator"): 
+                continue
+            fn_name = name
+            fn_bind = ""
+            fn_wraps = []
+            fn_id = 0
+            alias_type_id = 0
+            alias_type_prefix = "TypeAlias_"
+            for fn_elem in fns:
+                fn_id = fn_id + 1
                 input_str = ""
                 excute_str = ""
-                for j in range(0, len(fn_elem.params)):
-                    param_elem = fn_elem.params[j]
-                    input_str += "{} p{},".format(param_elem.type_name, j)
-                    excute_str += "p{},".format(j)
-                input_str = input_str.strip(',')
-                excute_str = excute_str.strip(',')
-                excute_fn = fn_elem.full_path.replace(".", "::")
-                fn_str += "[]({}){} return {}({}); {},".format(input_str, "{",  excute_fn, excute_str, "}")
-            fn_str = fn_str.strip(',')
-            overload_str = "sol::overload({})".format(fn_str)
-            ret.append({"name": name, "fn_str": overload_str})
+                alias_types = {}
+                param_id = 0
+                for param_elem in fn_elem.params:
+                    param_id = param_id + 1
+                    alias_type_id = alias_type_id + 1
+                    alias_type_name = alias_type_prefix + str(alias_type_id)
+                    alias_types[alias_type_name] = param_elem.type_name
+                    input_str += "{} p{}, ".format(alias_type_name, param_id)
+                    excute_str += "p{}, ".format(param_id)
+                excute_str = excute_str.strip(' ,')
+                input_str = input_str.strip(" ,")
+                alias_type_id = alias_type_id + 1
+                alias_type_name = alias_type_prefix + str(alias_type_id)
+                alias_types[alias_type_name] = fn_elem.return_type
+                fn_declare = "static {} {}{}({})".format(
+                    alias_type_name,
+                    fn_name, 
+                    fn_id,
+                    input_str
+                )
+                fn_body = "return {}({});".format(
+                    fn_elem.full_path.replace(".", "::"),
+                    excute_str
+                )
+                fn_wraps.append({"declare": fn_declare, "body": fn_body, "alias_types":alias_types})
+                fn_bind += "ForOverloadFns::{}{}, ".format(
+                    fn_name,
+                    fn_id
+                )
+            fn_bind = "sol::overload({})".format(fn_bind.strip(", "))
+            ret.append({"name": fn_name, "bind": fn_bind, "fn_wraps": fn_wraps})
         return ret
 
     @property
@@ -282,14 +310,20 @@ class struct_meta(base_meta):
             fn_bind = ""
             fn_wraps = []
             fn_id = 0
+            alias_type_id = 0
+            alias_type_prefix = "TypeAlias_"
             for fn_elem in fns:
                 fn_id = fn_id + 1
                 input_str = ""
                 excute_str = ""
+                alias_types = {}
                 param_id = 0
                 for param_elem in fn_elem.params:
                     param_id = param_id + 1
-                    input_str += "{} p{}, ".format(param_elem.type_name, param_id)
+                    alias_type_id = alias_type_id + 1
+                    alias_type_name = alias_type_prefix + str(alias_type_id)
+                    alias_types[alias_type_name] = param_elem.type_name
+                    input_str += "{} p{}, ".format(alias_type_name, param_id)
                     excute_str += "p{}, ".format(param_id)
                 excute_str = excute_str.strip(' ,')
                 cls_str = ""
@@ -300,8 +334,11 @@ class struct_meta(base_meta):
                     )
                 input_str = cls_str + input_str
                 input_str = input_str.strip(" ,")
+                alias_type_id = alias_type_id + 1
+                alias_type_name = alias_type_prefix + str(alias_type_id)
+                alias_types[alias_type_name] = fn_elem.return_type
                 fn_declare = "static {} {}{}({})".format(
-                    fn_elem.return_type,
+                    alias_type_name,
                     fn_name, 
                     fn_id,
                     input_str
@@ -310,7 +347,7 @@ class struct_meta(base_meta):
                     fn_elem.is_static and fn_elem.full_path.replace(".", "::") or "cls.{}".format(fn_elem.spelling),
                     excute_str
                 )
-                fn_wraps.append({"declare": fn_declare, "body": fn_body})
+                fn_wraps.append({"declare": fn_declare, "body": fn_body, "alias_types":alias_types})
                 fn_bind += "ForOverloadFns::{}{}, ".format(
                     fn_name,
                     fn_id

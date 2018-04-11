@@ -1,10 +1,13 @@
 {
-	"opts": ["-x", "c++", "-std=c++11", "-D__CODE_GENERATOR__"],
-	"out_dir" : "E:/git-dir/Utopia/Code/Server/AutoLuaBind", 
+	"opts": ["-x", "c++", "-std=c++14", "-D__CODE_GENERATOR__",
+		"-D_CRT_SECURE_NO_WARNINGS",
+		"-D_WINSOCK_DEPRECATED_NO_WARNINGS"
+	],
+	"out_dir" : "F:/git-dir/Utopia/Code/Server/AutoLuaBind", 
 	
 	"include_paths" : [
 		[
-			"E:/git-dir/Utopia/Code/Server", 
+			"F:/git-dir/Utopia/Code/Server", 
 			[
 				".",
 				"Libs/3rdpartLibs",
@@ -30,17 +33,16 @@
 	
 	"parse_paths" : [
 		[
-			"E:/git-dir/Utopia/Code/Server/Logic/LogicModules/GameLogic", 
+			"F:/git-dir/Utopia/Code/Server/Logic/LogicModules/GameLogic", 
 			[
-				"Scene/SceneUnit/SceneUnit.h",
-				"Scene/SceneModule/SceneUnitFilter/SceneUnitFilter.h"
+				"Scene/SceneUnit/SceneUnit.h"
 			]
 		]
 	],
 	
 	"exclude_paths" : [
 		[
-			"E:/git-dir/Utopia/Code/Server/Logic", 
+			"F:/git-dir/Utopia/Code/Server/Logic", 
 			[
 				"CommonModules/Network",
 				"LogicModules/GameLogic/AI"
@@ -50,7 +52,7 @@
 
 	"fake_paths" : [
 		[
-			"E:/git-dir/Utopia/Code/Server", 
+			"F:/git-dir/Utopia/Code/Server", 
 			[
 				"."
 			]

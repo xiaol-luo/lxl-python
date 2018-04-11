@@ -173,9 +173,6 @@ def do_parse_ex(opts, out_dir, cpp_include_sets, parse_sets, fake_sets, parse_su
                 hfile_struct_define_hfile_map[hfile].append(relate_path)
     for hfile in hfile_struct_define_hfile_map.keys():
         hfile_struct_define_hfile_map[hfile].sort()
-    root_ns = descript_namespace()
-    root_ns.cursor = tu.cursor
-    descript_base.try_parse_child_ast(tu.cursor, root_ns, parse_files)
     abspath_relative_path_map = {}
     all_abspath_files = list(parse_files.union(fake_files))
     all_abspath_files.sort()
@@ -187,6 +184,19 @@ def do_parse_ex(opts, out_dir, cpp_include_sets, parse_sets, fake_sets, parse_su
                 break
         assert(relative_path)
         abspath_relative_path_map[parse_item] = relative_path
+        fake_h_content = ""
+    for item in parse_files:
+        fake_h_content += "#include <{0}>\n".format(item)
+    tu_parse = TranslationUnit.from_source(fake_h_name, opts, [(fake_h_name, fake_h_content)], \
+        options= 0 + \
+            #+ TranslationUnit.PARSE_INCLUDE_BRIEF_COMMENTS_IN_CODE_COMPLETION \
+            + TranslationUnit.PARSE_SKIP_FUNCTION_BODIES \
+            + TranslationUnit.PARSE_INCOMPLETE \
+            # + TranslationUnit.PARSE_CACHE_COMPLETION_RESULTS \
+            )
+    root_ns = descript_namespace()
+    root_ns.cursor = tu_parse.cursor
+    descript_base.try_parse_child_ast(root_ns.cursor, root_ns, parse_files)
     render_cpp.do_render(root_ns, abspath_relative_path_map, hfile_struct_define_hfile_map, out_dir)
 
 

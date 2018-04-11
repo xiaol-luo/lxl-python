@@ -11,6 +11,22 @@ namespace SolLuaBind
 	{
 		struct LuaBindImpl
 		{
+			struct ForOverloadFns
+			{
+			{%- for overload_fn in meta_data.overload_fns %}			
+			{%- for item in overload_fn.fn_wraps%}
+			
+			{%- for type_name, type_content in item.alias_types.items() %}
+				using {{ type_name }} = {{ type_content }};
+			{%- endfor %}
+				{{ item.declare }}
+				{
+					{{ item.body }}
+				}
+			{%- endfor %}
+			{%- endfor %}
+			};
+
 			static void DoLuaBind(lua_State *L)
 			{
 				std::string name_space = "{{ meta_data.full_path }}";
@@ -42,7 +58,7 @@ namespace SolLuaBind
 					std::string name = "{{ item.name }}";
 					sol::object obj = ns_table.raw_get_or(name, sol::nil);
 					assert(!obj.valid());
-					ns_table.set_function(name, {{ item.fn_str }});
+					ns_table.set_function(name, {{ item.bind }});
 				}
 			{%- endfor %}			
 			}
