@@ -44,19 +44,26 @@ def main():
         ps.root = item[0]
         ps.paths.extend(item[1])
         parse_paths.append(ps)
-    exclude_paths = []
+    parse_exclude_paths = []
     for item in cfg["exclude_paths"]:
         ps = path_set()
         ps.root = item[0]
         ps.paths.extend(item[1])
-        exclude_paths.append(ps)
+        parse_exclude_paths.append(ps)
     fake_paths = []
     for item in cfg["fake_paths"]:
         ps = path_set()
         ps.root = item[0]
         ps.paths.extend(item[1])
         fake_paths.append(ps)
-    do_parse_ex(cfg["opts"], cfg["out_dir"], include_paths, parse_paths, fake_paths,cfg["parse_subfixs"], exclude_paths)
+    fake_exclude_paths = []
+    for item in cfg["fake_exclude_paths"]:
+        ps = path_set()
+        ps.root = item[0]
+        ps.paths.extend(item[1])
+        fake_exclude_paths.append(ps)
+    do_parse_ex(cfg["opts"], cfg["out_dir"], include_paths, parse_paths, fake_paths,\
+        cfg["parse_subfixs"], parse_exclude_paths, fake_exclude_paths)
 
 if __name__ == "__main__":
     main()
