@@ -26,6 +26,24 @@ namespace SolLuaBind
 			{%- endfor %}
 			{%- endfor %}
 			};
+			
+			struct ForPropertyField
+			{
+			{%- for property in meta_data.property_fields %} 
+				
+				using AliasType_{{ property.id }} = {{ property.desc.type_name }};
+				static AliasType_{{ property.id}} & Get{{ property.desc.spelling }}({{ property.parent_type }} &cls)
+				{
+					return cls.{{ property.desc.spelling }};
+				}
+				static void Set{{ property.desc.spelling }}({{ property.parent_type }} &cls, AliasType_{{ property.id}} & p1)
+				{
+					cls.{{property.desc.spelling}} = p1;
+				}
+			
+			{%- endfor %}
+			};			
+			
 
 			static void DoLuaBind(lua_State *L)
 			{
@@ -45,6 +63,10 @@ namespace SolLuaBind
 
 					{%- for item in meta_data.fields %}				
 						,"{{ item.spelling }}", &{{ item.full_path|replace(".", "::") }}
+					{%- endfor %}
+					
+					{%- for item in meta_data.property_fields %}				
+						,"{{ item.desc.spelling }}", sol::property(ForPropertyField::Get{{ item.desc.spelling }}, ForPropertyField::Set{{ item.desc.spelling }})
 					{%- endfor %}
 					
 					{%- for item in meta_data.fns %}				
@@ -69,8 +91,14 @@ namespace SolLuaBind
             
 				{
 					sol::table ns_table = SolLuaBindUtils::GetOrNewLuaNameSpaceTable(sol::state_view(L), name_space)[name];
+				
 				{%- for item in meta_data.vars %}				
-					ns_table.set("{{ item.spelling }}", {{ item.full_path|replace(".", "::") }});
+					{
+						std::string var_name = "{{ item.spelling }}";
+						sol::object obj = ns_table.raw_get_or(var_name, sol::nil);
+						assert(!obj.valid());
+						ns_table.set(var_name, {{ item.full_path|replace(".", "::") }});
+					}
 				{%- endfor %}
 				}
 			}

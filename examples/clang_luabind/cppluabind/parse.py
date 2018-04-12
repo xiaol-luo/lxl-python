@@ -2,7 +2,7 @@
 from .defines import *
 from . import render_cpp
 from clang import cindex
-from clang.cindex import TranslationUnit
+from clang.cindex import TranslationUnit, Config
 import jinja2
 import os
 import codecs

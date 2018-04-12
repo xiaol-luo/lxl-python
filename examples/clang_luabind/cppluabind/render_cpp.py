@@ -54,7 +54,7 @@ def collect_fns(self, is_overload):
     for name, fns in fns_map.items():
         remove_fns = []
         for fn in fns:
-            if not fn.is_public or fn.is_template or fn.is_ignore():
+            if not fn.is_public or fn.is_template or fn.is_sol_ignore:
                 remove_fns.append(fn)
         remove_fns_map[name] = remove_fns
     for name, fns in remove_fns_map.items():
@@ -111,7 +111,7 @@ class namespace_meta(base_meta):
     def vars(self):
         ret = []
         for item in self.desc.vars:
-            if item.is_ignore():
+            if item.is_sol_ignore:
                 continue
             ret.append(item)
         return ret
@@ -261,20 +261,47 @@ class struct_meta(base_meta):
     def vars(self):
         ret = []
         for item in self.desc.vars:
-            if item.is_ignore():
+            if item.is_sol_ignore:
                 continue
             if CursorKind.VAR_DECL == item.cursor.kind:
                 ret.append(item)
+        return ret
+
+    @property
+    def property_vars(self):
+        ret = []
+        pid = 0
+        for item in self.desc.vars:
+            if item.is_sol_ignore:
+                continue
+            if CursorKind.VAR_DECL == item.cursor.kind:
+                if item.is_sol_property:
+                    pid = pid + 1
+                    ret.append({"id": pid, "desc": item, "parent_type": self.full_path.replace(".", "::") })
         return ret
     
     @property
     def fields(self):
         ret = []            
         for item in self.desc.vars:
-            if item.is_ignore():
+            if item.is_sol_ignore:
                 continue
             if CursorKind.VAR_DECL != item.cursor.kind:
-                ret.append(item)
+                if not item.is_sol_property:
+                    ret.append(item)
+        return ret
+
+    @ property
+    def property_fields(self):
+        ret = []
+        pid = 0
+        for item in self.desc.vars:
+            if item.is_sol_ignore:
+                continue
+            if CursorKind.VAR_DECL != item.cursor.kind:
+                if item.is_sol_property:
+                    pid = pid + 1
+                    ret.append({"id": pid, "desc": item, "parent_type": self.full_path.replace(".", "::") })
         return ret
 
     @property
@@ -444,7 +471,7 @@ def do_render(desc_root, abspath_relative_path_map, hfile_struct_define_hfile_ma
     desc_queue.append(desc_root)
     while len(desc_queue) > 0:
         desc = desc_queue.pop(0)
-        if desc.is_ignore():
+        if desc.is_sol_ignore:
             continue
         render_action = render_actions.get(desc.desc_type, None)
         if render_action:

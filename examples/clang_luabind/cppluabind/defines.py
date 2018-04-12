@@ -70,6 +70,8 @@ class descript_base(object):
         self.cursor = None
         self.usr = None
         self.brief_comment = None
+        self.is_sol_ignore = False
+        self.is_sol_property = False
 
     @property
     def space_path(self):
@@ -128,13 +130,15 @@ class descript_base(object):
         self.brief_comment = cursor.brief_comment
         if self.brief_comment:
             self.brief_comment = self.brief_comment.strip(" ")
-
-    def is_ignore(self):
-        if not self.brief_comment:
-            return False
-        if self.brief_comment != "sol_ignore":
-            return False
-        return True
+            comments = self.brief_comment.split(" ")
+            for item in comments:
+                if "sol_ignore" == item.strip('/ ').lower():
+                    self.is_sol_ignore = True
+                    break
+            if not self.is_sol_ignore:
+                for item in comments:
+                    if "sol_property" == item.strip('/ ').lower():
+                        self.is_sol_property = True
 
 
 class descript_enum(descript_base):
