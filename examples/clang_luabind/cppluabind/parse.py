@@ -84,14 +84,23 @@ def find_struct_define_hfile_path(root_cursor, usr):
         return file_path
     return None
 
-def do_parse_ex(opts, out_dir, cpp_include_sets, parse_sets, fake_sets, \
+def do_parse_ex(opts, out_dir, cpp_include_sets, source_root_sets, parse_sets, fake_sets, \
         parse_subfixs=set([".h", ".hpp"]), exclude_sets=[], fake_exclude_sets=[]):
     all_fake_parse_files = set()
+    source_roots = set()
+    for item in source_root_sets:
+        item.gen_path_map()
+        for abspath in item.abspaths:
+            source_roots.add(abspath)
+    include_file_paths = set()
     include_paths = set()
     for item in cpp_include_sets:
         item.gen_path_map()
         for abspath in item.abspaths:
             include_paths.add(abspath)
+            files = find_all_files(abspath, parse_subfixs)
+            include_file_paths = include_file_paths.union(set(files))
+    all_fake_parse_files = all_fake_parse_files.union(include_file_paths)
     #cal parse files start
     parse_files = set()
     for parse_set in parse_sets:
@@ -116,12 +125,13 @@ def do_parse_ex(opts, out_dir, cpp_include_sets, parse_sets, fake_sets, \
     #cal parse files start
     #cal fake files start
     fake_files = set()
+    fake_files = fake_files.union(parse_files)
+    fake_files = fake_files.union(include_file_paths)
     for item in fake_sets:
         item.gen_path_map()
         for abspath in item.abspaths:
             files = find_all_files(abspath, parse_subfixs)
             fake_files = fake_files.union(set(files))
-    fake_files = fake_files.union(parse_files)
     all_fake_parse_files = all_fake_parse_files.union(fake_files)
     fake_exclude_paths = set()
     for item in fake_exclude_sets:
@@ -148,18 +158,23 @@ def do_parse_ex(opts, out_dir, cpp_include_sets, parse_sets, fake_sets, \
         options= 0 + \
             #+ TranslationUnit.PARSE_INCLUDE_BRIEF_COMMENTS_IN_CODE_COMPLETION \
             + TranslationUnit.PARSE_SKIP_FUNCTION_BODIES \
-            # + TranslationUnit.PARSE_INCOMPLETE \
+            + TranslationUnit.PARSE_INCOMPLETE \
             # + TranslationUnit.PARSE_CACHE_COMPLETION_RESULTS \
             )
     # get usr location(hfile), hfile undeclare usrs
     struct_usr_locate_path_map = {} # usr map to h file abspath
     hfile_undeclare_struct_map = {} # hfile include undeclare usrs
-    for curr_cursor in tu.cursor.walk_preorder():      
-        if CursorKind.STRUCT_DECL != curr_cursor.kind and CursorKind.CLASS_DECL != curr_cursor.kind:
+    for curr_cursor in tu.cursor.walk_preorder(): 
+        cursor_kind = curr_cursor.kind
+        is_concern = CursorKind.STRUCT_DECL ==  cursor_kind\
+            or CursorKind.CLASS_DECL == cursor_kind \
+            or CursorKind.TYPE_REF == cursor_kind
+        if not is_concern:
             continue
-        if not curr_cursor.location.file:
+        location_file = curr_cursor.location.file
+        if not location_file:
             continue
-        file_path = curr_cursor.location.file.name.replace('\\', '/')
+        file_path = location_file.name.replace('\\', '/')
         if curr_cursor.is_definition():
             struct_usr_locate_path_map[curr_cursor.get_usr()] = file_path
             continue
@@ -169,7 +184,11 @@ def do_parse_ex(opts, out_dir, cpp_include_sets, parse_sets, fake_sets, \
         if not struct_usrs:
             struct_usrs = set()
             hfile_undeclare_struct_map[file_path] = struct_usrs
-        struct_usrs.add(curr_cursor.get_usr())
+        if not CursorKind.TYPE_REF == cursor_kind:
+            struct_usrs.add(curr_cursor.get_usr())
+        else:
+            if curr_cursor.get_definition():
+                struct_usrs.add(curr_cursor.get_definition().get_usr())
     # hfile need to include other hfiles to get undeclare usrs's definition
     hfile_struct_define_hfile_map = {} 
     for hfile, struct_usrs in hfile_undeclare_struct_map.items():
@@ -187,20 +206,22 @@ def do_parse_ex(opts, out_dir, cpp_include_sets, parse_sets, fake_sets, \
                 abspath_relative_path_map[item] = item[len(include_item):].strip('/')
                 break
     # gen fake.h and parse it
-    fake_h_content = ""
-    for item in parse_files:
-        fake_h_content += "#include <{0}>\n".format(item)
-    tu_parse = TranslationUnit.from_source(fake_h_name, opts, [(fake_h_name, fake_h_content)], \
-        options= 0 + \
-            + TranslationUnit.PARSE_INCLUDE_BRIEF_COMMENTS_IN_CODE_COMPLETION \
-            + TranslationUnit.PARSE_SKIP_FUNCTION_BODIES \
-            # + TranslationUnit.PARSE_INCOMPLETE \
-            # + TranslationUnit.PARSE_CACHE_COMPLETION_RESULTS \
-            )
     root_ns = descript_namespace()
-    root_ns.cursor = tu_parse.cursor
-    descript_base.try_parse_child_ast(root_ns.cursor, root_ns, parse_files)
-    render_cpp.do_render(root_ns, abspath_relative_path_map, hfile_struct_define_hfile_map, out_dir)
+    for item in parse_files:
+        fake_h_content = "#include <{0}>\n".format(item)
+        for extra_hfile in hfile_struct_define_hfile_map.get(item, []):
+            continue
+            fake_h_content += "#include <{0}>\n".format(item)
+        tu_parse = TranslationUnit.from_source(fake_h_name, opts, [(fake_h_name, fake_h_content)], \
+            options= 0 + \
+                + TranslationUnit.PARSE_INCLUDE_BRIEF_COMMENTS_IN_CODE_COMPLETION \
+                + TranslationUnit.PARSE_SKIP_FUNCTION_BODIES \
+                + TranslationUnit.PARSE_INCOMPLETE 
+                # + TranslationUnit.PARSE_CACHE_COMPLETION_RESULTS \
+                )
+        root_ns.cursor = tu_parse.cursor
+        descript_base.try_parse_child_ast(root_ns.cursor, root_ns, parse_files)
+    render_cpp.do_render(root_ns, abspath_relative_path_map, hfile_struct_define_hfile_map, source_roots, out_dir)
 
 
 

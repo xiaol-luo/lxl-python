@@ -330,9 +330,6 @@ class descript_struct(descript_namespace_base):
         if old_elem:
             old_weight = len(old_elem.funcs) + len(old_elem.vars) + len(old_elem.structs) + len(old_elem.enums) + len(old_elem.bases)
             new_weight = len(elem.funcs) + len(elem.vars) + len(elem.structs) + len(elem.enums) + len(elem.bases)
-            if new_weight > 0 and old_weight > 0:
-                assert(False)
-            assert(0 == old_weight or 0 == new_weight)
             if old_weight > new_weight:
                 parent_desc.structs[old_elem.spelling] = old_elem
         return elem        

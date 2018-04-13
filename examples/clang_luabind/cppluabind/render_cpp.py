@@ -7,6 +7,15 @@ from clang.cindex import CursorKind
 _abspath_relative_path_map = None
 _hfile_struct_define_hfile_map = None
 _desc_root = None
+_source_roots = None
+
+def cal_out_file_name(abspath):
+    ret = None
+    for item in _source_roots:
+        if abspath.startswith(item):
+            ret = abspath[len(item):]
+            break
+    return ret
 
 def find_struct_by_usr(usr):
     global _desc_root
@@ -454,13 +463,15 @@ render_actions = {
     enum_descript_type.struct: do_render_struct,
 }
 
-def do_render(desc_root, abspath_relative_path_map, hfile_struct_define_hfile_map, outdir):
+def do_render(desc_root, abspath_relative_path_map, hfile_struct_define_hfile_map, source_roots, outdir):
     global _abspath_relative_path_map
     _abspath_relative_path_map = abspath_relative_path_map
     global _hfile_struct_define_hfile_map
     _hfile_struct_define_hfile_map = hfile_struct_define_hfile_map
     global _desc_root
     _desc_root = desc_root
+    global _source_roots
+    _source_roots = source_roots
     template_env = jinja2.Environment(loader=jinja2.ChoiceLoader([
         jinja2.PackageLoader(__package__, package_path='templates')
         #jinja2.FileSystemLoader("")

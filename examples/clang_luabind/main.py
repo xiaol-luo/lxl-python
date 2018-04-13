@@ -5,9 +5,11 @@ import argparse
 import json
 import argparse
 import codecs
+from clang.cindex import TranslationUnit, Config
 
 
 def main():
+    Config.set_library_file("D:/Tools/LLVM/bin/libclang.dll")
     curr_dir = os.path.dirname(__file__)
     file_path = os.path.abspath(os.path.join(curr_dir, "data/heads.h"))
     include_dir = os.path.abspath(os.path.join(curr_dir, "data")).replace('\\', '/')
@@ -38,6 +40,12 @@ def main():
         ps.root = item[0]
         ps.paths.extend(item[1])
         include_paths.append(ps)
+    source_roots = []
+    for item in cfg["source_roots"]:
+        ps = path_set()
+        ps.root = item[0]
+        ps.paths.extend(item[1])
+        source_roots.append(ps)
     parse_paths = []
     for item in cfg["parse_paths"]:
         ps = path_set()
@@ -62,7 +70,7 @@ def main():
         ps.root = item[0]
         ps.paths.extend(item[1])
         fake_exclude_paths.append(ps)
-    do_parse_ex(cfg["opts"], cfg["out_dir"], include_paths, parse_paths, fake_paths,\
+    do_parse_ex(cfg["opts"], cfg["out_dir"], include_paths, source_roots, parse_paths, fake_paths,\
         cfg["parse_subfixs"], parse_exclude_paths, fake_exclude_paths)
 
 if __name__ == "__main__":

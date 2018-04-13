@@ -3,11 +3,11 @@
 		"-D_CRT_SECURE_NO_WARNINGS",
 		"-D_WINSOCK_DEPRECATED_NO_WARNINGS"
 	],
-	"out_dir" : "E:/git-dir/Utopia/Code/Server/AutoLuaBind", 
+	"out_dir" : "F:/git-dir/Utopia/Code/Server/AutoLuaBind", 
 	
 	"include_paths" : [
 		[
-			"E:/git-dir/Utopia/Code/Server", 
+			"F:/git-dir/Utopia/Code/Server", 
 			[
 				".",
 				"Libs/3rdpartLibs",
@@ -30,29 +30,39 @@
 			]		
 		]
 	],
-	
+
+	"source_roots" : [
+		[
+			"F:/git-dir/Utopia/Code/Server", 
+			[
+				"."
+			]
+		]
+	],
+
 	"parse_paths" : [
 		[
-			"E:/git-dir/Utopia/Code/Server/Logic/LogicModules/GameLogic", 
+			"F:/git-dir/Utopia/Code/Server/Logic/LogicModules/GameLogic", 
 			[
-				"Scene/SceneUnit"
+				"Scene"
 			]
 		]
 	],
 	
 	"exclude_paths" : [
 		[
-			"E:/git-dir/Utopia/Code/Server/Logic", 
+			"F:/git-dir/Utopia/Code/Server/Logic", 
 			[
 				"CommonModules/Network",
-				"LogicModules/GameLogic/AI"
+				"LogicModules/GameLogic/AI",
+				"LogicModules/GameLogic/Scene/Defines/StdHashDefines.h"
 			]
 		]
 	],
 
 	"fake_paths" : [
 		[
-			"E:/git-dir/Utopia/Code/Server/Logic", 
+			"F:/git-dir/Utopia/Code/Server/Logic", 
 			[
 				"."
 			]
@@ -60,7 +70,7 @@
 	],
 	"fake_exclude_paths" : [
 		[
-			"E:/git-dir/Utopia/Code/Server/Logic/LogicModules/GameLogic", 
+			"F:/git-dir/Utopia/Code/Server/Logic/LogicModules/GameLogic", 
 			[
 				"AI"
 			]
