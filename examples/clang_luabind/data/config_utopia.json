@@ -44,7 +44,15 @@
 		[
 			"F:/git-dir/Utopia/Code/Server/Logic/LogicModules/GameLogic", 
 			[
-				"Scene"
+				"Scene",
+				"Player"
+			]
+		],
+		[
+			"F:/git-dir/Utopia/Code/Server/Logic/ShareCode", 
+			[
+				"Config",
+				"Common"
 			]
 		]
 	],
@@ -55,7 +63,9 @@
 			[
 				"CommonModules/Network",
 				"LogicModules/GameLogic/AI",
-				"LogicModules/GameLogic/Scene/Defines/StdHashDefines.h"
+				"LogicModules/GameLogic/Scene/Defines/StdHashDefines.h",
+				"ShareCode/Common/Macro",
+				"ShareCode/Network"				
 			]
 		]
 	],

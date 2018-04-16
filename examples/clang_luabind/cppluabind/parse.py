@@ -210,7 +210,6 @@ def do_parse_ex(opts, out_dir, cpp_include_sets, source_root_sets, parse_sets, f
     for item in parse_files:
         fake_h_content = "#include <{0}>\n".format(item)
         for extra_hfile in hfile_struct_define_hfile_map.get(item, []):
-            continue
             fake_h_content += "#include <{0}>\n".format(item)
         tu_parse = TranslationUnit.from_source(fake_h_name, opts, [(fake_h_name, fake_h_content)], \
             options= 0 + \

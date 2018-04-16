@@ -477,7 +477,7 @@ def do_render(desc_root, abspath_relative_path_map, hfile_struct_define_hfile_ma
         #jinja2.FileSystemLoader("")
     ]))
 
-    gen_descs = []
+    gen_descs = {}
     desc_queue = []
     desc_queue.append(desc_root)
     while len(desc_queue) > 0:
@@ -487,7 +487,7 @@ def do_render(desc_root, abspath_relative_path_map, hfile_struct_define_hfile_ma
         render_action = render_actions.get(desc.desc_type, None)
         if render_action:
             if render_action(desc, template_env, outdir):
-                gen_descs.append(desc)
+                gen_descs[desc.full_path] =  desc
         if isinstance(desc, descript_namespace_base):
             desc_queue.extend(desc.structs.values())
             desc_queue.extend(desc.enums)
@@ -496,7 +496,7 @@ def do_render(desc_root, abspath_relative_path_map, hfile_struct_define_hfile_ma
     # gen bind function
     tt = template_env.get_template("cpp_bind.tt")
     ret = tt.render({
-        "descs": gen_descs
+        "descs": gen_descs.values()
     })
     out_file_path = os.path.join(outdir, "{}/{}".format(base_meta.FILE_DIR, "SolBindCommon.cpp"))
     if os.path.exists(out_file_path):
