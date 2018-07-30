@@ -449,6 +449,8 @@ def do_render_struct(desc, template_env, outdir):
     ret = tt.render({
         "meta_data": meta_data
     })
+    ret = ret.replace("unsigned long long", "uint64_t")
+    ret = ret.replace("long long", "int64_t")
     out_file_path = os.path.join(outdir, meta_data.out_file_name())
     if os.path.exists(out_file_path):
         os.remove(out_file_path)
@@ -483,6 +485,8 @@ def do_render(desc_root, abspath_relative_path_map, hfile_struct_define_hfile_ma
     while len(desc_queue) > 0:
         desc = desc_queue.pop(0)
         if desc.is_sol_ignore:
+            continue
+        if desc.full_path in gen_descs:
             continue
         render_action = render_actions.get(desc.desc_type, None)
         if render_action:
