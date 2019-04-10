@@ -14,15 +14,15 @@ g_app = bottle.Bottle()
 
 with g_app:
     @bottle.route("/")
-    @bottle.view('ajax_index.html')
+    #@bottle.view('ajax_index.html')
     def index_page():
         params = {
             "param": 12456679,
             "times": 10
         }
-        return params
-        #ret = bottle.template('ajax_index.html', params)
-        #return ret 
+        #return params
+        ret = bottle.template('ajax_index.html', params)
+        return ret
         
     
     @bottle.route('/load_xml_doc')
@@ -66,5 +66,5 @@ with g_app:
 if __name__ == "__main__":
     ws_dir = os.path.abspath(os.path.dirname(sys.argv[0]))
     os.chdir(ws_dir)
-    bottle.run(app=g_app, host='0.0.0.0', port=8080, debug=True)
+    bottle.run(app=g_app, host='0.0.0.0', port=8080, debug=True, reloader=True)
     #bottle.run(g_app, host='0.0.0.0', port=8080, debug=True, reloader=True)
