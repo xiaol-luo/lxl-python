@@ -37,7 +37,7 @@ with g_app:
 
     @bottle.route('/filter/re/<txt:re:[a-zA-Z0-9]+>')
     def filter_int(txt):
-        return string.Template('you input re $txt').substitute(txt=txt)
+        return string.Template('<a1>you input re $txt<a1>').substitute(txt=txt)
 
     @bottle.get('/login')
     #@bottle.route('/login', method='GET')
@@ -92,4 +92,4 @@ if __name__ == "__main__":
     ws_dir = os.path.abspath(os.path.dirname(sys.argv[0]))
     os.chdir(ws_dir)
     #bottle.run(app=g_app, host='0.0.0.0', port=8080, debug=True)
-    bottle.run(g_app, host='0.0.0.0', port=8080, debug=True)
+    bottle.run(g_app, host='0.0.0.0', port=8080, debug=True, reloader=True)

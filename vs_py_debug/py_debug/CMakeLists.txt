@@ -1,0 +1,38 @@
+cmake_minimum_required(VERSION 2.6)
+
+PROJECT(python_debug)
+
+SET(python_code_dir "E:/code/Python-3.7.6")
+
+SET(PYTHON_EXECUTABLE "${python_code_dir}/PCbuild/win32/python_d.exe")
+
+SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}) 
+SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}) 
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
+
+ADD_DEFINITIONS(/MP)
+ADD_COMPILE_OPTIONS( /wd4200)
+ADD_COMPILE_OPTIONS(-D_CRT_SECURE_NO_WARNINGS -D_WINSOCK_DEPRECATED_NO_WARNINGS)
+set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+ADD_COMPILE_OPTIONS(/Zc:__cplusplus)
+
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR})
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/pybind11/include)
+
+INCLUDE_DIRECTORIES("${python_code_dir}/Include")
+INCLUDE_DIRECTORIES("${python_code_dir}/PC")
+
+LINK_DIRECTORIES("${python_code_dir}/PCbuild/win32")
+LINK_DIRECTORIES("${CMAKE_BINARY_DIR}")
+
+ADD_SUBDIRECTORY(pybind11)
+pybind11_add_module(example pybind_example/pybind_example.cpp)
+
+ADD_SUBDIRECTORY(py_debug)
+# ADD_SUBDIRECTORY(pybind_example)
+
+
+
+
+
