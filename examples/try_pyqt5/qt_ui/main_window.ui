@@ -10,22 +10,128 @@
     <height>600</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>10240</width>
+    <height>10240</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="main_dialog_btn">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>330</x>
-      <y>270</y>
-      <width>75</width>
-      <height>23</height>
+      <x>0</x>
+      <y>0</y>
+      <width>800</width>
+      <height>600</height>
      </rect>
     </property>
-    <property name="text">
-     <string>main_dialog</string>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+      <horstretch>100</horstretch>
+      <verstretch>100</verstretch>
+     </sizepolicy>
     </property>
+    <property name="minimumSize">
+     <size>
+      <width>300</width>
+      <height>300</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>10240</width>
+      <height>10240</height>
+     </size>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="tab_1">
+     <attribute name="title">
+      <string>1</string>
+     </attribute>
+     <widget class="QPushButton" name="btn_tab_1">
+      <property name="geometry">
+       <rect>
+        <x>460</x>
+        <y>370</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>btn_tab_1</string>
+      </property>
+     </widget>
+     <widget class="QWidget" name="widget_holder" native="true">
+      <property name="geometry">
+       <rect>
+        <x>570</x>
+        <y>80</y>
+        <width>151</width>
+        <height>151</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_2">
+     <attribute name="title">
+      <string>2</string>
+     </attribute>
+     <widget class="QPushButton" name="btn_tab_2">
+      <property name="geometry">
+       <rect>
+        <x>460</x>
+        <y>400</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>btn_tab_2</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_3">
+     <attribute name="title">
+      <string>3</string>
+     </attribute>
+     <widget class="QPushButton" name="btn_tab_3">
+      <property name="geometry">
+       <rect>
+        <x>500</x>
+        <y>400</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>btn_tab_3</string>
+      </property>
+     </widget>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
