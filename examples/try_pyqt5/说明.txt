@@ -1,0 +1,15 @@
+安装pyqt5
+pip.exe install pyqt5
+pip.exe install pyqt5-tools
+
+工具
+pyuic5.exe在$python_dir/Scripts目录下
+designer.exe在$python_dir/Lib/site-packages/qt5_applications/Qt/bin目录下
+
+用designer.exe编辑ui
+用pyuic5.exe把ui转为python脚本: pyuic5.exe -o ui/test_dialog.py ui/test_dialog.ui 
+
+运行
+python main.py
+
+
