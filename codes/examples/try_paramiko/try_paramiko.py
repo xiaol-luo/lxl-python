@@ -19,7 +19,7 @@ ssh.connect(hostname=hostname, port=port, username=username, password=password)
 t = paramiko.Transport(hostname, port)
 t.connect(username=username, password=password)
 sftp = paramiko.SFTPClient.from_transport(t)
-local_dir = "E:/git/code/lock_step/client/game_card/Assets/StreamingAssets/Abs"
+local_dir = "D:/work_space/code/lock_step/client/game_card/Assets/StreamingAssets/Abs"
 remote_dir = "/usr/share/nginx/download/Abs"
 
 ssh.exec_command("mkdir -p {0}".format(remote_dir))
