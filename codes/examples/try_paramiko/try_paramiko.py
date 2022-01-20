@@ -5,7 +5,7 @@ import os
 hostname = "119.28.224.75"
 port = 22
 username = "root"
-password = ""
+password = "*2012xiaolzz"
 
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())

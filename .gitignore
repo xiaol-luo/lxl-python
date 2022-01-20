@@ -2,3 +2,4 @@
 .vscode
 .idea
 *.pyc
+pycharm_project/venv
