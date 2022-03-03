@@ -1,19 +1,13 @@
 {
 	"opts": ["-x", "c++", "-std=c++14", "-D__CODE_GENERATOR__"],
-	"out_dir" : "F:/git-dir/Utopia/Code/TrySol/AutoGenLuaBindCode",
+	"out_dir" : "E:\\git\\code\\lxl-python\\codes\\examples\\clang_luabind\\data\\AutoBind",
 	
 	"include_paths" : [
-		[
-			"F:/git-dir/Utopia/Code/TrySol", 
-			[
-				"."
-			]
-		]
 	],
 	
 	"source_roots" : [
 		[
-			"F:/git-dir/Utopia/Code/TrySol", 
+			"E:\\git\\code\\lxl-python\\codes\\examples\\clang_luabind\\data\\AutoBind",
 			[
 				"."
 			]
@@ -22,9 +16,9 @@
 
 	"parse_paths" : [
 		[
-			"F:/git-dir/Utopia/Code/TrySol", 
+			"E:\\git\\code\\lxl-python\\codes\\examples\\clang_luabind\\data\\AutoBind",
 			[
-				"AutoBind"
+				"."
 			]
 		]
 	],
@@ -33,20 +27,8 @@
 	],
 
 	"fake_paths" : [
-		[
-			"F:/git-dir/Utopia/Code/TrySol", 
-			[
-				"AutoBind"
-			]
-		]
 	],
 	"fake_exclude_paths" : [
-		[
-			"F:/git-dir/Utopia/Code/TrySol", 
-			[
-				"AutoBind/Test"
-			]
-		]
 	],
 
 	"parse_subfixs" : [

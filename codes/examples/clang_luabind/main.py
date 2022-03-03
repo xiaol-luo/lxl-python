@@ -9,7 +9,7 @@ from clang.cindex import TranslationUnit, Config
 
 
 def main():
-    Config.set_library_file("D:/Tools/LLVM/bin/libclang.dll")
+    Config.set_library_file(r"D:\tools\LLVM\bin\libclang.dll")
     curr_dir = os.path.dirname(__file__)
     file_path = os.path.abspath(os.path.join(curr_dir, "data/heads.h"))
     include_dir = os.path.abspath(os.path.join(curr_dir, "data")).replace('\\', '/')
