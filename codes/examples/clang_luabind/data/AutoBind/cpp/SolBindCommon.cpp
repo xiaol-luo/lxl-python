@@ -6,6 +6,7 @@ namespace SolLuaBind
         extern void LuaBind_NoneSpaceClass(lua_State *L);
         extern void LuaBind_TryEnum(lua_State *L);
         extern void LuaBind_OK(lua_State *L);
+        extern void LuaBind_OK_TestMultiNameSpace(lua_State *L);
         extern void LuaBind_OK_Test(lua_State *L);
         extern void LuaBind_OK_Base(lua_State *L);
         extern void LuaBind_OK_OuterClass(lua_State *L);
@@ -17,6 +18,7 @@ namespace SolLuaBind
             LuaBind_NoneSpaceClass(L);
             LuaBind_TryEnum(L);
             LuaBind_OK(L);
+            LuaBind_OK_TestMultiNameSpace(L);
             LuaBind_OK_Test(L);
             LuaBind_OK_Base(L);
             LuaBind_OK_OuterClass(L);

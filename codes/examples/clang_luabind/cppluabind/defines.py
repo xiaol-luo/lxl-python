@@ -203,11 +203,6 @@ class descript_variable(descript_base):
             self.parent.vars.append(self)
         self.fill_common_fields(self.cursor)
         self.is_const = self.cursor.type.is_const_qualified()
-        if self.parent:
-            for item in self.parent.vars:
-                if item != self and item.is_same(self):
-                    self.parent.vars.remove(self)
-                    break
         return []
 
     @staticmethod
@@ -314,12 +309,7 @@ class descript_function(descript_base):
             head_desc = wait_parse_desc_list.pop(0)
             child_desc_list = head_desc.do_parse_ast()
             wait_parse_desc_list.extend(child_desc_list)
-        if self.parent:
-            for item in self.parent.funcs:
-                if item != self and item.is_same(self):
-                    self.parent.funcs.remove(self)
-                    break
-        return []
+        return wait_parse_desc_list
 
     @staticmethod
     def parse_ast(cursor, parent_desc):
@@ -359,7 +349,7 @@ class descript_namespace_base(descript_base):
         self.funcs = []
         self.vars = []
         self.structs = {}
-        self.struct_list = []
+        self.cached_struct_list = []
         self.enums = []
 
 
@@ -378,10 +368,14 @@ class descript_struct(descript_namespace_base):
             return self.parent.is_public
         return True
 
+    def cal_weight(self):
+        weight = len(self.funcs) + len(self.vars) + len(self.structs) + len(self.enums) + len(self.bases)
+        return weight
+
     def do_parse_ast_help(self):
         if self.parent:
             assert (isinstance(self.parent, descript_namespace_base))
-            self.parent.struct_list.append(self)
+            self.parent.cached_struct_list.append(self)
         self.fill_common_fields(self.cursor)
         for child_cursor in self.cursor.get_children():  # identify base classes
             if CursorKind.CXX_BASE_SPECIFIER == child_cursor.kind:
@@ -389,6 +383,9 @@ class descript_struct(descript_namespace_base):
                     self.bases.append(child_cursor.type.get_canonical().spelling)
                 self.base_usrs.append(child_cursor.get_definition().get_usr())
         wait_parse_desc_list = create_child_desc_list(self, self.cursor)
+        ''' todo
+        根据权限，删掉重名的struct
+        '''
         return wait_parse_desc_list
 
     @staticmethod
@@ -427,6 +424,17 @@ class descript_namespace(descript_namespace_base):
         self.namespaces = []
         super(__class__, self).__init__(enum_descript_type.namespace)
 
+    def do_parse_ast_help(self):
+        if self.parent:
+            assert (isinstance(self.parent, descript_namespace))
+            self.parent.namespaces.append(self)
+        self.fill_common_fields(self.cursor)
+        wait_parse_desc_list = create_child_desc_list(self, self.cursor)
+        ''' todo
+        合并命名空间
+        '''
+        return wait_parse_desc_list
+
     @staticmethod
     def parse_ast(cursor, parent_desc):
         elem = descript_namespace()
@@ -449,6 +457,7 @@ class descript_namespace(descript_namespace_base):
 
 
 def parse_ast(top_desc, cursor, parse_files=None):
+    all_desc_list = [ top_desc ]
     child_cursor_list = []
     for child_cursor in cursor.get_children():
         need_parse = True
@@ -461,10 +470,79 @@ def parse_ast(top_desc, cursor, parse_files=None):
         child_desc = create_desc(top_desc, child_cursor)
         if child_desc:
             wait_parse_desc_list.append(child_desc)
+    all_desc_list.extend(wait_parse_desc_list)
     while wait_parse_desc_list:
         head_desc: descript_base = wait_parse_desc_list.pop(0)
         child_desc_list = head_desc.do_parse_ast()
         wait_parse_desc_list.extend(child_desc_list)
+        all_desc_list.extend(child_desc_list)
+    while all_desc_list:
+        desc = all_desc_list.pop()
+        need_check_desc_list = fix_descript(desc)
+        all_desc_list.extend(need_check_desc_list)
+
+    # 最后遍历top_desc，处理一些属性
+
+
+def fix_descript(desc: descript_base):
+    if not desc.parent:
+        return []
+
+    need_check_desc_list = []
+    if enum_descript_type.namespace == desc.desc_type:
+        # 合并命名空间
+        ns_desc_list = []
+        for elem in desc.parent.namespaces:
+            if elem != desc and elem.spelling == desc.spelling:
+                ns_desc_list.append(elem)
+                elem.parent = None
+                need_check_desc_list.extend(elem.namespaces)
+                need_check_desc_list.extend(elem.funcs)
+                need_check_desc_list.extend(elem.vars)
+                need_check_desc_list.extend(elem.enums)
+                need_check_desc_list.extend(elem.structs.values())
+                desc.namespaces.extend(elem.namespaces)
+                desc.funcs.extend(elem.funcs)
+                desc.vars.extend(elem.vars)
+                desc.enums.extend(elem.enums)
+                if elem.structs:
+                    if desc.cached_struct_list is None:
+                        desc.cached_struct_list = []
+                    desc.cached_struct_list.extend(elem.structs.values())
+                for x in elem.namespaces: x.parent = desc
+                for x in elem.funcs: x.parent = desc
+                for x in elem.vars: x.parent = desc
+                for x in elem.enums: x.parent = desc
+                for x in elem.structs.values(): x.parent = desc
+        for elem in ns_desc_list:
+            desc.parent.namespaces.remove(elem)
+    if enum_descript_type.struct == desc.desc_type:
+        # 根据权限，删掉重名的struct
+        win_all = True
+        desc_weight = desc.cal_weight()
+        for elem in desc.parent.cached_struct_list:
+            if desc != elem and desc.spelling == elem.spelling and elem.cal_weight() > desc_weight:
+                win_all = False
+                break
+        if win_all and desc.spelling not in desc.parent.structs:
+            desc.parent.structs[desc.spelling] = desc
+        desc.parent.cached_struct_list.remove(desc)
+    if enum_descript_type.function == desc.desc_type:
+        # 删掉is_same的函数
+        for elem in desc.parent.funcs:
+            if elem != desc and desc.is_same(elem):
+                desc.parent.funcs.remove(desc)
+                break
+    if enum_descript_type.variable == desc.desc_type:
+        # 删掉同名的变量
+        for elem in desc.parent.vars:
+            if elem != desc and desc.is_same(elem):
+                desc.parent.vars.remove(desc)
+    if enum_descript_type.param == desc.desc_type:
+        pass
+    if enum_descript_type.enum == desc.desc_type:
+        pass
+    return need_check_desc_list
 
 
 def create_desc(parent_desc: descript_base, child_cursor) -> typing.Optional[descript_base]:
@@ -473,7 +551,8 @@ def create_desc(parent_desc: descript_base, child_cursor) -> typing.Optional[des
     if not cursor_kind.is_declaration():
         pass
     elif CursorKind.NAMESPACE == cursor_kind:
-        ret_desc = descript_namespace()
+        if child_cursor.spelling:
+            ret_desc = descript_namespace()
     elif CursorKind.STRUCT_DECL == cursor_kind or CursorKind.CLASS_DECL == cursor_kind:
         if child_cursor.is_definition() and child_cursor.spelling:
             ret_desc = descript_struct()

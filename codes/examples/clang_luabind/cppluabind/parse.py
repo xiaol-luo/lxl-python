@@ -164,8 +164,11 @@ def do_parse_ex(opts, out_dir, cpp_include_sets, source_root_sets, parse_sets, f
     # get usr location(hfile), hfile undeclare usrs
     struct_usr_locate_path_map = {} # usr map to h file abspath
     hfile_undeclare_struct_map = {} # hfile include undeclare usrs
-    for curr_cursor in tu.cursor.walk_preorder(): 
-        cursor_kind = curr_cursor.kind
+    for curr_cursor in tu.cursor.walk_preorder():
+        try:
+            cursor_kind = curr_cursor.kind
+        except Exception:
+            continue
         is_concern = CursorKind.STRUCT_DECL ==  cursor_kind\
             or CursorKind.CLASS_DECL == cursor_kind \
             or CursorKind.TYPE_REF == cursor_kind
@@ -219,7 +222,8 @@ def do_parse_ex(opts, out_dir, cpp_include_sets, source_root_sets, parse_sets, f
                 # + TranslationUnit.PARSE_CACHE_COMPLETION_RESULTS \
                 )
         root_ns.cursor = tu_parse.cursor
-        descript_base.try_parse_child_ast(root_ns.cursor, root_ns, parse_files)
+        # descript_base.try_parse_child_ast(root_ns.cursor, root_ns, parse_files)
+        parse_ast(root_ns, root_ns.cursor, parse_files)
     render_cpp.do_render(root_ns, abspath_relative_path_map, hfile_struct_define_hfile_map, source_roots, out_dir)
 
 

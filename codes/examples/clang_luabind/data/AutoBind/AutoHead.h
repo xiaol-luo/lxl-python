@@ -34,6 +34,15 @@ namespace OK
 	extern int CommonIVal;
 }
 
+namespace OK
+{
+    class TestMultiNameSpace
+    {
+    };
+    extern int CommonFunc(int param);
+	extern int CommonIVal;
+}
+
 class NoneSpaceClass
 {
 public:
