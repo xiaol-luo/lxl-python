@@ -181,7 +181,7 @@ def do_parse_ex(opts, out_dir, cpp_include_sets, source_root_sets, parse_sets, f
         if curr_cursor.is_definition():
             struct_usr_locate_path_map[curr_cursor.get_usr()] = file_path
             continue
-        if file_path not in  parse_files:
+        if file_path not in parse_files:
             continue
         struct_usrs = hfile_undeclare_struct_map.get(file_path)
         if not struct_usrs:
