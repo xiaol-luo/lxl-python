@@ -1,30 +1,11 @@
-from cppluabind.parse import do_parse, do_parse_ex, path_set
-import os
-import sys
-import argparse
+from .cppluabind.parse import do_parse_ex, path_set
+from .clang.cindex import Config
 import json
 import argparse
 import codecs
-from clang.cindex import TranslationUnit, Config
-
 
 def main():
     Config.set_library_file(r"D:\tools\LLVM\bin\libclang.dll")
-    curr_dir = os.path.dirname(__file__)
-    file_path = os.path.abspath(os.path.join(curr_dir, "data/heads.h"))
-    include_dir = os.path.abspath(os.path.join(curr_dir, "data")).replace('\\', '/')
-
-    ps = path_set()
-    ps.root = curr_dir
-    ps.paths.append("data")
-
-    eps = path_set()
-    eps.root = curr_dir
-    eps.paths.append("data/AutoBind")
-
-    ins = path_set()
-    ins.root = curr_dir
-    ins.paths.append("data")
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", '--file',  help='json config file')
@@ -72,6 +53,7 @@ def main():
         fake_exclude_paths.append(ps)
     do_parse_ex(cfg["opts"], cfg["out_dir"], include_paths, source_roots, parse_paths, fake_paths,\
         cfg["parse_subfixs"], parse_exclude_paths, fake_exclude_paths)
+
 
 if __name__ == "__main__":
     main()

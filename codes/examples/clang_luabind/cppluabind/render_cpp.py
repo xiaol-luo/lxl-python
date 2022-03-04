@@ -2,7 +2,7 @@ from .defines import *
 import jinja2
 import os
 import codecs
-from clang.cindex import CursorKind
+from ..clang.cindex import CursorKind
 
 _abspath_relative_path_map = None
 _hfile_struct_define_hfile_map = None
@@ -508,4 +508,3 @@ def do_render(desc_root, abspath_relative_path_map, hfile_struct_define_hfile_ma
     os.makedirs(os.path.dirname(out_file_path), exist_ok=True)
     with codecs.open(out_file_path, 'w', encoding='utf-8') as f:
         f.write(ret)
-        

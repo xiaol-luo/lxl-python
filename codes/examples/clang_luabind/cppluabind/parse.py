@@ -1,11 +1,9 @@
 
 from .defines import *
 from . import render_cpp
-from clang import cindex
-from clang.cindex import TranslationUnit, Config
-import jinja2
+from ..clang import cindex
+from ..clang.cindex import TranslationUnit, Config
 import os
-import codecs
 import collections
 
 def do_parse(file_path, opts, parse_files, outdir):
