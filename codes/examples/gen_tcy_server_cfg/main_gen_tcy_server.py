@@ -5,6 +5,7 @@ import codecs
 from slpp import slpp
 import lupa
 import logbook
+import json
 logbook.StreamHandler(sys.stdout).push_application()
 
 if __name__ == "__main__":
@@ -33,13 +34,14 @@ if __name__ == "__main__":
     logbook.debug("lua.execute(lua_content) {}", lua.execute(lua_content))
     lua_g = lua.globals()
     logbook.debug("lua.globals() {}", lua.globals())
-    logbook.debug("lua.globals() {}", lua_g.all_setting)
     for (k, v) in lua_g.all_setting.items():
         if lupa.lua_type(v) == "table":
             for k2, v2 in v.items():
                 logbook.debug("kkk, vvv {} {} {}", k, k2, v2)
         else:
             logbook.debug("kkk, vvv {} {}", k, v)
+    tmp = json.loads(lua_g.all_setting_json)
+    logbook.debug("lua.globals() {}", json.dumps(tmp, indent=2))
 
 
 
