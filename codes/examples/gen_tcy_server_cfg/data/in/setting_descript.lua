@@ -13,13 +13,12 @@ end
 ---@field ssh_port
 ---@field ssh_user
 ---@field ssh_pwd
----@field ssh_id_file
+---@field private_key_file
 Machine = Machine or class("Machine", SettingBase)
 
 ---@class DockerVolume
 ---@field name string
 ---@field map_path string
-local DockerVolume = {}
 DockerVolume = DockerVolume or class("DockerVolume", SettingBase)
 
 ---@class DockerVolumeUse
@@ -30,7 +29,7 @@ DockerVolumeUse = DockerVolumeUse or class("DockerVolumeUse", SettingBase)
 ---@class DockerNet
 ---@field name string
 ---@field subnet string
-local DockerNet = {}
+DockerNet = DockerNet or class("DockerNet", SettingBase)
 
 ---@class DockerNetUse
 ---@field docker_net DockerNet

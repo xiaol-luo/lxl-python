@@ -9,24 +9,24 @@ docker_volume_map = {}
 local tmp_list = {}
 do
     ---@type DockerVolume
-    local net = {}
-    table.insert(tmp_list, net)
-    net.name = Docker_Volume_Name.zone_1_code
-    net.map_path = "/root/code"
+    local elem = {}
+    table.insert(tmp_list, elem)
+    elem.name = Docker_Volume_Name.zone_1_code
+    elem.map_path = "/root/code"
 end
 do
     ---@type DockerVolume
-    local net = {}
-    table.insert(tmp_list, net)
-    net.name = Docker_Volume_Name.zone_1_build
-    net.map_path = "/root/build"
+    local elem = DockerVolume:new()
+    table.insert(tmp_list, elem)
+    elem.name = Docker_Volume_Name.zone_1_build
+    elem.map_path = "/root/build"
 end
 do
     ---@type DockerVolume
-    local net = {}
-    table.insert(tmp_list, net)
-    net.name = Docker_Volume_Name.zone_1_data
-    net.map_path = "/root/data"
+    local elem = DockerVolume:new()
+    table.insert(tmp_list, elem)
+    elem.name = Docker_Volume_Name.zone_1_data
+    elem.map_path = "/root/data"
 end
 
 for _, v in ipairs(tmp_list) do

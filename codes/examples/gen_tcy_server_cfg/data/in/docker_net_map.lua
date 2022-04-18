@@ -7,7 +7,7 @@ docker_net_map = {}
 local tmp_list = {}
 do
     ---@type DockerNet
-    local net = {}
+    local net = DockerNet:new()
     table.insert(tmp_list, net)
     net.name = Docker_Net_Name.net_zone_1
     net.subnet = "10.0.1.1/24"
