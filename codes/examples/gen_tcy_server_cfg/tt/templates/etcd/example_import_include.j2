@@ -1,0 +1,32 @@
+# machine Machine
+# etcd_cluster EtcdServerCluster
+# etcd EtcdServer
+
+import paramiko
+
+{% import 'common/ssh.py.j2' as ssh_help %}
+{% from 'common/ssh.py.j2' import invoke_shell  %}
+{% from 'common/ssh.py.j2' import invoke_shell as invoke_shell_alias %}
+
+{% include 'common/ssh.py.j2' %}
+
+aaa
+
+ssh_client = paramiko.SSHClient()
+ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+ssh_client.connect(hostname="{{machine.ip}}", port="{{machine.ssh_port}}", username="{{machine.ssh_user}}", \
+    pkey=paramiko.RSAKey.from_private_key_file(r"{{machine.private_key_file}}", "{{machine.ssh_pwd}}"))
+shell = ssh_client.invoke_shell()
+
+{{ ssh_help.invoke_shell(machine) }}
+
+{{ invoke_shell(machine) }}
+
+{{invoke_shell_alias(machine)}}
+
+
+shell.sendall("ls -al\n")
+shell.sendall("ret=$?\n")
+shell.sendall("echo xxx $? $ret\n")
+shell.sendall("exit $ret\n")
+shell.shutdown_write()

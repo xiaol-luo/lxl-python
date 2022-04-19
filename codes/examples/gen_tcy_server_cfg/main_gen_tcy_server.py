@@ -7,8 +7,10 @@ import logbook
 import json
 import paramiko
 import time
+import tt
 
 logbook.StreamHandler(sys.stdout).push_application()
+
 
 if __name__ == "__main__":
     logbook.debug("{who} hello", who="nihao")
@@ -52,7 +54,6 @@ if __name__ == "__main__":
     stdin, stdout, stderr = ssh_client.exec_command("ret=`ls -al`;exit_code=$?;echo bbb $? $exit_code; echo $ret")
     logbook.debug("----------------------")
     chan = ssh_client.invoke_shell()
-    stdout = chan.recv(9999)
     # chan.send("cd /root;")
     chan.sendall("ls -al\n")
     chan.sendall("ret=$?\n")
@@ -60,13 +61,28 @@ if __name__ == "__main__":
     chan.sendall("exit $ret\n")
     chan.shutdown_write()
 
+    out_lines = []
+    while True:
+        recv_data = chan.recv(1024)
+        if len(recv_data) > 0:
+            out_lines.append(recv_data.decode("utf-8"))
+        else:
+            break
+    logbook.debug("chan output is {}", "".join(out_lines))
 
     exit_code = chan.recv_exit_status()
-    while chan.recv_ready():
-        stdout = chan.recv(1024)
-        logbook.debug(stdout.decode("utf-8"))
-        logbook.debug("\n")
     logbook.debug("exit code is {}", exit_code)
+
+    etcd_cluster = lua_g.all_setting.zone_map.zone_1.etcd_cluster
+    etcd = etcd_cluster.server_list[2]
+    tt_ret, tt_content = tt.render("etcd/etcd_start.py.j2", machine=ll_machine, etcd=etcd, etcd_cluster=etcd_cluster)
+    logbook.debug("tt ret {} {}", tt_ret, tt_content)
+
+    if tt_ret:
+        from codes.libs.utils.file_utils import write_file
+        out_file = os.path.join(parse_ret.out_setting, "zone_1/etcd/start.py")
+        os.makedirs(os.path.dirname(out_file), exist_ok=True)
+        write_file(out_file, tt_content)
     sys.exit(2)
 
 

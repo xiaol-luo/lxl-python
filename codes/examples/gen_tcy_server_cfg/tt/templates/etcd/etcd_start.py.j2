@@ -1,0 +1,19 @@
+# machine Machine
+# etcd_cluster EtcdServerCluster
+# etcd EtcdServer
+
+{% import 'common/ssh.py.j2' as ssh_help %}
+
+import paramiko
+
+{{ ssh_help.invoke_shell("shell", machine) }}
+
+
+docker run -d --network my-network --name {{etcd.name}} --mount type=volume,src=tcy_code,dst=/root/code --mount type=volume,src=tcy_build,dst=/root/build --mount type=volume,src=tcy_zone,dst=/root/zone --mount type=bind,src=/root/tmp,dst=/root/tmp  lxl_debian etcd
+
+
+shell.sendall("ls -al\n")
+shell.sendall("ret=$?\n")
+shell.sendall("echo xxx $? $ret\n")
+shell.sendall("exit $ret\n")
+shell.shutdown_write()

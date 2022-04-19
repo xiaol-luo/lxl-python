@@ -1,0 +1,16 @@
+
+# machine Machine
+{% macro invoke_shell (shell_name, machine) -%}
+
+ssh_client = paramiko.SSHClient()
+ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+ssh_client.connect(hostname="{{machine.ip}}", port="{{machine.ssh_port}}", username="{{machine.ssh_user}}", \
+    pkey=paramiko.RSAKey.from_private_key_file(r"{{machine.private_key_file}}", "{{machine.ssh_pwd}}"))
+{{shell_name}} = ssh_client.invoke_shell()
+
+# docker run -d --network my-network --name tcy --mount type=volume,src=tcy_code,dst=/root/code --mount type=volume,src=tcy_build,dst=/root/build --mount type=volume,src=tcy_zone,dst=/root/zone --mount type=bind,src=/root/tmp,dst=/root/tmp  lxl_debian etcd
+# docker exec etcd_2 /bin/bash -c "ps -ef | grep etc | grep -v grep"
+
+{%- endmacro -%}
+
+
