@@ -20,6 +20,18 @@ all_setting =
     },
 }
 
+travel_table({all_setting, all_setting.machine_map, all_setting.docker_net_map, all_setting.docker_volume_map}, function(elem)
+    if "function" == type(elem.init_self) then
+        elem.init_self(elem)
+    end
+end)
+
+travel_table({all_setting, all_setting.machine_map, all_setting.docker_net_map, all_setting.docker_volume_map}, function(elem)
+    if "function" == type(elem.figure_out_fields) then
+        elem.figure_out_fields(elem)
+    end
+end)
+
 all_setting_json = lua_json.encode(all_setting)
 
 

@@ -8,6 +8,7 @@ import json
 import paramiko
 import time
 import tt
+import typing
 
 logbook.StreamHandler(sys.stdout).push_application()
 
@@ -35,7 +36,7 @@ if __name__ == "__main__":
     lua.globals().package.path = str.format("{0};{1}/?.lua", lua.globals().package.path, os.path.dirname(parse_ret.in_setting))
     logbook.debug("lua.execute(lua_content) {}", lua.execute(lua_content))
     lua_g = lua.globals()
-    '''
+
     logbook.debug("lua.globals() {}", lua.globals())
     for (k, v) in lua_g.all_setting.items():
         if lupa.lua_type(v) == "table":
@@ -45,44 +46,62 @@ if __name__ == "__main__":
             logbook.debug("kkk, vvv {} {}", k, v)
     tmp = json.loads(lua_g.all_setting_json)
     logbook.debug("lua.globals() {}", json.dumps(tmp, indent=2))
-    '''
+
     ll_machine = lua_g.machine_map[lua_g.Machine_Name.ll]
     private_key = paramiko.RSAKey.from_private_key_file(ll_machine.private_key_file, ll_machine.ssh_pwd)
-    ssh_client = paramiko.SSHClient()
+    ssh_client: paramiko.SSHClient = paramiko.SSHClient()
     ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh_client.connect(hostname=ll_machine.ip, port=ll_machine.ssh_port, username=ll_machine.ssh_user, pkey=private_key)
+
     stdin, stdout, stderr = ssh_client.exec_command("ret=`ls -al`;exit_code=$?;echo bbb $? $exit_code; echo $ret")
-    logbook.debug("----------------------")
-    chan = ssh_client.invoke_shell()
-    # chan.send("cd /root;")
-    chan.sendall("ls -al\n")
-    chan.sendall("ret=$?\n")
-    chan.sendall("echo xxx $? $ret\n")
-    chan.sendall("exit $ret\n")
-    chan.shutdown_write()
 
-    out_lines = []
-    while True:
-        recv_data = chan.recv(1024)
-        if len(recv_data) > 0:
-            out_lines.append(recv_data.decode("utf-8"))
+    ListOrStr = typing.TypeVar("ListOrStr", typing.List[str], str)
+
+    def execute_ssh_cmd(ssh_client: paramiko.SSHClient, cmd: ListOrStr):
+        shell: paramiko.Channel = ssh_client.invoke_shell()
+        if cmd is str:
+            shell.sendall(cmd + "\n")
         else:
-            break
-    logbook.debug("chan output is {}", "".join(out_lines))
+            for e in cmd:
+                shell.sendall(e + "\n")
+        shell.sendall("exit $?\n")
+        exit_status = shell.recv_exit_status()
+        out_lines = []
+        while True:
+            recv_data = shell.recv(1024)
+            if len(recv_data) > 0:
+                out_lines.append(recv_data.decode("utf-8"))
+            else:
+                break
+        error_lines = []
+        while True:
+            recv_data = shell.recv_stderr(1024)
+            if len(recv_data) > 0:
+                error_lines.append(recv_data.decode("utf-8"))
+            else:
+                break
+        return exit_status, "".join(out_lines), "".join(error_lines)
 
-    exit_code = chan.recv_exit_status()
-    logbook.debug("exit code is {}", exit_code)
+    exit_status, out_content, error_content = execute_ssh_cmd(ssh_client, [
+        "ls -al",
+        r'echo "hello world"',
+    ])
+    logbook.debug("exit_status" + str(exit_status))
+    logbook.debug("out_content" + out_content)
+    logbook.debug("error_content" + error_content)
 
     etcd_cluster = lua_g.all_setting.zone_map.zone_1.etcd_cluster
     etcd = etcd_cluster.server_list[2]
     tt_ret, tt_content = tt.render("etcd/etcd_start.py.j2", machine=ll_machine, etcd=etcd, etcd_cluster=etcd_cluster)
-    logbook.debug("tt ret {} {}", tt_ret, tt_content)
+    # logbook.debug("tt ret {} {}", tt_ret, tt_content)
 
     if tt_ret:
         from codes.libs.utils.file_utils import write_file
         out_file = os.path.join(parse_ret.out_setting, "zone_1/etcd/start.py")
         os.makedirs(os.path.dirname(out_file), exist_ok=True)
         write_file(out_file, tt_content)
-    sys.exit(2)
+
+
+
 
 

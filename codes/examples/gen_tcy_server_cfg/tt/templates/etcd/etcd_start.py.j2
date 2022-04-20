@@ -2,18 +2,21 @@
 # etcd_cluster EtcdServerCluster
 # etcd EtcdServer
 
-{% import 'common/ssh.py.j2' as ssh_help %}
+{% include "common/common_head.py.j2" %}
+{% import 'common/ssh_help.py.j2' as ssh_help %}
 
-import paramiko
-
-{{ ssh_help.invoke_shell("shell", machine) }}
-
-
-docker run -d --network my-network --name {{etcd.name}} --mount type=volume,src=tcy_code,dst=/root/code --mount type=volume,src=tcy_build,dst=/root/build --mount type=volume,src=tcy_zone,dst=/root/zone --mount type=bind,src=/root/tmp,dst=/root/tmp  lxl_debian etcd
+{{ ssh_help.invoke_shell("ssh_client", machine) }}
 
 
-shell.sendall("ls -al\n")
-shell.sendall("ret=$?\n")
-shell.sendall("echo xxx $? $ret\n")
-shell.sendall("exit $ret\n")
-shell.shutdown_write()
+# docker run -d --network my-network --name {{etcd.name}} --mount type=volume,src=tcy_code,dst=/root/code --mount type=volume,src=tcy_build,dst=/root/build --mount type=volume,src=tcy_zone,dst=/root/zone --mount type=bind,src=/root/tmp,dst=/root/tmp  lxl_debian etcd
+
+
+with IndentHelp():
+    cmds = []
+    with IndentHelp():
+        ct_name = "ct_{}".format(random.randint(1, 99999999))
+        mount_volumes = []
+        cmds.append("docker run {opt} --name {name} --network {network} {mount_volumes} {image} {command}".format(
+            opt="-itd", name=ct_name, network="my-network",  mount_volumes ="".join(mount_volumes), image="lxl_debian", command="/bin/bash"))
+        print("cmds", cmds)
+

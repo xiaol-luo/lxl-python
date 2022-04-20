@@ -4,11 +4,11 @@
 
 import paramiko
 
-{% import 'common/ssh.py.j2' as ssh_help %}
-{% from 'common/ssh.py.j2' import invoke_shell  %}
-{% from 'common/ssh.py.j2' import invoke_shell as invoke_shell_alias %}
+{% import 'common/ssh_help.py.j2' as ssh_help %}
+{% from 'common/ssh_help.py.j2' import invoke_shell  %}
+{% from 'common/ssh_help.py.j2' import invoke_shell as invoke_shell_alias %}
 
-{% include 'common/ssh.py.j2' %}
+{% include 'common/ssh_help.py.j2' %}
 
 aaa
 

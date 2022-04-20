@@ -1,9 +1,15 @@
 require "class"
 
+-- fo figure out
+
 ---@class SettingBase
 SettingBase = SettingBase or class("SettingBase")
 
-function SettingBase:fill_fields()
+function SettingBase:init_self()
+
+end
+
+function SettingBase:figure_out_fields()
 
 end
 
@@ -24,17 +30,61 @@ DockerVolume = DockerVolume or class("DockerVolume", SettingBase)
 ---@class DockerVolumeUse
 ---@field docker_volume DockerVolume
 ---@field relative_path string
+---@field fo_abs_path string
 DockerVolumeUse = DockerVolumeUse or class("DockerVolumeUse", SettingBase)
+
+function DockerVolumeUse:figure_out_fields()
+    self.fo_abs_path = path_combine(self.docker_volume.map_path, self.relative_path)
+end
 
 ---@class DockerNet
 ---@field name string
 ---@field subnet string
+---@field fo_ip_prefix
+---@field fo_ip_suffix_dhcp_max number
+---@field fo_ip_suffix_dhcp_min number
+---@field private _ip_dhcp_val number
 DockerNet = DockerNet or class("DockerNet", SettingBase)
+
+function DockerNet:ctor()
+    self._ip_dhcp_val = nil
+end
+
+function DockerNet:init_self()
+    local mask = nil
+    self.fo_ip_prefix, mask = string.match(self.subnet, "(.*)%.%d+/(%d+)")
+    print("DockerNet:init_self", self.fo_ip_prefix,mask)
+    mask = tonumber(mask)
+    assert(mask > 0 and mask < 32)
+    local sub_ip_count = 2 ^ (32 - mask)
+    self.fo_ip_suffix_dhcp_max = sub_ip_count - 1
+    self.fo_ip_suffix_dhcp_min = math.ceil(sub_ip_count * 0.7)
+    self._ip_dhcp_val = self.fo_ip_suffix_dhcp_min
+end
+
+function DockerNet:cal_ip(ip_suffix, is_apply)
+    local ret = nil
+    if "dhcp" == ip_suffix then
+        ret = string.format("%s.%s", self.fo_ip_prefix, self._ip_dhcp_val)
+        if is_apply then
+            self._ip_dhcp_val = self._ip_dhcp_val + 1
+        end
+    else
+        ret = string.format("%s.%s", self.fo_ip_prefix, ip_suffix)
+    end
+    print("DockerNet:cal_ip ", ip_suffix, is_apply, self._ip_dhcp_val)
+    return ret
+end
 
 ---@class DockerNetUse
 ---@field docker_net DockerNet
----@field sub_ip string
+---@field ip_suffix string
+---@field fo_ip string
 DockerNetUse = DockerNetUse or class("DockerNetUse", SettingBase)
+
+function DockerNetUse:init_self()
+    self.fo_ip = self.docker_net:cal_ip(self.ip_suffix, true)
+end
 
 ---@class PortPublish
 ---@field docker_port
@@ -51,7 +101,6 @@ PortPublish = PortPublish or class("PortPublish", SettingBase)
 ---@field db_path DockerVolumeUse
 EtcdServer = EtcdServer or class("EtcdServer", SettingBase)
 
-
 ---@class EtcdServerCluster
 ---@field server_list table<number, EtcdServer>
 EtcdServerCluster = EtcdServerCluster or class("EtcdServerCluster", SettingBase)
@@ -60,7 +109,7 @@ EtcdServerCluster = EtcdServerCluster or class("EtcdServerCluster", SettingBase)
 ---@field name
 ---@field locate_machine Machine
 ---@field docker_net DockerNet
----@field docker_ip string
+---@field docker_ip DockerNetUse
 ---@field listen_port number
 ---@field db_dir string
 ---@field pwd string
@@ -125,7 +174,26 @@ MongoDbServerCluster = MongoDbServerCluster or class("MongoDbServerCluster", Set
 ---@field redis_cluster RedisServerCluster
 ---@field etcd_cluster EtcdServerCluster
 ---@field game_servers
+---@field main_network DockerNet
+---@field fo_used_network_map table<string, DockerNet> @不包含main_network
+---@field fo_used_volume_map table<string, DockerVolume>
 Zone = Zone or class("Zone", SettingBase)
+
+function Zone:figure_out_fields()
+    self.fo_used_network_map = {}
+    self.fo_used_volume_map = {}
+    travel_table(self, function(elem)
+        if is_class_instance(elem, DockerNet) then
+            if elem ~= self.main_network then
+               self.fo_used_network_map[elem.name] = elem
+            end
+        end
+        if is_class_instance(elem, DockerVolume) then
+            self.fo_used_volume_map[elem.name] = elem
+        end
+    end)
+end
+
 
 
 
