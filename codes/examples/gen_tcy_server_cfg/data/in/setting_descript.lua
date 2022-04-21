@@ -99,6 +99,7 @@ PortPublish = PortPublish or class("PortPublish", SettingBase)
 ---@field client_port number
 ---@field peer_port number
 ---@field db_path DockerVolumeUse
+---@field image string
 EtcdServer = EtcdServer or class("EtcdServer", SettingBase)
 
 ---@class EtcdServerCluster

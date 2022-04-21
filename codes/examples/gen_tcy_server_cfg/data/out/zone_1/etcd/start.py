@@ -64,7 +64,7 @@ with IndentHelp():
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
     run_cmd = "docker run -itd --name {name} {network} {mount_volumes} {image} {command}".format(
-        opt="-itd", name=ct_name, network=opt_network,  mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian", command="/bin/bash")
+        name=ct_name, network=opt_network,  mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian", command="/bin/bash")
     ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, run_cmd)
     if 0 != ret:
         print("docker exec: run docker container fail, cmd is {0}\n exit_code is {1}\n out is {2}\n error is {3}".format(run_cmd, ret, out_txt, error_txt))
@@ -78,3 +78,20 @@ with IndentHelp():
         "docker container kill {0}".format(ct_name),
         "docker container prune -f",
     ])
+
+
+# docker run --name zone_1_etcd_2 --network my-network \
+#    --ip 10.0.1.181 --mount type=volume,src=tcy_zone,dst=/root/zone \
+#    lxl_debian ls -al
+
+with IndentHelp():
+    opt_mount_volumes = []
+    opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
+    opt_network = "--network my-network"
+    opt_ip = "--ip 10.0.1.181"
+    run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
+        opt="", name="zone_1_etcd_2", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian", command="ls -al")
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, run_cmd)
+    if 0 != ret:
+        print("docker run: run docker container fail, cmd is {0}\n exit_code is {1}\n out is {2}\n error is {3}".format(run_cmd, ret, out_txt, error_txt))
+        sys.exit(ret)

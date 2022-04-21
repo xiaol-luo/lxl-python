@@ -1,5 +1,18 @@
 
 
+## network DockerNet
+{% macro opt_network (network) -%}
+--network {{network.name}}
+{%- endmacro -%}
+
+
+## net_used DockerNetUse
+{% macro opt_ip (net_used) -%}
+--ip {{net_used.fo_ip}}
+{%- endmacro -%}
+
+
+
 ## volume DockerVolume
 {% macro opt_mount (volume) -%}
 --mount type=volume,src={{volume.name}},dst={{volume.map_path}}
@@ -8,6 +21,30 @@
 ## volume_used DockerVolumeUse
 {% macro cmd_mkdir_volume_used (volume_used) -%}
 mkdir -p {{volume_used.fo_abs_path}}
+{%- endmacro -%}
+
+## machine Machine
+## container_name str
+## image str
+## cmd str
+## opt str
+## volumes typing.List[DockerVolume]
+## network typing DockerNet
+## net_used DockerNetUse
+{% macro run_container (machine, container_name, image, cmd, opt="", volumes = None, network=None, net_used=None) -%}
+with IndentHelp():
+    opt_mount_volumes = []
+{%- if volumes -%}{%- for e in volumes %}
+    opt_mount_volumes.append("--mount type=volume,src={{e.name}},dst={{e.map_path}}")
+{%- endfor -%}{% endif %}
+{% if network %}    opt_network = "{{ opt_network(network) }}"{% else %}    opt_network = ""{% endif %}
+{% if net_used %}    opt_ip = "{{ opt_ip(net_used) }}"{% else %}    opt_ip = ""{% endif %}
+    run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
+        opt="{{opt}}", name="{{container_name}}", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="{{image}}", command="{{cmd}}")
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, run_cmd)
+    if 0 != ret:
+        print("docker run: run docker container fail, cmd is {0}\n exit_code is {1}\n out is {2}\n error is {3}".format(run_cmd, ret, out_txt, error_txt))
+        sys.exit(ret)
 {%- endmacro -%}
 
 ## machine Machine
@@ -27,12 +64,12 @@ with IndentHelp():
 {%- endfor -%}
 {% endif %}
     {% if network -%}
-    opt_network = "--network {{network.name}}"
+    opt_network = "--network {{ network.name}}"
     {% else -%}
     opt_network = ""
     {% endif -%}
     run_cmd = "docker run -itd --name {name} {network} {mount_volumes} {image} {command}".format(
-        opt="-itd", name=ct_name, network=opt_network,  mount_volumes=" ".join(opt_mount_volumes), image="{{image}}", command="/bin/bash")
+        name=ct_name, network=opt_network,  mount_volumes=" ".join(opt_mount_volumes), image="{{image}}", command="/bin/bash")
     ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, run_cmd)
     if 0 != ret:
         print("docker exec: run docker container fail, cmd is {0}\n exit_code is {1}\n out is {2}\n error is {3}".format(run_cmd, ret, out_txt, error_txt))
@@ -49,4 +86,6 @@ with IndentHelp():
         "docker container prune -f",
     ])
 {%- endmacro -%}
+
+
 

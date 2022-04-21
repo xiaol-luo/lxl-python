@@ -13,3 +13,10 @@
 
 {% set test_cmd = [ docker_help.cmd_mkdir_volume_used(etcd.db_path),  ] %}
 {{ docker_help.exec_cmds(etcd.locate_machine, "lxl_debian", test_cmd, network=etcd.docker_net, volumes=zone.fo_used_volume_map.values()) }}
+
+
+# docker run --name {{etcd.name}} {{ docker_help.opt_network(etcd.docker_net) }} \
+#    {{ docker_help.opt_ip(etcd.docker_ip) }} {{ docker_help.opt_mount(etcd.db_path.docker_volume) }} \
+#    {{ etcd.image }} ls -al
+
+{{ docker_help.run_container(etcd.locate_machine, etcd.name, etcd.image, "ls -al", opt="", volumes=zone.fo_used_volume_map.values(), network=etcd.docker_net, net_used=etcd.docker_ip) }}

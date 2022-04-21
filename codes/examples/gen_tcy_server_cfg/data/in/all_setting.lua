@@ -4,6 +4,7 @@ require "docker_net_map"
 require "docker_volume_map"
 require "utils"
 require "json"
+require "image_map"
 
 lua_json = require "json"
 

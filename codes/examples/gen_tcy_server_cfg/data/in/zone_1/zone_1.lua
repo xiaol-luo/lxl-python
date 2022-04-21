@@ -14,6 +14,7 @@ do
     local es = EtcdServer:new()
     table.insert(zone.etcd_cluster.server_list, es)
     es.name = string_concat(zone_name, "etcd_1")
+    es.image = Image_Name.lxl_debian
     es.locate_machine = machine_map[Machine_Name.ll]
     es.docker_net = docker_net
     es.docker_ip = DockerNetUse:new()
@@ -30,6 +31,7 @@ do
     local es = EtcdServer:new()
     table.insert(zone.etcd_cluster.server_list, es)
     es.name = string_concat(zone_name, "etcd_2")
+    es.image = Image_Name.lxl_debian
     es.locate_machine = machine_map[Machine_Name.ll]
     es.docker_net = docker_net
     es.docker_ip = DockerNetUse:new()
@@ -46,6 +48,7 @@ do
     local es = EtcdServer:new()
     table.insert(zone.etcd_cluster.server_list, es)
     es.name = string_concat(zone_name, "etcd_3")
+    es.image = Image_Name.lxl_debian
     es.locate_machine = machine_map[Machine_Name.ll]
     es.docker_net = docker_net
     es.docker_ip = DockerNetUse:new()
