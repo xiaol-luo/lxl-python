@@ -1,6 +1,6 @@
 
 Docker_Net_Name = {}
-Docker_Net_Name.net_zone_1 = "net_zone_1"
+Docker_Net_Name.net_zone_1 = "my-network"
 
 ---@type table<string, DockerNet>
 docker_net_map = {}

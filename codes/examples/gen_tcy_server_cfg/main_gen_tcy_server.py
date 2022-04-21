@@ -90,9 +90,10 @@ if __name__ == "__main__":
     logbook.debug("out_content" + out_content)
     logbook.debug("error_content" + error_content)
 
-    etcd_cluster = lua_g.all_setting.zone_map.zone_1.etcd_cluster
+    zone = lua_g.all_setting.zone_map.zone_1
+    etcd_cluster = zone.etcd_cluster
     etcd = etcd_cluster.server_list[2]
-    tt_ret, tt_content = tt.render("etcd/etcd_start.py.j2", machine=ll_machine, etcd=etcd, etcd_cluster=etcd_cluster)
+    tt_ret, tt_content = tt.render("etcd/etcd_start.py.j2", zone=zone, etcd=etcd, etcd_cluster=etcd_cluster)
     # logbook.debug("tt ret {} {}", tt_ret, tt_content)
 
     if tt_ret:

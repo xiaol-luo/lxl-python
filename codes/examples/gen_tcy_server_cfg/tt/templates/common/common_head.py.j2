@@ -1,6 +1,8 @@
 import paramiko
 import typing
 import random
+import sys
+import os
 
 class IndentHelp(object):
     def __enter__(self):
@@ -14,7 +16,7 @@ ListOrStr = typing.TypeVar("ListOrStr", typing.List[str], str)
 
 def paramiko_ssh_cmd(ssh_client: paramiko.SSHClient, cmd: ListOrStr):
     shell: paramiko.Channel = ssh_client.invoke_shell()
-    if cmd is str:
+    if isinstance(cmd, str):
         shell.sendall(cmd + "\n")
     else:
         for e in cmd:

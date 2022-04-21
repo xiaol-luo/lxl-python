@@ -1,8 +1,8 @@
 
 Docker_Volume_Name = {}
-Docker_Volume_Name.zone_1_code = "zone_1_code"
-Docker_Volume_Name.zone_1_build = "zone_1_build"
-Docker_Volume_Name.zone_1_data = "zone_1_data"
+Docker_Volume_Name.zone_1_code = "tcy_code"
+Docker_Volume_Name.zone_1_build = "tcy_build"
+Docker_Volume_Name.zone_1_data = "tcy_zone"
 
 ---@type table<string, DockerVolume>
 docker_volume_map = {}
@@ -26,7 +26,7 @@ do
     local elem = DockerVolume:new()
     table.insert(tmp_list, elem)
     elem.name = Docker_Volume_Name.zone_1_data
-    elem.map_path = "/root/data"
+    elem.map_path = "/root/zone"
 end
 
 for _, v in ipairs(tmp_list) do
