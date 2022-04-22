@@ -55,6 +55,18 @@ with IndentHelp():
 
 # docker run -d --network my-network --name zone_1_etcd_2 --mount type=volume,src=tcy_code,dst=/root/code --mount type=volume,src=tcy_build,dst=/root/build --mount type=volume,src=tcy_zone,dst=/root/zone --mount type=bind,src=/root/tmp,dst=/root/tmp  lxl_debian etcd
 
+with IndentHelp():
+    opt_mount_volumes = []
+    opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
+    opt_network = "--network my-network"
+    opt_ip = "--ip 10.0.1.181"
+    run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
+        opt="", name="zone_1_etcd_2", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian", command="etcd")
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, run_cmd)
+    if 0 != ret or True:
+        print("docker run: run docker container fail, cmd is {0}\n exit_code is {1}\n out is {2}\n error is {3}".format(run_cmd, ret, out_txt, error_txt))
+        sys.exit(ret)
+
 
 with IndentHelp():
     # run docker container
@@ -83,15 +95,3 @@ with IndentHelp():
 # docker run --name zone_1_etcd_2 --network my-network \
 #    --ip 10.0.1.181 --mount type=volume,src=tcy_zone,dst=/root/zone \
 #    lxl_debian ls -al
-
-with IndentHelp():
-    opt_mount_volumes = []
-    opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
-    opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.181"
-    run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
-        opt="", name="zone_1_etcd_2", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian", command="ls -al")
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, run_cmd)
-    if 0 != ret:
-        print("docker run: run docker container fail, cmd is {0}\n exit_code is {1}\n out is {2}\n error is {3}".format(run_cmd, ret, out_txt, error_txt))
-        sys.exit(ret)

@@ -104,6 +104,9 @@ EtcdServer = EtcdServer or class("EtcdServer", SettingBase)
 
 ---@class EtcdServerCluster
 ---@field server_list table<number, EtcdServer>
+---@field user string
+---@field pwd string
+---@field cluster_token string
 EtcdServerCluster = EtcdServerCluster or class("EtcdServerCluster", SettingBase)
 
 ---@class RedisServer
