@@ -1,0 +1,10 @@
+
+
+{% macro start_cmd2 (etcd_cluster, etcd) -%}
+"etcd --name {name} --data-dir {data_dir} --listen-peer-urls http://0.0.0.0:{peer_port} --listen-client-urls http://0.0.0.0:{client_port}  --initial-advertise-peer-urls http://{ip}:{peer_port} --advertise-client-urls http://{ip}:{client_port} --log-output stdout --initial-cluster-token \"{token}\" --initial-cluster {initial_cluster}".format(
+name = "{{etcd.name}}", data_dir="{{etcd.db_path.fo_abs_path}}", peer_port="{{etcd.peer_port}}", client_port="{{etcd.client_port}}", ip="{{etcd.docker_ip.fo_ip}}", token="{{etcd_cluster.cluster_token}}", initial_cluster="{{etcd_cluster.fo_initial_cluster}}")
+{%- endmacro -%}
+
+{% macro start_cmd (etcd_cluster, etcd) -%}
+etcd --name {{etcd.name}} --data-dir {{etcd.db_path.fo_abs_path}} --listen-peer-urls http://0.0.0.0:{{etcd.peer_port}} --listen-client-urls http://0.0.0.0:{{etcd.client_port}} --initial-advertise-peer-urls http://{{etcd.docker_ip.fo_ip}}:{{etcd.peer_port}} --advertise-client-urls http://{{etcd.docker_ip.fo_ip}}:{{etcd.client_port}}  --log-output stdout --initial-cluster-token '{{etcd_cluster.cluster_token}}' --initial-cluster {{etcd_cluster.fo_initial_cluster}}
+{%- endmacro -%}

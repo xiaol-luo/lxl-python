@@ -8,6 +8,9 @@ local docker_net = zone.main_network
 local zone_name = zone.name
 
 zone.etcd_cluster = EtcdServerCluster:new()
+zone.etcd_cluster.cluster_token = zone.name
+zone.user = zone.name
+zone.pwd = zone.name
 zone.etcd_cluster.server_list = {}
 do
     ---@type EtcdServer

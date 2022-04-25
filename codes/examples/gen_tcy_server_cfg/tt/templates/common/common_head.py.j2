@@ -14,7 +14,7 @@ class IndentHelp(object):
 ListOrStr = typing.TypeVar("ListOrStr", typing.List[str], str)
 
 
-def paramiko_ssh_cmd(ssh_client: paramiko.SSHClient, cmd: ListOrStr):
+def paramiko_ssh_cmd(ssh_client: paramiko.SSHClient, cmd: ListOrStr, exit_when_error:bool=False):
     shell: paramiko.Channel = ssh_client.invoke_shell()
     if isinstance(cmd, str):
         shell.sendall(cmd + "\n")
@@ -37,4 +37,7 @@ def paramiko_ssh_cmd(ssh_client: paramiko.SSHClient, cmd: ListOrStr):
             error_lines.append(recv_data.decode("utf-8"))
         else:
             break
+    if exit_when_error:
+        print("paramiko_ssh_cmd fail, exit_code is {0}\n out is {1}\n error is {2}".format(exit_status, "".join(out_lines), "".join(error_lines)))
+        sys.exit(ret)
     return exit_status, "".join(out_lines), "".join(error_lines)

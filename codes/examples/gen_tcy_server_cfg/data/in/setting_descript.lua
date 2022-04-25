@@ -92,7 +92,7 @@ end
 PortPublish = PortPublish or class("PortPublish", SettingBase)
 
 ---@class EtcdServer
----@field name
+---@field namesubprocess
 ---@field locate_machine Machine
 ---@field docker_net DockerNet
 ---@field docker_ip DockerNetUse
@@ -107,7 +107,18 @@ EtcdServer = EtcdServer or class("EtcdServer", SettingBase)
 ---@field user string
 ---@field pwd string
 ---@field cluster_token string
+---@field fo_initial_cluster string
 EtcdServerCluster = EtcdServerCluster or class("EtcdServerCluster", SettingBase)
+
+function EtcdServerCluster:figure_out_fields()
+    do
+        local elems = {}
+        for _, v in ipairs(self.server_list) do
+            table.insert(elems, string.format("%s=http://%s:%s", v.name, v.docker_ip.fo_ip, v.peer_port))
+        end
+        self.fo_initial_cluster = table.concat(elems, ",")
+    end
+end
 
 ---@class RedisServer
 ---@field name
