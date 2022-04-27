@@ -2,7 +2,7 @@
 ## machine Machine
 {% macro invoke_shell (ssh_client_name, machine) -%}
 {{ssh_client_name}} = None
-with IndentHelp():
+with IndentFlag():
     {{ssh_client_name}} = paramiko.SSHClient()
     {{ssh_client_name}}.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     {{ssh_client_name}}.connect(hostname="{{machine.ip}}", port="{{machine.ssh_port}}", username="{{machine.ssh_user}}", \

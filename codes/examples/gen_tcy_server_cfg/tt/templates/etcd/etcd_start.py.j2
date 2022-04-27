@@ -2,30 +2,21 @@
 # etcd_cluster EtcdServerCluster
 # etcd EtcdServer
 
-{% include "common/common_head.py.j2" %}
 {% import 'common/ssh_help.py.j2' as ssh_help %}
 {% import 'common/docker_help.py.j2' as docker_help %}
 {% import 'common/etcd_help.py.j2' as etcd_help %}
 
-{% set ssh_client = "ssh_client" %}
-
+{%- include "common/common_head.py.j2" %}
+{%- set ssh_client = "ssh_client" %}
 {{ ssh_help.invoke_shell(ssh_client, etcd.locate_machine) }}
 
 
-# docker run -d --network my-network --name {{etcd.name}} --mount type=volume,src=tcy_code,dst=/root/code --mount type=volume,src=tcy_build,dst=/root/build --mount type=volume,src=tcy_zone,dst=/root/zone --mount type=bind,src=/root/tmp,dst=/root/tmp  lxl_debian etcd
 {{ docker_help.kill_container(ssh_client, etcd.name) }}
-
-{% set run_cmd = etcd_help.start_cmd(etcd_cluster, etcd) %}
-{{ docker_help.run_container(ssh_client, etcd.name, etcd.image, run_cmd, opt="-d", volumes=zone.fo_used_volume_map.values(), network=etcd.docker_net, net_used=etcd.docker_ip) }}
 
 {% set run_cmd = [ docker_help.cmd_mkdir_volume_used(etcd.db_path),  ] %}
 {{ docker_help.exec_cmds(ssh_client, etcd.image, run_cmd, network=etcd.docker_net, volumes=zone.fo_used_volume_map.values()) }}
 
+{% set run_cmd = etcd_help.start_cmd(etcd_cluster, etcd) %}
+{{ docker_help.run_container(ssh_client, etcd.name, etcd.image, run_cmd, opt="-d", volumes=zone.fo_used_volume_map.values(), network=etcd.docker_net, net_used=etcd.docker_ip) }}
 
-# docker run --name {{etcd.name}} {{ docker_help.opt_network(etcd.docker_net) }} \
-#    {{ docker_help.opt_ip(etcd.docker_ip) }} {{ docker_help.opt_mount(etcd.db_path.docker_volume) }} \
-#    {{ etcd.image }} ls -al
-
-
-# etcd --name test --data-dir /root/tmp/test/db --listen-peer-urls http://0.0.0.0:23801 --listen-client-urls http://0.0.0.0:23791  --initial-advertise-peer-urls http://127.0.0.1:23801 --advertise-client-urls http://127.0.0.1:23791 --log-output stdout --initial-cluster-token "hello_world" --initial-cluster test=http://127.0.0.1:23801
 

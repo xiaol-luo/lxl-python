@@ -108,15 +108,19 @@ EtcdServer = EtcdServer or class("EtcdServer", SettingBase)
 ---@field pwd string
 ---@field cluster_token string
 ---@field fo_initial_cluster string
+---@field fo_end_points string
 EtcdServerCluster = EtcdServerCluster or class("EtcdServerCluster", SettingBase)
 
 function EtcdServerCluster:figure_out_fields()
     do
         local elems = {}
+        local end_points = {}
         for _, v in ipairs(self.server_list) do
             table.insert(elems, string.format("%s=http://%s:%s", v.name, v.docker_ip.fo_ip, v.peer_port))
+            table.insert(end_points, string.format("//%s:%s", v.docker_ip.fo_ip, v.client_port))
         end
         self.fo_initial_cluster = table.concat(elems, ",")
+        self.fo_end_points = table.concat(end_points, ",")
     end
 end
 

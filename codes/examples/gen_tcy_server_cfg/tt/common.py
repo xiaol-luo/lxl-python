@@ -6,7 +6,7 @@ _tt_env = None
 def get_env():
     global _tt_env
     if not _tt_env:
-        _tt_env = jinja2.Environment(loader=jinja2.PackageLoader(__package__))
+        _tt_env = jinja2.Environment(loader=jinja2.PackageLoader(__package__), extensions=['jinja2.ext.do'])
     return _tt_env
 
 

@@ -9,8 +9,14 @@ import paramiko
 import time
 import tt
 import typing
+import render
+from codes.libs.common import *
 
 logbook.StreamHandler(sys.stdout).push_application()
+
+with IndentFlag():
+    print("hello world")
+
 
 
 if __name__ == "__main__":
@@ -19,6 +25,7 @@ if __name__ == "__main__":
     arg_parse = argparse.ArgumentParser()
     arg_parse.add_argument("in_setting", help="in setting path")
     arg_parse.add_argument("out_setting", help="out setting dir")
+    arg_parse.add_argument("--python_path", help="python_path locate path")
     parse_ret = arg_parse.parse_args(sys.argv[1:])
     for (k, v) in vars(parse_ret).items():
         print("k,v {0}, {1}".format(k, v))
@@ -100,9 +107,19 @@ if __name__ == "__main__":
         from codes.libs.utils.file_utils import write_file
         out_file = os.path.join(parse_ret.out_setting, "zone_1/etcd/start.py")
         os.makedirs(os.path.dirname(out_file), exist_ok=True)
-        write_file(out_file, tt_content)
+        # write_file(out_file, tt_content)
 
-
+    # render.render_etcd.export_start_file(parse_ret.out_setting, zone, etcd_cluster, etcd)
+    render.render_etcd.export_cluster_start_file(parse_ret.out_setting, zone, etcd_cluster)
+    render.render_etcd.export_cluster_stop_file(parse_ret.out_setting, zone, etcd_cluster)
+    render.render_etcd.export_cluster_clear_file(parse_ret.out_setting, zone, etcd_cluster)
+    render.render_etcd.export_cluster_logs_file(parse_ret.out_setting, zone, etcd_cluster)
+    render.render_etcd.export_cluster_etcdctl_cmds_file(parse_ret.out_setting, zone, etcd_cluster,  "etcdctl_test.py", ["ls /"], is_auth=True)
+    render.render_etcd.export_cluster_enable_auth_file(parse_ret.out_setting, zone, etcd_cluster)
+    render.render_etcd.export_cluster_opera_file(parse_ret.out_setting, zone, etcd_cluster, "start", parse_ret.python_path)
+    render.render_etcd.export_cluster_opera_file(parse_ret.out_setting, zone, etcd_cluster, "stop", parse_ret.python_path)
+    render.render_etcd.export_cluster_opera_file(parse_ret.out_setting, zone, etcd_cluster, "clear", parse_ret.python_path)
+    render.render_etcd.export_cluster_opera_file(parse_ret.out_setting, zone, etcd_cluster, "logs", parse_ret.python_path)
 
 
 

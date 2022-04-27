@@ -9,8 +9,8 @@ local zone_name = zone.name
 
 zone.etcd_cluster = EtcdServerCluster:new()
 zone.etcd_cluster.cluster_token = zone.name
-zone.user = zone.name
-zone.pwd = zone.name
+zone.etcd_cluster.user = zone.name
+zone.etcd_cluster.pwd = zone.name
 zone.etcd_cluster.server_list = {}
 do
     ---@type EtcdServer

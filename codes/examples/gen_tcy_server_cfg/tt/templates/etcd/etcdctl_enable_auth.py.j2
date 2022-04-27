@@ -1,0 +1,23 @@
+# machine Machine
+# etcd_cluster EtcdServerCluster
+# etcd EtcdServer
+
+{%- import 'common/ssh_help.py.j2' as ssh_help %}
+{%- import 'common/docker_help.py.j2' as docker_help %}
+{%- import 'common/etcd_help.py.j2' as etcd_help %}
+
+{%- include "common/common_head.py.j2" %}
+
+{% set ssh_client = "ssh_client" %}
+{{ ssh_help.invoke_shell(ssh_client, etcd.locate_machine) }}
+
+{% set run_cmd = [
+    "/bin/bash -c 'echo xiaolzz | etcdctl --endpoints %(end_points)s user add root' " | format(end_points=etcd_cluster.fo_end_points),
+    "etcdctl --endpoints %(end_points)s --username root:xiaolzz auth enable" | format(end_points=etcd_cluster.fo_end_points),
+    "/bin/bash -c  'echo %(pwd)s | etcdctl --endpoints %(end_points)s --username root:xiaolzz user add %(user)s' " | format(pwd=etcd_cluster.pwd, end_points=etcd_cluster.fo_end_points, user=etcd_cluster.user),
+    "etcdctl --endpoints %(end_points)s --username root:xiaolzz role add rw_all" | format(end_points=etcd_cluster.fo_end_points),
+    "etcdctl --endpoints %(end_points)s --username root:xiaolzz role grant --readwrite --path / rw_all" | format(end_points=etcd_cluster.fo_end_points),
+    "etcdctl --endpoints %(end_points)s --username root:xiaolzz user grant --roles rw_all %(user)s" | format(end_points=etcd_cluster.fo_end_points, user=etcd_cluster.user),
+] %}
+{{ docker_help.exec_cmds(ssh_client, etcd.image, run_cmd, network=etcd.docker_net, volumes=zone.fo_used_volume_map.values()) }}
+

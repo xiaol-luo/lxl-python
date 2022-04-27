@@ -1,4 +1,6 @@
-
+# machine Machine
+# etcd_cluster EtcdServerCluster
+# etcd EtcdServer
 import paramiko
 import typing
 import random
@@ -42,3 +44,16 @@ def paramiko_ssh_cmd(ssh_client: paramiko.SSHClient, cmd: ListOrStr, exit_when_e
         print("paramiko_ssh_cmd fail, exit_code is {0}\n out is {1}\n error is {2}".format(exit_status, "".join(out_lines), "".join(error_lines)))
         sys.exit(exit_status)
     return exit_status, "".join(out_lines), "".join(error_lines)
+
+
+ssh_client = None
+with IndentFlag():
+    ssh_client = paramiko.SSHClient()
+    ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh_client.connect(hostname="119.91.239.128", port="22", username="root", \
+        pkey=paramiko.RSAKey.from_private_key_file(r"C:/Users/luoxiaolong/.ssh/keys/root/id_rsa", "xiaolzz"))
+
+paramiko_ssh_cmd(ssh_client, [
+    "docker container kill zone_1_etcd_1",
+    "docker container prune -f",
+])

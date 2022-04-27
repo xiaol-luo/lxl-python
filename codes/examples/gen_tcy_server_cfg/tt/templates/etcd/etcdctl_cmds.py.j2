@@ -1,0 +1,22 @@
+# machine Machine
+# etcd_cluster EtcdServerCluster
+# etcd EtcdServer
+# cmd_list
+# is_auth
+
+{% import 'common/ssh_help.py.j2' as ssh_help %}
+{% import 'common/docker_help.py.j2' as docker_help %}
+{% import 'common/etcd_help.py.j2' as etcd_help %}
+
+{%- include "common/common_head.py.j2" %}
+{%- set ssh_client = "ssh_client" %}
+{{ ssh_help.invoke_shell(ssh_client, etcd.locate_machine) }}
+
+
+{% set run_cmd = [] -%}
+{% for cmd in cmd_list %}
+    {%- do run_cmd.append(etcd_help.etcdctl_cmd(etcd_cluster, is_auth, cmd)) -%}
+{% endfor %}
+{{ docker_help.exec_cmds(ssh_client, etcd.image, run_cmd, network=etcd.docker_net, volumes=zone.fo_used_volume_map.values(), print_fn_name="print") }}
+
+
