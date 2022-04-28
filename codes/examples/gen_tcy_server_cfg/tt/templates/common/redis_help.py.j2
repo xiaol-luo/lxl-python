@@ -1,0 +1,12 @@
+
+{% macro start_cmd (redis_cluster, redis) -%}
+    redis-server --port {{redis.client_port}} --dir {{redis.db_path.fo_abs_path}} --cluster-enabled yes --bind 0.0.0.0
+{%- endmacro -%}
+
+{% macro redis_cli_cmd (redis_cluster, is_auth, cmd) -%}
+{%- if is_auth -%}
+    redis-cli -c --no-auth-warning -a {{redis_cluster.pwd}} -h {{redis_cluster.fo_cli_visit_ip}} -p  {{redis_cluster.fo_cli_visit_port}}  {{cmd}}
+{%- else -%}
+    redis-cli -c -h {{redis_cluster.fo_cli_visit_ip}} -p  {{redis_cluster.fo_cli_visit_port}}  {{cmd}}
+{%- endif -%}
+{%- endmacro -%}

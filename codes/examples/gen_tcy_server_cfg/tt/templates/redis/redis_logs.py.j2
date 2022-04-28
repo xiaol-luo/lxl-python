@@ -1,0 +1,18 @@
+# machine Machine
+# redis_cluster RedisServerCluster
+# redis RedisServer
+# zone Zone
+
+{%- import 'common/ssh_help.py.j2' as ssh_help %}
+{%- import 'common/docker_help.py.j2' as docker_help %}
+{%- import 'common/redis_help.py.j2' as redis_help %}
+
+{%- include "common/common_head.py.j2" %}
+
+{% set ssh_client = "ssh_client" %}
+{{ ssh_help.invoke_shell(ssh_client, redis.locate_machine) }}
+
+ret, out_txt, error_txt = paramiko_ssh_cmd({{ssh_client}}, [
+    "docker container logs {{ redis.name }}",
+])
+print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))

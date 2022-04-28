@@ -1,6 +1,11 @@
 # machine Machine
-# etcd_cluster EtcdServerCluster
-# etcd EtcdServer
+# redis_cluster RedisServerCluster
+# redis RedisServer
+# zone Zone
+
+
+
+
 import paramiko
 import typing
 import random
@@ -44,14 +49,15 @@ def paramiko_ssh_cmd(ssh_client: paramiko.SSHClient, cmd: ListOrStr, exit_when_e
         print("paramiko_ssh_cmd fail, exit_code is {0}\n out is {1}\n error is {2}".format(exit_status, "".join(out_lines), "".join(error_lines)))
         sys.exit(exit_status)
     return exit_status, "".join(out_lines), "".join(error_lines)
-
-
 ssh_client = None
 with IndentFlag():
     ssh_client = paramiko.SSHClient()
     ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh_client.connect(hostname="119.91.239.128", port="22", username="root", \
         pkey=paramiko.RSAKey.from_private_key_file(r"C:/Users/luoxiaolong/.ssh/keys/root/id_rsa", "xiaolzz"))
+
+
+
 
 
 with IndentFlag():
@@ -68,24 +74,41 @@ with IndentFlag():
         print("docker exec: run docker container fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
         sys.exit(ret)
     # execute cmds in docker contianer
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command="/bin/bash -c 'echo xiaolzz | etcdctl --endpoints //10.0.1.186:2379,//10.0.1.187:2379,//10.0.1.188:2379 user add root' "))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command="/bin/bash -c 'echo yes | redis-cli --cluster create 10.0.1.180:6379 10.0.1.181:6379 10.0.1.182:6379 10.0.1.183:6379 10.0.1.184:6379 10.0.1.185:6379  --cluster-replicas 1 ' "))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command="etcdctl --endpoints //10.0.1.186:2379,//10.0.1.187:2379,//10.0.1.188:2379 --username root:xiaolzz auth enable"))
+    else:
+        print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command="redis-cli -c -h 10.0.1.180 -p  6379  config set requirepass zone_1"))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command="/bin/bash -c  'echo zone_1 | etcdctl --endpoints //10.0.1.186:2379,//10.0.1.187:2379,//10.0.1.188:2379 --username root:xiaolzz user add zone_1' "))
+    else:
+        print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command="redis-cli -c -h 10.0.1.181 -p  6379  config set requirepass zone_1"))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command="etcdctl --endpoints //10.0.1.186:2379,//10.0.1.187:2379,//10.0.1.188:2379 --username root:xiaolzz role add rw_all"))
+    else:
+        print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command="redis-cli -c -h 10.0.1.182 -p  6379  config set requirepass zone_1"))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command="etcdctl --endpoints //10.0.1.186:2379,//10.0.1.187:2379,//10.0.1.188:2379 --username root:xiaolzz role grant --readwrite --path / rw_all"))
+    else:
+        print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command="redis-cli -c -h 10.0.1.183 -p  6379  config set requirepass zone_1"))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command="etcdctl --endpoints //10.0.1.186:2379,//10.0.1.187:2379,//10.0.1.188:2379 --username root:xiaolzz user grant --roles rw_all zone_1"))
+    else:
+        print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command="redis-cli -c -h 10.0.1.184 -p  6379  config set requirepass zone_1"))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
+    else:
+        print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command="redis-cli -c -h 10.0.1.185 -p  6379  config set requirepass zone_1"))
+    if 0 != ret:
+        print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
+    else:
+        print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     # remove docker container
     paramiko_ssh_cmd(ssh_client, [
         "docker container kill {0}".format(ct_name),

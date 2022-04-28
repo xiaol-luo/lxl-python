@@ -1,0 +1,23 @@
+# machine Machine
+# redis_cluster RedisServerCluster
+# redis RedisServer
+# zone Zone
+# cmd_list
+# is_auth
+
+{% import 'common/ssh_help.py.j2' as ssh_help %}
+{% import 'common/docker_help.py.j2' as docker_help %}
+{% import 'common/redis_help.py.j2' as redis_help %}
+
+{%- include "common/common_head.py.j2" %}
+{%- set ssh_client = "ssh_client" %}
+{{ ssh_help.invoke_shell(ssh_client, redis.locate_machine) }}
+
+
+{% set run_cmd = [] -%}
+{% for cmd in cmd_list %}
+    {%- do run_cmd.append(redis_help.redis_cli_cmd(redis_cluster, is_auth, cmd)) -%}
+{% endfor %}
+{{ docker_help.exec_cmds(ssh_client, redis.image, run_cmd, network=redis.docker_ip.docker_net, volumes=zone.fo_used_volume_map.values(), print_fn_name="print") }}
+
+

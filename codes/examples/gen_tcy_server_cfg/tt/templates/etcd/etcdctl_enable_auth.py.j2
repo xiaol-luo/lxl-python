@@ -19,5 +19,5 @@
     "etcdctl --endpoints %(end_points)s --username root:xiaolzz role grant --readwrite --path / rw_all" | format(end_points=etcd_cluster.fo_end_points),
     "etcdctl --endpoints %(end_points)s --username root:xiaolzz user grant --roles rw_all %(user)s" | format(end_points=etcd_cluster.fo_end_points, user=etcd_cluster.user),
 ] %}
-{{ docker_help.exec_cmds(ssh_client, etcd.image, run_cmd, network=etcd.docker_net, volumes=zone.fo_used_volume_map.values()) }}
+{{ docker_help.exec_cmds(ssh_client, etcd.image, run_cmd, network=etcd.docker_ip.docker_net, volumes=zone.fo_used_volume_map.values()) }}
 

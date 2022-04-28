@@ -17,6 +17,6 @@
 {% for cmd in cmd_list %}
     {%- do run_cmd.append(etcd_help.etcdctl_cmd(etcd_cluster, is_auth, cmd)) -%}
 {% endfor %}
-{{ docker_help.exec_cmds(ssh_client, etcd.image, run_cmd, network=etcd.docker_net, volumes=zone.fo_used_volume_map.values(), print_fn_name="print") }}
+{{ docker_help.exec_cmds(ssh_client, etcd.image, run_cmd, network=etcd.docker_ip.docker_net, volumes=zone.fo_used_volume_map.values(), print_fn_name="print") }}
 
 

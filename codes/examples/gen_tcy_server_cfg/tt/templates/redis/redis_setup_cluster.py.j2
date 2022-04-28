@@ -1,0 +1,25 @@
+# machine Machine
+# redis_cluster RedisServerCluster
+# redis RedisServer
+# zone Zone
+
+{% import 'common/ssh_help.py.j2' as ssh_help %}
+{% import 'common/docker_help.py.j2' as docker_help %}
+{% import 'common/redis_help.py.j2' as redis_help %}
+
+{%- include "common/common_head.py.j2" %}
+{%- set ssh_client = "ssh_client" %}
+{{ ssh_help.invoke_shell(ssh_client, redis.locate_machine) }}
+
+
+{% set run_cmd = [
+    "/bin/bash -c 'echo yes | redis-cli --cluster create %s  --cluster-replicas %s ' "|format( redis_cluster.fo_all_hosts, redis_cluster.replicas)
+    ]
+-%}
+{% for redis in redis_cluster.server_list.values() %}
+    {%- do run_cmd.append("redis-cli -c -h %s -p  %s  config set requirepass %s"|format(redis.docker_ip.fo_ip, redis.client_port, redis_cluster.pwd)) -%}
+{% endfor %}
+
+
+{{ docker_help.exec_cmds(ssh_client, redis.image, run_cmd, network=redis.docker_ip.docker_net, volumes=zone.fo_used_volume_map.values(), print_fn_name="print") }}
+

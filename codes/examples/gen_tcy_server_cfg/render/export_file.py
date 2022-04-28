@@ -33,7 +33,35 @@ def cal_etcd_enable_auth_file_path(root_dir, zone):
     return path_batch_join(root_dir, zone.name, "etcd", "enable_auth.py")
 
 
-def cal_etcd_etcdctl_opera_file_path(root_dir, zone, out_file):
+def cal_etcd_cluster_opera_file_path(root_dir, zone, out_file):
     return path_batch_join(root_dir, zone.name, "etcd", out_file)
+
+
+def cal_redis_start_file_path(root_dir, zone, redis):
+    return path_batch_join(root_dir, zone.name, "redis", redis.name, "start.py")
+
+
+def cal_redis_stop_file_path(root_dir, zone, redis):
+    return path_batch_join(root_dir, zone.name, "redis", redis.name, "stop.py")
+
+
+def cal_redis_clear_file_path(root_dir, zone, redis):
+    return path_batch_join(root_dir, zone.name, "redis", redis.name, "clear.py")
+
+
+def cal_redis_logs_file_path(root_dir, zone, redis):
+    return path_batch_join(root_dir, zone.name, "redis", redis.name, "logs.py")
+
+
+def cal_redis_cluster_opera_file_path(root_dir, zone, out_file):
+    return path_batch_join(root_dir, zone.name, "redis", out_file)
+
+
+def cal_redis_setup_cluster_file_path(root_dir, zone):
+    return path_batch_join(root_dir, zone.name, "redis", "setup_cluster.py")
+
+
+def cal_redis_cli_cmds_file_path(root_dir, zone, out_file):
+    return path_batch_join(root_dir, zone.name, "redis", out_file)
 
 

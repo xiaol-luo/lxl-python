@@ -59,7 +59,7 @@ def export_cluster_opera_file(out_root_dir:str, zone:typing.Dict[str, typing.Dic
         if "logs" == opera:
             script_list.append(export_file.cal_etcd_logs_file_path(out_root_dir, zone, etcd))
     tt_ret, tt_content = tt.render("etcd/etcd_cluster_opera.py.j2", script_list=script_list, python_path=python_path)
-    out_file = export_file.cal_etcd_etcdctl_opera_file_path(out_root_dir, zone, "{0}_cluster.py".format(opera))
+    out_file = export_file.cal_etcd_cluster_opera_file_path(out_root_dir, zone, "{0}_cluster.py".format(opera))
     os.makedirs(os.path.dirname(out_file), exist_ok=True)
     if tt_ret:
         file_utils.write_file(out_file, tt_content)

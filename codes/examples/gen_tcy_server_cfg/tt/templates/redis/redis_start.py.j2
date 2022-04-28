@@ -1,0 +1,23 @@
+# machine Machine
+# redis_cluster RedisServerCluster
+# redis RedisServer
+# zone Zone
+
+{% import 'common/ssh_help.py.j2' as ssh_help %}
+{% import 'common/docker_help.py.j2' as docker_help %}
+{% import 'common/redis_help.py.j2' as redis_help %}
+
+{%- include "common/common_head.py.j2" %}
+{%- set ssh_client = "ssh_client" %}
+{{ ssh_help.invoke_shell(ssh_client, redis.locate_machine) }}
+
+
+{{ docker_help.kill_container(ssh_client, redis.name) }}
+
+{% set run_cmd = [ docker_help.cmd_mkdir_volume_used(redis.db_path),  ] %}
+{{ docker_help.exec_cmds(ssh_client, redis.image, run_cmd, network=redis.docker_ip.docker_net, volumes=zone.fo_used_volume_map.values()) }}
+
+{% set run_cmd = redis_help.start_cmd(redis_cluster, redis) %}
+{{ docker_help.run_container(ssh_client, redis.name, redis.image, run_cmd, opt="-d", volumes=zone.fo_used_volume_map.values(), network=redis.docker_ip.docker_net, net_used=redis.docker_ip) }}
+
+

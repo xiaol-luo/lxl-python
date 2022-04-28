@@ -1,12 +1,7 @@
 # machine Machine
-# etcd_cluster EtcdServerCluster
-# etcd EtcdServer
-# cmd_list
-# is_auth
-
-
-
-
+# redis_cluster RedisServerCluster
+# redis RedisServer
+# zone Zone
 import paramiko
 import typing
 import random
@@ -50,6 +45,8 @@ def paramiko_ssh_cmd(ssh_client: paramiko.SSHClient, cmd: ListOrStr, exit_when_e
         print("paramiko_ssh_cmd fail, exit_code is {0}\n out is {1}\n error is {2}".format(exit_status, "".join(out_lines), "".join(error_lines)))
         sys.exit(exit_status)
     return exit_status, "".join(out_lines), "".join(error_lines)
+
+
 ssh_client = None
 with IndentFlag():
     ssh_client = paramiko.SSHClient()
@@ -57,30 +54,7 @@ with IndentFlag():
     ssh_client.connect(hostname="119.91.239.128", port="22", username="root", \
         pkey=paramiko.RSAKey.from_private_key_file(r"C:/Users/luoxiaolong/.ssh/keys/root/id_rsa", "xiaolzz"))
 
-
-
-with IndentFlag():
-    # run docker container
-    import random
-    ct_name = "ct_{}".format(random.randint(1, 99999999))
-    opt_mount_volumes = []
-    opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
-    opt_network = "--network my-network"
-    run_cmd = "docker run -itd --name {name} {network} {mount_volumes} {image} {command}".format(
-        name=ct_name, network=opt_network,  mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian", command="/bin/bash")
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, run_cmd)
-    if 0 != ret:
-        print("docker exec: run docker container fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-        sys.exit(ret)
-    # execute cmds in docker contianer
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command="etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.186:2379,//10.0.1.187:2379,//10.0.1.188:2379 ls /"))
-    if 0 != ret:
-        print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    else:
-        print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    # remove docker container
-    paramiko_ssh_cmd(ssh_client, [
-        "docker container kill {0}".format(ct_name),
-        "docker container prune -f",
-    ])
-
+paramiko_ssh_cmd(ssh_client, [
+    "docker container kill zone_1_redis_2",
+    "docker container prune -f",
+])

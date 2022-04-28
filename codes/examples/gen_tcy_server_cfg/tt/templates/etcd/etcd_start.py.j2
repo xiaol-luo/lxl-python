@@ -14,9 +14,9 @@
 {{ docker_help.kill_container(ssh_client, etcd.name) }}
 
 {% set run_cmd = [ docker_help.cmd_mkdir_volume_used(etcd.db_path),  ] %}
-{{ docker_help.exec_cmds(ssh_client, etcd.image, run_cmd, network=etcd.docker_net, volumes=zone.fo_used_volume_map.values()) }}
+{{ docker_help.exec_cmds(ssh_client, etcd.image, run_cmd, network=etcd.docker_ip.docker_net, volumes=zone.fo_used_volume_map.values()) }}
 
 {% set run_cmd = etcd_help.start_cmd(etcd_cluster, etcd) %}
-{{ docker_help.run_container(ssh_client, etcd.name, etcd.image, run_cmd, opt="-d", volumes=zone.fo_used_volume_map.values(), network=etcd.docker_net, net_used=etcd.docker_ip) }}
+{{ docker_help.run_container(ssh_client, etcd.name, etcd.image, run_cmd, opt="-d", volumes=zone.fo_used_volume_map.values(), network=etcd.docker_ip.docker_net, net_used=etcd.docker_ip) }}
 
 

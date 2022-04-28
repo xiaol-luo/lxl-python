@@ -94,7 +94,6 @@ PortPublish = PortPublish or class("PortPublish", SettingBase)
 ---@class EtcdServer
 ---@field namesubprocess
 ---@field locate_machine Machine
----@field docker_net DockerNet
 ---@field docker_ip DockerNetUse
 ---@field client_port number
 ---@field peer_port number
@@ -125,21 +124,36 @@ function EtcdServerCluster:figure_out_fields()
 end
 
 ---@class RedisServer
----@field name
+---@field name string
 ---@field locate_machine Machine
----@field docker_net DockerNet
 ---@field docker_ip DockerNetUse
----@field listen_port number
----@field db_dir string
----@field pwd string
+---@field client_port number
+---@field db_path DockerVolumeUse
+---@field image string
 RedisServer = RedisServer or class("RedisServer", SettingBase)
 
 ---@class RedisServerCluster
 ---@field replicas number
 ---@field pwd string
 ---@field server_list table<number, RedisServer>
+---@field fo_cli_visit_ip string @提供给redis-cli访问
+---@field fo_cli_visit_port string @提供给redis-cli访问
+---@field fo_all_hosts table<string, string>
 RedisServerCluster = RedisServerCluster or class("RedisServerCluster", SettingBase)
 
+function RedisServerCluster:figure_out_fields()
+    do
+        local all_hosts = {}
+        for _, v in ipairs(self.server_list) do
+            table.insert(all_hosts, string.format("%s:%s", v.docker_ip.fo_ip, v.client_port))
+            if not self.fo_cli_visit_ip then
+                self.fo_cli_visit_ip = v.docker_ip.fo_ip
+                self.fo_cli_visit_port = v.client_port
+            end
+        end
+        self.fo_all_hosts = table.concat(all_hosts, " ")
+    end
+end
 
 ---@class MongoDbServer
 ---@field name string
