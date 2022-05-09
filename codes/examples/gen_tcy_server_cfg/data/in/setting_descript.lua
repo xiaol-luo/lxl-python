@@ -157,16 +157,16 @@ end
 
 ---@class MongoDbServer
 ---@field name string
+---@field image string
 ---@field locate_machine Machine
----@field docker_net DockerNet
----@field docker_ip string
----@field listen_port number
+---@field docker_ip DockerNetUse
+---@field client_port number
 ---@field cluster_role string @ shardsvr or configsvr
 ---@field repl_set_name string
 ---@field log_path string
 ---@field db_path string
 ---@field pid_file_path string
----@field id_key_file_path string
+---@field key_file_path string
 MongoDbServer = MongoDbServer or class("MongoDbServer", SettingBase)
 
 ---@class MongosServer
@@ -180,7 +180,7 @@ MongoDbServer = MongoDbServer or class("MongoDbServer", SettingBase)
 ---@field log_path string
 ---@field pid_file_path string
 ---@field config_db_hosts table<number, string>
----@field id_key_file_path string
+---@field key_file_path string
 MongosServer = MongosServer or class("MongosServer", SettingBase)
 
 ---@class MongoRole
@@ -194,16 +194,16 @@ MongoRole = MongoRole or class("MongoRole", SettingBase)
 ---@field role_list table<number, MongoRole>
 MongoUser = MongoUser or class("MongoUser", SettingBase)
 
----@class MongoDbServerCluster
+---@class MongoServerCluster
 ---@field mongos_server_list table<number, MongosServer>
 ---@field config_server_list table<number, MongoDbServer>
 ---@field shard_server_list table<number, MongoDbServer>
 ---@field user_list table<number, MongoUser>
-MongoDbServerCluster = MongoDbServerCluster or class("MongoDbServerCluster", SettingBase)
+MongoServerCluster = MongoServerCluster or class("MongoServerCluster", SettingBase)
 
 ---@class Zone
 ---@field name
----@field mongo_cluster MongoDbServerCluster
+---@field mongo_cluster MongoServerCluster
 ---@field redis_cluster RedisServerCluster
 ---@field etcd_cluster EtcdServerCluster
 ---@field game_servers
