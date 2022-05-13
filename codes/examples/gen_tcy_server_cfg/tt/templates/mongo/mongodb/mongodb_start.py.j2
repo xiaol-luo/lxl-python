@@ -14,7 +14,13 @@
 
 {{ docker_help.kill_container(ssh_client, mongodb.name) }}
 
-{% set run_cmd = mongodb_help.start_cmd(mongodb_cluster, mongodb) %}
+{% set run_cmd = [ 
+    docker_help.cmd_mkdir_volume_used(mongodb.db_path), 
+    docker_help.cmd_mkdir_volume_used(mongodb.log_path, True),
+] %}
+{{ docker_help.exec_cmds(ssh_client, mongodb.image, run_cmd, network=mongodb.docker_ip.docker_net, volumes=zone.fo_used_volume_map.values()) }}
+
+{% set run_cmd = mongo_help.mongodb_start_cmd(mongodb_cluster, mongodb) %}
 {{ docker_help.run_container(ssh_client, mongodb.name, mongodb.image, run_cmd, opt="-d", volumes=zone.fo_used_volume_map.values(), network=mongodb.docker_ip.docker_net, net_used=mongodb.docker_ip) }}
 
 

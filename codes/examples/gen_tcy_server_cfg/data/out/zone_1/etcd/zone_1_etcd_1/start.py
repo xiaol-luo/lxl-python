@@ -91,10 +91,10 @@ with IndentFlag():
     opt_mount_volumes = []
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.186"
+    opt_ip = "--ip 10.0.1.189"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_etcd_1", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
-        command=r"etcd --name zone_1_etcd_1 --data-dir /root/zone/zone_1/etcd/zone_1_etcd_1 --listen-peer-urls http://0.0.0.0:2380 --listen-client-urls http://0.0.0.0:2379 --initial-advertise-peer-urls http://10.0.1.186:2380 --advertise-client-urls http://10.0.1.186:2379  --log-output stdout --initial-cluster-token 'zone_1' --initial-cluster zone_1_etcd_1=http://10.0.1.186:2380,zone_1_etcd_2=http://10.0.1.187:2380,zone_1_etcd_3=http://10.0.1.188:2380"
+        command=r"etcd --name zone_1_etcd_1 --data-dir /root/zone/zone_1/etcd/zone_1_etcd_1 --listen-peer-urls http://0.0.0.0:2380 --listen-client-urls http://0.0.0.0:2379 --initial-advertise-peer-urls http://10.0.1.189:2380 --advertise-client-urls http://10.0.1.189:2379  --log-output stdout --initial-cluster-token 'zone_1' --initial-cluster zone_1_etcd_1=http://10.0.1.189:2380,zone_1_etcd_2=http://10.0.1.190:2380,zone_1_etcd_3=http://10.0.1.191:2380"
     )
     ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, run_cmd)
     if 0 != ret:

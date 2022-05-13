@@ -163,10 +163,10 @@ end
 ---@field client_port number
 ---@field cluster_role string @ shardsvr or configsvr
 ---@field repl_set_name string
----@field log_path string
----@field db_path string
----@field pid_file_path string
----@field key_file_path string
+---@field log_path DockerVolumeUse
+---@field db_path DockerVolumeUse
+---@field pid_file_path DockerVolumeUse
+---@field key_file_path DockerVolumeUse
 MongoDbServer = MongoDbServer or class("MongoDbServer", SettingBase)
 
 ---@class MongosServer
@@ -196,8 +196,7 @@ MongoUser = MongoUser or class("MongoUser", SettingBase)
 
 ---@class MongoServerCluster
 ---@field mongos_server_list table<number, MongosServer>
----@field config_server_list table<number, MongoDbServer>
----@field shard_server_list table<number, MongoDbServer>
+---@field mongodb_server_list table<number, MongoDbServer>
 ---@field user_list table<number, MongoUser>
 MongoServerCluster = MongoServerCluster or class("MongoServerCluster", SettingBase)
 

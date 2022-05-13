@@ -36,6 +36,7 @@ if __name__ == "__main__":
     zone = lua_g.all_setting.zone_map.zone_1
     etcd_cluster = zone.etcd_cluster
     redis_cluster = zone.redis_cluster
+    mongo_cluster = zone.mongo_cluster
 
     tmp = json.loads(lua_g.all_setting_json)
     logbook.debug("lua.globals.all_setting_json {}", json.dumps(tmp, indent=2))
@@ -65,6 +66,12 @@ if __name__ == "__main__":
         render.render_redis.export_cluster_opera_file(parse_ret.out_setting, zone, redis_cluster, "logs", parse_ret.python_path)
         render.render_redis.export_cluster_setup_cluster_file(parse_ret.out_setting, zone, redis_cluster)
         render.render_redis.export_cluster_cli_cmds_file(parse_ret.out_setting, zone, redis_cluster, "cli_test.py", ["set a 0", "get a"], is_auth=True)
+
+    with IndentFlag():
+        render.render_mongo.export_mongodb_start_file(parse_ret.out_setting, zone, mongo_cluster)
+        render.render_mongo.export_mongodb_stop_file(parse_ret.out_setting, zone, mongo_cluster)
+        render.render_mongo.export_mongodb_clear_file(parse_ret.out_setting, zone, mongo_cluster)
+        render.render_mongo.export_mongodb_logs_file(parse_ret.out_setting, zone, mongo_cluster)
 
 
 

@@ -20,12 +20,12 @@ local mongo_cluster = MongoServerCluster:new()
 mongo_cluster.cluster_token = zone_name
 mongo_cluster.user = zone_name
 mongo_cluster.pwd = zone_name
-mongo_cluster.shard_server_list = {}
+mongo_cluster.mongodb_server_list = {}
 
 do
     ---@type MongoDbServer
     local item = MongoDbServer:new()
-    table.insert(mongo_cluster.shard_server_list, item)
+    table.insert(mongo_cluster.mongodb_server_list, item)
     item.name = string_concat(zone_name, "mongodb_1")
     item.image = Image_Name.lxl_debian
     item.locate_machine = machine_map[Machine_Name.ll]
@@ -51,7 +51,7 @@ end
 do
     ---@type MongoDbServer
     local item = MongoDbServer:new()
-    table.insert(mongo_cluster.shard_server_list, item)
+    table.insert(mongo_cluster.mongodb_server_list, item)
     item.name = string_concat(zone_name, "mongodb_2")
     item.image = Image_Name.lxl_debian
     item.locate_machine = machine_map[Machine_Name.ll]
@@ -77,7 +77,7 @@ end
 do
     ---@type MongoDbServer
     local item = MongoDbServer:new()
-    table.insert(mongo_cluster.shard_server_list, item)
+    table.insert(mongo_cluster.mongodb_server_list, item)
     item.name = string_concat(zone_name, "mongodb_3")
     item.image = Image_Name.lxl_debian
     item.locate_machine = machine_map[Machine_Name.ll]

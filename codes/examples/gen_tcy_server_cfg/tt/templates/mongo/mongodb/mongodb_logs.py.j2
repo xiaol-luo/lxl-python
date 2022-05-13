@@ -1,0 +1,18 @@
+# machine Machine
+# mongodb_cluster MongoServerCluster
+# mongodb MongoDbServer
+# zone Zone
+
+{% import 'common/ssh_help.py.j2' as ssh_help %}
+{% import 'common/docker_help.py.j2' as docker_help %}
+{% import 'common/mongo_help.py.j2' as mongo_help %}
+
+{%- include "common/common_head.py.j2" %}
+
+{% set ssh_client = "ssh_client" %}
+{{ ssh_help.invoke_shell(ssh_client, mongodb.locate_machine) }}
+
+ret, out_txt, error_txt = paramiko_ssh_cmd({{ssh_client}}, [
+    "docker exec {{ mongodb.name }} cat {{mongodb.log_path.fo_abs_path}}",
+])
+print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))

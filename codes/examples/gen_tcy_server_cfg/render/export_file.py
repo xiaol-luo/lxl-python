@@ -65,3 +65,20 @@ def cal_redis_cli_cmds_file_path(root_dir, zone, out_file):
     return path_batch_join(root_dir, zone.name, "redis", out_file)
 
 
+def cal_mongodb_start_file_path(root_dir, zone, mongodb):
+    return path_batch_join(root_dir, zone.name, "mongo", "mongodb", mongodb.name, "start.py")
+
+
+def cal_mongodb_stop_file_path(root_dir, zone, mongodb):
+    return path_batch_join(root_dir, zone.name, "mongo", "mongodb", mongodb.name, "stop.py")
+
+
+def cal_mongodb_clear_file_path(root_dir, zone, mongodb):
+    return path_batch_join(root_dir, zone.name, "mongo", "mongodb", mongodb.name, "clear.py")
+
+
+
+def cal_mongodb_logs_file_path(root_dir, zone, mongodb):
+    return path_batch_join(root_dir, zone.name, "mongo", "mongodb", mongodb.name, "logs.py")
+
+

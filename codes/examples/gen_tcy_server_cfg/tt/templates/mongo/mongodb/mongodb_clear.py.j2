@@ -1,0 +1,23 @@
+# machine Machine
+# mongodb_cluster MongoServerCluster
+# mongodb MongoDbServer
+# zone Zone
+
+{% import 'common/ssh_help.py.j2' as ssh_help %}
+{% import 'common/docker_help.py.j2' as docker_help %}
+{% import 'common/mongo_help.py.j2' as mongo_help %}
+
+
+{%- include "common/common_head.py.j2" %}
+
+{% set ssh_client = "ssh_client" %}
+{{ ssh_help.invoke_shell(ssh_client, mongodb.locate_machine) }}
+
+
+{{ docker_help.kill_container(ssh_client, mongodb.name) }}
+
+{% set run_cmd = [
+    docker_help.cmd_rm_volume_used(mongodb.db_path),
+    docker_help.cmd_rm_volume_used(mongodb.log_path),
+]%}
+{{ docker_help.exec_cmds(ssh_client, mongodb.image, run_cmd, volumes=zone.fo_used_volume_map.values()) }}

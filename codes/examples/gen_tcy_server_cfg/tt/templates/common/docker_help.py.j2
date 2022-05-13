@@ -19,8 +19,12 @@
 
 
 ## volume_used DockerVolumeUse
-{% macro cmd_mkdir_volume_used (volume_used) -%}
+{% macro cmd_mkdir_volume_used (volume_used, is_file) -%}
+{%- if is_file -%}
+mkdir -p `dirname {{volume_used.fo_abs_path}}`
+{%- else -%}
 mkdir -p {{volume_used.fo_abs_path}}
+{%- endif -%}
 {%- endmacro -%}
 
 ## volume_used DockerVolumeUse
