@@ -161,7 +161,7 @@ end
 ---@field locate_machine Machine
 ---@field docker_ip DockerNetUse
 ---@field client_port number
----@field cluster_role string @ shardsvr or configsvr
+---@field repl_set_role string @ shardsvr or configsvr
 ---@field repl_set_name string
 ---@field log_path DockerVolumeUse
 ---@field db_path DockerVolumeUse
@@ -170,16 +170,12 @@ end
 MongoDbServer = MongoDbServer or class("MongoDbServer", SettingBase)
 
 ---@class MongosServer
----@field name
+---@field name string
 ---@field locate_machine Machine
----@field docker_net DockerNet
----@field docker_ip string
----@field listen_port number
----@field port_publish table<number, number>
----@field config_db_name string
----@field log_path string
----@field pid_file_path string
----@field config_db_hosts table<number, string>
+---@field docker_ip DockerNetUse
+---@field client_port number
+---@field log_path DockerVolumeUse
+---@field pid_file_path DockerVolumeUse
 ---@field key_file_path string
 MongosServer = MongosServer or class("MongosServer", SettingBase)
 
@@ -194,14 +190,56 @@ MongoRole = MongoRole or class("MongoRole", SettingBase)
 ---@field role_list table<number, MongoRole>
 MongoUser = MongoUser or class("MongoUser", SettingBase)
 
+---@class MongoReplSet
+---@field name string
+---@field repl_set_role string
+---@field host_list string[]
+---@field server_list MongoDbServer[]
+---@field fo_host_list_str string
+MongoReplSet = MongoReplSet or class("MongoReplSet", SettingBase)
+
 ---@class MongoServerCluster
 ---@field mongos_server_list table<number, MongosServer>
 ---@field mongodb_server_list table<number, MongoDbServer>
 ---@field user_list table<number, MongoUser>
+---@field fo_repl_set_map table<string, MongoReplSet>
+---@field fo_cfg_repl_set MongoReplSet
 MongoServerCluster = MongoServerCluster or class("MongoServerCluster", SettingBase)
 
+function MongoServerCluster:figure_out_fields()
+    do
+        local repl_set_map = {}
+        ---@param v MongoDbServer
+        for _, v in pairs(self.mongodb_server_list) do
+            local repl_set = repl_set_map[v.repl_set_name]
+            if not repl_set then
+                ---@type MongoReplSet
+                repl_set = MongoReplSet:new()
+                repl_set.name = v.repl_set_name
+                repl_set_map[repl_set.name] = repl_set
+                repl_set.repl_set_role = v.repl_set_role
+                repl_set.host_list = {}
+                repl_set.server_list = {}
+            end
+            assert(repl_set.repl_set_role == v.repl_set_role)
+            table.insert(repl_set.host_list, string.format("%s:%s", v.docker_ip.fo_ip, v.client_port))
+            table.insert(repl_set.server_list, v)
+        end
+        self.fo_repl_set_map = repl_set_map
+        self.fo_cfg_repl_set = nil
+        ---@param v MongoReplSet
+        for _, v in pairs(repl_set_map) do
+            if v.repl_set_role == Mongo_Repl_Set_Role.configsvr then
+                assert(not self.fo_cfg_repl_set)
+                self.fo_cfg_repl_set = v
+            end
+            v.fo_host_list_str = table.concat(v.host_list, ",")
+        end
+    end
+end
+
 ---@class Zone
----@field name
+---@field name string
 ---@field mongo_cluster MongoServerCluster
 ---@field redis_cluster RedisServerCluster
 ---@field etcd_cluster EtcdServerCluster
@@ -228,6 +266,8 @@ end
 
 
 
-
-
+---@class Mongo_Repl_Set_Role
+Mongo_Repl_Set_Role = {}
+Mongo_Repl_Set_Role.configsvr = "configsvr"
+Mongo_Repl_Set_Role.shardsvr = "shardsvr"
 

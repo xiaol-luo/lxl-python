@@ -82,3 +82,17 @@ def cal_mongodb_logs_file_path(root_dir, zone, mongodb):
     return path_batch_join(root_dir, zone.name, "mongo", "mongodb", mongodb.name, "logs.py")
 
 
+
+def cal_mongos_start_file_path(root_dir, zone, mongos):
+    return path_batch_join(root_dir, zone.name, "mongo", "mongos", mongos.name, "start.py")
+
+
+def cal_mongos_stop_file_path(root_dir, zone, mongos):
+    return path_batch_join(root_dir, zone.name, "mongo", "mongos", mongos.name, "stop.py")
+
+
+def cal_mongos_logs_file_path(root_dir, zone, mongos):
+    return path_batch_join(root_dir, zone.name, "mongo", "mongos", mongos.name, "logs.py")
+
+def cal_mongo_setup_cluster_file_path(root_dir, zone):
+    return path_batch_join(root_dir, zone.name, "mongo", "setup_cluster.py")

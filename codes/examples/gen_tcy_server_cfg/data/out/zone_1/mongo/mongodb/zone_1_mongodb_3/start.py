@@ -1,5 +1,5 @@
 # machine Machine
-# mongodb_cluster MongoServerCluster
+# mongo_cluster MongoServerCluster
 # mongodb MongoDbServer
 # zone Zone
 
@@ -95,7 +95,7 @@ with IndentFlag():
     opt_mount_volumes = []
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.182"
+    opt_ip = "--ip 10.0.1.192"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_3", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --configsvr --replSet rs_cfg  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_3/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_3/log.txt"

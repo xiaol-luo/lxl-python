@@ -1,6 +1,6 @@
 # machine Machine
 # mongo_cluster MongoServerCluster
-# mongodb MongoDbServer
+# mongos MongosServer
 # zone Zone
 
 
@@ -58,7 +58,7 @@ with IndentFlag():
     ssh_client.connect(hostname="119.91.239.128", port="22", username="root", \
         pkey=paramiko.RSAKey.from_private_key_file(r"C:/Users/luoxiaolong/.ssh/keys/root/id_rsa", "xiaolzz"))
 
-ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, [
-    "docker exec zone_1_mongodb_2 cat /root/zone/zone_1/mongodb/zone_1_mongodb_2/log.txt",
+paramiko_ssh_cmd(ssh_client, [
+    "docker container kill zone_1_mongos_1",
+    "docker container prune -f",
 ])
-print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))

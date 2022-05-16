@@ -1,6 +1,23 @@
 
 {% macro mongodb_start_cmd (mongo_cluster, mongodb) -%}
-    mongod --{{mongodb.cluster_role}} --replSet {{mongodb.repl_set_name}}  --bind_ip 0.0.0.0 --port {{mongodb.client_port}} --dbpath {{mongodb.db_path.fo_abs_path}} --logpath {{mongodb.log_path.fo_abs_path}}
+    mongod --{{mongodb.repl_set_role}} --replSet {{mongodb.repl_set_name}}  --bind_ip 0.0.0.0 --port {{mongodb.client_port}} --dbpath {{mongodb.db_path.fo_abs_path}} --logpath {{mongodb.log_path.fo_abs_path}}
 {%- endmacro -%}
 
+{% macro mongos_start_cmd (mongo_cluster, mongos) -%}
+    mongos --bind_ip 0.0.0.0 --port {{mongos.client_port}} --logpath {{mongos.log_path.fo_abs_path}} --configdb {{mongo_cluster.fo_cfg_repl_set.name}}/{{mongo_cluster.fo_cfg_repl_set.fo_host_list_str}}
+{%- endmacro -%}
+
+{% macro mongo_cli_cmd (mongo_cluster, is_auth, server, cmd_db, cmd) -%}
+{%- if is_auth -%}
+    mongo --host {{server.docker_ip.fo_ip}} --port {{server.client_port}} {{cmd_db}} --eval '{{cmd}}'
+{%- else -%}
+    mongo --host {{server.docker_ip.fo_ip}} --port {{server.client_port}} {{cmd_db}} --eval '{{cmd}}'
+{%- endif -%}
+{%- endmacro -%}
+
+
+
+
 {# mongod --configsvr --replSet rs_cfg  --bind_ip 0.0.0.0 --port 27019 --dbpath /shared/tmp/mongodb/rs_cfg_1/db --logpath /shared/tmp/mongodb/rs_cfg_1/log.txt #}
+{# mongos --bind_ip 0.0.0.0 --port 27017 --configdb rs_cfg/127.0.0.1:9010,127.0.0.1:9011,127.0.0.1:9012 --logpath /shared/tmp/mongos/name_1/log.txt #}
+{# mongo -port 9400 -u lxl -p xiaolzz --authenticationDatabase admin testsh --eval 'db.role.count({})' #}

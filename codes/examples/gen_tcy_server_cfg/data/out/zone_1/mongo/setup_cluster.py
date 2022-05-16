@@ -1,6 +1,10 @@
-# machine Machine
-# etcd_cluster EtcdServerCluster
-# etcd EtcdServer
+# mongo_cluster MongoServerCluster
+# zone Zone
+# docker_locate_machine Machine
+# docker_net DockerNet
+# docker_image string
+# repl_set_init_cmd_list
+# add_shard_cmd_list
 
 
 
@@ -56,11 +60,7 @@ with IndentFlag():
         pkey=paramiko.RSAKey.from_private_key_file(r"C:/Users/luoxiaolong/.ssh/keys/root/id_rsa", "xiaolzz"))
 
 
-with IndentFlag():
-    cmds = []
-    cmds.append("docker container kill {name}".format(name="zone_1_etcd_1"))
-    cmds.append("docker container prune -f")
-    paramiko_ssh_cmd(ssh_client, cmds, exit_when_error=False)
+
 
 
 with IndentFlag():
@@ -77,27 +77,13 @@ with IndentFlag():
         print("docker exec: run docker container fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
         sys.exit(ret)
     # execute cmds in docker contianer
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command="mkdir -p /root/zone/zone_1/etcd/zone_1_etcd_1"))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command="mongo --host 10.0.1.190 --port 27017  --eval 'rs.initiate({ _id:\"rs_cfg\", members:[ {_id:0, host:\"10.0.1.190:27017\"},{_id:1, host:\"10.0.1.191:27017\"},{_id:2, host:\"10.0.1.192:27017\"} ] }); rs.secondaryOk()'"))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
+    else:
+        print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     # remove docker container
     paramiko_ssh_cmd(ssh_client, [
         "docker container kill {0}".format(ct_name),
         "docker container prune -f",
     ])
-
-
-with IndentFlag():
-    opt_mount_volumes = []
-    opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
-    opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.186"
-    run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
-        opt="-d", name="zone_1_etcd_1", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
-        command=r"etcd --name zone_1_etcd_1 --data-dir /root/zone/zone_1/etcd/zone_1_etcd_1 --listen-peer-urls http://0.0.0.0:2380 --listen-client-urls http://0.0.0.0:2379 --initial-advertise-peer-urls http://10.0.1.186:2380 --advertise-client-urls http://10.0.1.186:2379  --log-output stdout --initial-cluster-token 'zone_1' --initial-cluster zone_1_etcd_1=http://10.0.1.186:2380,zone_1_etcd_2=http://10.0.1.187:2380,zone_1_etcd_3=http://10.0.1.188:2380"
-    )
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, run_cmd)
-    if 0 != ret:
-        print("docker run: run docker container fail, cmd is {0}\n exit_code is {1}\n out is {2}\n error is {3}".format(run_cmd, ret, out_txt, error_txt))
-        sys.exit(ret)
-

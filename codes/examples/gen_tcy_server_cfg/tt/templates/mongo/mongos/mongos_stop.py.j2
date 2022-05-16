@@ -1,6 +1,6 @@
 # machine Machine
 # mongo_cluster MongoServerCluster
-# mongodb MongoDbServer
+# mongos MongosServer
 # zone Zone
 
 {% import 'common/ssh_help.py.j2' as ssh_help %}
@@ -11,9 +11,9 @@
 {%- include "common/common_head.py.j2" %}
 
 {% set ssh_client = "ssh_client" %}
-{{ ssh_help.invoke_shell(ssh_client, mongodb.locate_machine) }}
+{{ ssh_help.invoke_shell(ssh_client, mongos.locate_machine) }}
 
 paramiko_ssh_cmd({{ssh_client}}, [
-    "docker container kill {{ mongodb.name }}",
+    "docker container kill {{ mongos.name }}",
     "docker container prune -f",
 ])

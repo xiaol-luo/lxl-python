@@ -1,5 +1,5 @@
 # machine Machine
-# mongodb_cluster MongoServerCluster
+# mongo_cluster MongoServerCluster
 # mongodb MongoDbServer
 # zone Zone
 

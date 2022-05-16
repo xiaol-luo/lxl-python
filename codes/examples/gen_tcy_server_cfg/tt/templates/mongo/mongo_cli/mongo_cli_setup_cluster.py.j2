@@ -1,0 +1,27 @@
+# mongo_cluster MongoServerCluster
+# zone Zone
+# docker_locate_machine Machine
+# docker_net DockerNet
+# docker_image string
+# repl_set_init_cmd_list
+# add_shard_cmd_list
+
+{% import 'common/ssh_help.py.j2' as ssh_help %}
+{% import 'common/docker_help.py.j2' as docker_help %}
+{% import 'common/mongo_help.py.j2' as mongo_help %}
+
+{%- include "common/common_head.py.j2" %}
+{%- set ssh_client = "ssh_client" %}
+{{ ssh_help.invoke_shell(ssh_client, docker_locate_machine) }}
+
+
+{% set run_cmd = [] -%}
+{% for item in repl_set_init_cmd_list %}
+    {%- do run_cmd.append(mongo_help.mongo_cli_cmd(mongo_cluster, False, item.server, item.db, item.cmd)) -%}
+{% endfor %}
+{% for item in add_shard_cmd_list %}
+    {%- do run_cmd.append(mongo_help.mongo_cli_cmd(mongo_cluster, False, item.server, item.db, item.cmd)) -%}
+{% endfor %}
+
+{{ docker_help.exec_cmds(ssh_client, docker_image, run_cmd, network=docker_net, volumes=zone.fo_used_volume_map.values(), print_fn_name="print") }}
+
