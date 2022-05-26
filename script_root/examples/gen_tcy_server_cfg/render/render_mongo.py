@@ -75,6 +75,35 @@ def export_mongos_logs_file(out_root_dir: str, zone: typing.Dict[str, typing.Dic
             file_utils.write_file(out_file, tt_content)
 
 
+def export_cluster_opera_file(out_root_dir:str, zone:typing.Dict[str, typing.Dict[str, str]], mongo_cluster, opera, python_path=None):
+    if not python_path:
+        python_path = "python"
+    else:
+        python_path = pathlib.Path(python_path).as_posix()
+    script_list = []
+    for item in mongo_cluster.mongodb_server_list.values():
+        if "start" == opera:
+            script_list.append(export_file.cal_mongodb_start_file_path(out_root_dir, zone, item))
+        if "stop" == opera:
+            script_list.append(export_file.cal_mongodb_stop_file_path(out_root_dir, zone, item))
+        if "clear" == opera:
+            script_list.append(export_file.cal_mongodb_clear_file_path(out_root_dir, zone, item))
+        if "logs" == opera:
+            script_list.append(export_file.cal_mongodb_logs_file_path(out_root_dir, zone, item))
+    for item in mongo_cluster.mongos_server_list.values():
+        if "start" == opera:
+            script_list.append(export_file.cal_mongos_start_file_path(out_root_dir, zone, item))
+        if "stop" == opera:
+            script_list.append(export_file.cal_mongos_stop_file_path(out_root_dir, zone, item))
+        if "logs" == opera:
+            script_list.append(export_file.cal_mongos_logs_file_path(out_root_dir, zone, item))
+    tt_ret, tt_content = tt.render("mongo/mongo_cluster_opera.py.j2", script_list=script_list, python_path=python_path)
+    out_file = export_file.cal_mongo_cluster_opera_file_path(out_root_dir, zone, "{0}_cluster.py".format(opera))
+    os.makedirs(os.path.dirname(out_file), exist_ok=True)
+    if tt_ret:
+        file_utils.write_file(out_file, tt_content)
+
+
 def export_setup_cluster_file(out_root_dir:str, zone:typing.Dict[str, typing.Dict[str, str]], mongo_cluster):
     docker_locate_machine = mongo_cluster.mongodb_server_list[1].locate_machine
     docker_net = mongo_cluster.mongodb_server_list[1].docker_ip.docker_net

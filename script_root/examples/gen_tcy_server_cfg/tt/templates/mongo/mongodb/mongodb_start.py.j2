@@ -2,6 +2,7 @@
 # mongo_cluster MongoServerCluster
 # mongodb MongoDbServer
 # zone Zone
+# is_auth
 
 {% import 'common/ssh_help.py.j2' as ssh_help %}
 {% import 'common/docker_help.py.j2' as docker_help %}
@@ -17,10 +18,13 @@
 {% set run_cmd = [ 
     docker_help.cmd_mkdir_volume_used(mongodb.db_path), 
     docker_help.cmd_mkdir_volume_used(mongodb.log_path, True),
+    docker_help.cmd_mkdir_volume_used(mongodb.key_file_path, True),
+    "/bin/bash -c 'echo \\'%s\\' > %s' "|format(mongo_cluster.private_key_file_content, mongodb.key_file_path.fo_abs_path),
+    "chmod 400 %s"|format(mongodb.key_file_path.fo_abs_path),
 ] %}
 {{ docker_help.exec_cmds(ssh_client, mongodb.image, run_cmd, network=mongodb.docker_ip.docker_net, volumes=zone.fo_used_volume_map.values()) }}
 
-{% set run_cmd = mongo_help.mongodb_start_cmd(mongo_cluster, mongodb) %}
+{% set run_cmd = mongo_help.mongodb_start_cmd(mongo_cluster, mongodb, True) %}
 {{ docker_help.run_container(ssh_client, mongodb.name, mongodb.image, run_cmd, opt="-d", volumes=zone.fo_used_volume_map.values(), network=mongodb.docker_ip.docker_net, net_used=mongodb.docker_ip) }}
 
 

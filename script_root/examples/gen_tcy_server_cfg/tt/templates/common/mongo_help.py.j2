@@ -1,10 +1,18 @@
 
-{% macro mongodb_start_cmd (mongo_cluster, mongodb) -%}
+{% macro mongodb_start_cmd (mongo_cluster, mongodb, is_auth) -%}
+{%- if is_auth -%}
+    mongod --{{mongodb.repl_set_role}} --keyFile {{mongodb.key_file_path.fo_abs_path}} --replSet {{mongodb.repl_set_name}}  --bind_ip 0.0.0.0 --port {{mongodb.client_port}} --dbpath {{mongodb.db_path.fo_abs_path}} --logpath {{mongodb.log_path.fo_abs_path}}
+{%- else -%}
     mongod --{{mongodb.repl_set_role}} --replSet {{mongodb.repl_set_name}}  --bind_ip 0.0.0.0 --port {{mongodb.client_port}} --dbpath {{mongodb.db_path.fo_abs_path}} --logpath {{mongodb.log_path.fo_abs_path}}
+{%- endif -%}
 {%- endmacro -%}
 
-{% macro mongos_start_cmd (mongo_cluster, mongos) -%}
+{% macro mongos_start_cmd (mongo_cluster, mongos, is_auth) -%}
+{%- if is_auth -%}
+    mongos --bind_ip 0.0.0.0 --port {{mongos.client_port}} --keyFile {{mongos.key_file_path.fo_abs_path}} --logpath {{mongos.log_path.fo_abs_path}} --configdb {{mongo_cluster.fo_cfg_repl_set.name}}/{{mongo_cluster.fo_cfg_repl_set.fo_host_list_str}}
+{%- else -%}
     mongos --bind_ip 0.0.0.0 --port {{mongos.client_port}} --logpath {{mongos.log_path.fo_abs_path}} --configdb {{mongo_cluster.fo_cfg_repl_set.name}}/{{mongo_cluster.fo_cfg_repl_set.fo_host_list_str}}
+{%- endif -%}
 {%- endmacro -%}
 
 {% macro mongo_cli_cmd (mongo_cluster, is_auth, server, cmd_db, cmd) -%}

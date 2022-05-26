@@ -63,6 +63,7 @@ with IndentFlag():
 
 
 
+
 with IndentFlag():
     # run docker container
     import random
@@ -77,7 +78,7 @@ with IndentFlag():
         print("docker exec: run docker container fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
         sys.exit(ret)
     # execute cmds in docker contianer
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command="mongo --host 10.0.1.186 --port 27017  --eval 'rs.initiate({ _id:\"rs_cfg\", members:[ {_id:0, host:\"10.0.1.186:27017\"},{_id:1, host:\"10.0.1.187:27017\"},{_id:2, host:\"10.0.1.188:27017\"} ] }); rs.secondaryOk()'"))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mongo --host 10.0.1.183 --port 27017  --eval 'rs.initiate({ _id:\"rs_cfg\", members:[ {_id:0, host:\"10.0.1.183:27017\"},{_id:1, host:\"10.0.1.184:27017\"},{_id:2, host:\"10.0.1.185:27017\"} ] }); rs.secondaryOk()' '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:

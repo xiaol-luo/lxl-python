@@ -80,10 +80,10 @@ with IndentFlag():
         print("docker exec: run docker container fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
         sys.exit(ret)
     # execute cmds in docker contianer
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command="rm -rf /root/zone/zone_1/mongodb/zone_1_mongodb_2/db"))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' rm -rf /root/zone/zone_1/mongodb/zone_1_mongodb_2/db '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command="rm -rf /root/zone/zone_1/mongodb/zone_1_mongodb_2/log.txt"))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' rm -rf /root/zone/zone_1/mongodb/zone_1_mongodb_2/log.txt '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     # remove docker container

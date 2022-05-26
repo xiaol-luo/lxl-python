@@ -2,6 +2,7 @@
 # mongo_cluster MongoServerCluster
 # mongodb MongoDbServer
 # zone Zone
+# is_auth
 
 
 
@@ -78,10 +79,34 @@ with IndentFlag():
         print("docker exec: run docker container fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
         sys.exit(ret)
     # execute cmds in docker contianer
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command="mkdir -p /root/zone/zone_1/mongodb/zone_1_mongodb_3/db"))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mkdir -p /root/zone/zone_1/mongodb/zone_1_mongodb_3/db '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command="mkdir -p `dirname /root/zone/zone_1/mongodb/zone_1_mongodb_3/log.txt`"))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mkdir -p `dirname /root/zone/zone_1/mongodb/zone_1_mongodb_3/log.txt` '''))
+    if 0 != ret:
+        print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mkdir -p `dirname /root/zone/zone_1/mongodb/zone_1_mongodb_3/id_key_file` '''))
+    if 0 != ret:
+        print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' /bin/bash -c 'echo \'seO+K0qiWBH6O4bzuv7q9AifmtGEDuFHBSQbcTGFj3+GNlbMFaeHzebG71dr0lNj\
+s0RfNSb4Vn0Faif3xGDpzdFhRKno6l0hzqulr29Ew9xDdeQ8rMM+0UTBBbQyzYUS\
+Vwz2ALXqVBt3URfOpas8v8vPbQUDlCcouRDiM+gJpGm3/Tg1QVVABTw1DAMyxrxd\
+0GTOKI1lObImspW2IPaIHKEgomjYNFcZQKdE9/JAZIH9Uw1ICfZxNAmx6+qQJGpu\
+Wnx9Qb6amghAf5LaunRisOiBJmoyfWz1N5Vt5iS7nPqyP69qv5NySmswPIbLMt+O\
+xbYbD9voeDXfOtvATcsP4LUdTVv0KOTcHOqfiaZabW8RHR57lon3lQTnNh5IHd4k\
+S+HSuv69pjGCj7tikYaMqarju1XAcy/1FqkZkj4adk3j2eQfx48cCM7Gyq0qOwzG\
+MP0Yfm7FVX07qnyS+11jeGgCZftC33J6Jes2d1a2XKZsJ/dp86VJUZReJTUtdOr4\
++E8DBwMPx7JbYqVcQ8cP8wABtUhk6biaVAPbBUPalpjjQrVvUTNIPykGrD8DX9v+\
+RBUibf8FTIhw9t1AAI6o1FcDXosVO+XPUZls4j/wclrXIzPWkM8uDfL4o3SeEafz\
+s0tPOQh28XnpxZGM8e20BQoKZxXNEQHRL5dUTRO1NlIWfYIveJdPPpLkp/AR5g5B\
+bMxsx+AICGqkjcaATsr3veyVV/vzwSZsreYu630aoflnE7UBu30fwnU5ZRiCTYqI\
+FoQMsBeGmnH1Ahb0tg2Bt1gAU0cE9IgvijZxFwNCDNs+eqZrFSvBlgpeMpEfAC0B\
+ZSnKxj1SkcjiCvImYbBq1QDEK2VYleMp7QPkgt20tk1SDW2IbHUQe1IqO/Emih1L\
+926ec3jewds2NCRoSDn8D3WBJwa2rbqaAvt2uAmur1usq8c5CPcOxUgNahxXitbS\
+cYn+h6iWGwuNkjFiNzML+Ny4CFeb\' > /root/zone/zone_1/mongodb/zone_1_mongodb_3/id_key_file'  '''))
+    if 0 != ret:
+        print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' chmod 400 /root/zone/zone_1/mongodb/zone_1_mongodb_3/id_key_file '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     # remove docker container
@@ -95,12 +120,12 @@ with IndentFlag():
     opt_mount_volumes = []
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.188"
+    opt_ip = "--ip 10.0.1.185"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_3", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
-        command=r"mongod --configsvr --replSet rs_cfg  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_3/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_3/log.txt"
+        command=r"mongod --configsvr --keyFile /root/zone/zone_1/mongodb/zone_1_mongodb_3/id_key_file --replSet rs_cfg  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_3/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_3/log.txt"
     )
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, run_cmd)
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, run_cmd, exit_when_error=True)
     if 0 != ret:
         print("docker run: run docker container fail, cmd is {0}\n exit_code is {1}\n out is {2}\n error is {3}".format(run_cmd, ret, out_txt, error_txt))
         sys.exit(ret)

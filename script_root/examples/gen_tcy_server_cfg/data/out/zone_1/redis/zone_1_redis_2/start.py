@@ -78,7 +78,7 @@ with IndentFlag():
         print("docker exec: run docker container fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
         sys.exit(ret)
     # execute cmds in docker contianer
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command="mkdir -p /root/zone/zone_1/redis/zone_1_redis_2"))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mkdir -p /root/zone/zone_1/redis/zone_1_redis_2 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     # remove docker container
@@ -92,12 +92,12 @@ with IndentFlag():
     opt_mount_volumes = []
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.181"
+    opt_ip = "--ip 10.0.1.188"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_redis_2", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"redis-server --port 6379 --dir /root/zone/zone_1/redis/zone_1_redis_2 --cluster-enabled yes --bind 0.0.0.0"
     )
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, run_cmd)
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, run_cmd, exit_when_error=True)
     if 0 != ret:
         print("docker run: run docker container fail, cmd is {0}\n exit_code is {1}\n out is {2}\n error is {3}".format(run_cmd, ret, out_txt, error_txt))
         sys.exit(ret)

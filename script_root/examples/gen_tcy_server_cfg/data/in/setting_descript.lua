@@ -201,6 +201,9 @@ MongoReplSet = MongoReplSet or class("MongoReplSet", SettingBase)
 ---@class MongoServerCluster
 ---@field mongos_server_list table<number, MongosServer>
 ---@field mongodb_server_list table<number, MongoDbServer>
+---@field private_key_file_content string @openssl rand -base64 741 可产生
+---@field user string
+---@field pwd string
 ---@field user_list table<number, MongoUser>
 ---@field fo_repl_set_map table<string, MongoReplSet>
 ---@field fo_cfg_repl_set MongoReplSet
