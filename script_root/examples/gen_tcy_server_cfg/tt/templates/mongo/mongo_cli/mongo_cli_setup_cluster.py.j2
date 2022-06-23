@@ -19,9 +19,14 @@
 {% for item in repl_set_init_cmd_list %}
     {%- do run_cmd.append(mongo_help.mongo_cli_cmd(mongo_cluster, False, item.server, item.db, item.cmd)) -%}
 {% endfor %}
+{{ docker_help.exec_cmds(ssh_client, docker_image, run_cmd, network=docker_net, volumes=zone.fo_used_volume_map.values(), print_fn_name="print") }}
+
+import time
+time.sleep(5)
+
+{% set run_cmd = [] -%}
 {% for item in add_shard_cmd_list %}
     {%- do run_cmd.append(mongo_help.mongo_cli_cmd(mongo_cluster, False, item.server, item.db, item.cmd)) -%}
 {% endfor %}
-
 {{ docker_help.exec_cmds(ssh_client, docker_image, run_cmd, network=docker_net, volumes=zone.fo_used_volume_map.values(), print_fn_name="print") }}
 

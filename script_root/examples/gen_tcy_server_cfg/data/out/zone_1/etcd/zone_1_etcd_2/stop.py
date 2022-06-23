@@ -40,7 +40,7 @@ def paramiko_ssh_cmd(ssh_client: paramiko.SSHClient, cmd: ListOrStr, exit_when_e
             error_lines.append(recv_data.decode("utf-8"))
         else:
             break
-    if exit_when_error:
+    if exit_when_error and 0 != exit_status:
         print("paramiko_ssh_cmd fail, exit_code is {0}\n out is {1}\n error is {2}".format(exit_status, "".join(out_lines), "".join(error_lines)))
         sys.exit(exit_status)
     return exit_status, "".join(out_lines), "".join(error_lines)

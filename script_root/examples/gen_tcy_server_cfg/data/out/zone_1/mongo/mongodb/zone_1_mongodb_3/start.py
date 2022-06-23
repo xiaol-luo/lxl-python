@@ -46,7 +46,7 @@ def paramiko_ssh_cmd(ssh_client: paramiko.SSHClient, cmd: ListOrStr, exit_when_e
             error_lines.append(recv_data.decode("utf-8"))
         else:
             break
-    if exit_when_error:
+    if exit_when_error and 0 != exit_status:
         print("paramiko_ssh_cmd fail, exit_code is {0}\n out is {1}\n error is {2}".format(exit_status, "".join(out_lines), "".join(error_lines)))
         sys.exit(exit_status)
     return exit_status, "".join(out_lines), "".join(error_lines)
@@ -120,7 +120,7 @@ with IndentFlag():
     opt_mount_volumes = []
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.185"
+    opt_ip = "--ip 10.0.1.186"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_3", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --configsvr --keyFile /root/zone/zone_1/mongodb/zone_1_mongodb_3/id_key_file --replSet rs_cfg  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_3/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_3/log.txt"

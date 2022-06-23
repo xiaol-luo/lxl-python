@@ -123,6 +123,250 @@ do
     item.key_file_path.relative_path = path_combine(zone_name, "mongodb", item.name, "id_key_file")
 end
 
+------------------------------------------------------------------------------------------------------
+
+do
+    ---@type MongoDbServer
+    local item = MongoDbServer:new()
+    table.insert(mongo_cluster.mongodb_server_list, item)
+    item.name = string_concat(zone_name, "mongodb_11")
+    item.image = Image_Name.lxl_debian
+    item.locate_machine = machine_map[Machine_Name.ll]
+    item.docker_ip = DockerNetUse:new()
+    item.docker_ip.docker_net = docker_net
+    item.docker_ip.ip_suffix = "dhcp"
+    item.client_port = 27017
+    item.repl_set_name = Repl_Set_Name.rs_db_1
+    item.repl_set_role = ReplSet_Name_Role_Map[item.repl_set_name]
+    item.db_path = DockerVolumeUse:new()
+    item.db_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.db_path.relative_path = path_combine(zone_name, "mongodb", item.name, "db")
+    item.log_path = DockerVolumeUse:new()
+    item.log_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.log_path.relative_path = path_combine(zone_name, "mongodb", item.name, "log.txt")
+    item.pid_file_path = DockerVolumeUse:new()
+    item.pid_file_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.pid_file_path.relative_path = path_combine(zone_name, "mongodb", item.name, "pid.txt")
+    item.key_file_path = DockerVolumeUse:new()
+    item.key_file_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.key_file_path.relative_path = path_combine(zone_name, "mongodb", item.name, "id_key_file")
+end
+do
+    ---@type MongoDbServer
+    local item = MongoDbServer:new()
+    table.insert(mongo_cluster.mongodb_server_list, item)
+    item.name = string_concat(zone_name, "mongodb_12")
+    item.image = Image_Name.lxl_debian
+    item.locate_machine = machine_map[Machine_Name.ll]
+    item.docker_ip = DockerNetUse:new()
+    item.docker_ip.docker_net = docker_net
+    item.docker_ip.ip_suffix = "dhcp"
+    item.client_port = 27017
+    item.repl_set_name = Repl_Set_Name.rs_db_1
+    item.repl_set_role = ReplSet_Name_Role_Map[item.repl_set_name]
+    item.db_path = DockerVolumeUse:new()
+    item.db_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.db_path.relative_path = path_combine(zone_name, "mongodb", item.name, "db")
+    item.log_path = DockerVolumeUse:new()
+    item.log_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.log_path.relative_path = path_combine(zone_name, "mongodb", item.name, "log.txt")
+    item.pid_file_path = DockerVolumeUse:new()
+    item.pid_file_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.pid_file_path.relative_path = path_combine(zone_name, "mongodb", item.name, "pid.txt")
+    item.key_file_path = DockerVolumeUse:new()
+    item.key_file_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.key_file_path.relative_path = path_combine(zone_name, "mongodb", item.name, "id_key_file")
+end
+do
+    ---@type MongoDbServer
+    local item = MongoDbServer:new()
+    table.insert(mongo_cluster.mongodb_server_list, item)
+    item.name = string_concat(zone_name, "mongodb_13")
+    item.image = Image_Name.lxl_debian
+    item.locate_machine = machine_map[Machine_Name.ll]
+    item.docker_ip = DockerNetUse:new()
+    item.docker_ip.docker_net = docker_net
+    item.docker_ip.ip_suffix = "dhcp"
+    item.client_port = 27017
+    item.repl_set_name = Repl_Set_Name.rs_db_1
+    item.repl_set_role = ReplSet_Name_Role_Map[item.repl_set_name]
+    item.db_path = DockerVolumeUse:new()
+    item.db_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.db_path.relative_path = path_combine(zone_name, "mongodb", item.name, "db")
+    item.log_path = DockerVolumeUse:new()
+    item.log_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.log_path.relative_path = path_combine(zone_name, "mongodb", item.name, "log.txt")
+    item.pid_file_path = DockerVolumeUse:new()
+    item.pid_file_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.pid_file_path.relative_path = path_combine(zone_name, "mongodb", item.name, "pid.txt")
+    item.key_file_path = DockerVolumeUse:new()
+    item.key_file_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.key_file_path.relative_path = path_combine(zone_name, "mongodb", item.name, "id_key_file")
+end
+
+------------------------------------------------------------------------------------------------------
+
+do
+    ---@type MongoDbServer
+    local item = MongoDbServer:new()
+    table.insert(mongo_cluster.mongodb_server_list, item)
+    item.name = string_concat(zone_name, "mongodb_21")
+    item.image = Image_Name.lxl_debian
+    item.locate_machine = machine_map[Machine_Name.ll]
+    item.docker_ip = DockerNetUse:new()
+    item.docker_ip.docker_net = docker_net
+    item.docker_ip.ip_suffix = "dhcp"
+    item.client_port = 27017
+    item.repl_set_name = Repl_Set_Name.rs_db_2
+    item.repl_set_role = ReplSet_Name_Role_Map[item.repl_set_name]
+    item.db_path = DockerVolumeUse:new()
+    item.db_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.db_path.relative_path = path_combine(zone_name, "mongodb", item.name, "db")
+    item.log_path = DockerVolumeUse:new()
+    item.log_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.log_path.relative_path = path_combine(zone_name, "mongodb", item.name, "log.txt")
+    item.pid_file_path = DockerVolumeUse:new()
+    item.pid_file_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.pid_file_path.relative_path = path_combine(zone_name, "mongodb", item.name, "pid.txt")
+    item.key_file_path = DockerVolumeUse:new()
+    item.key_file_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.key_file_path.relative_path = path_combine(zone_name, "mongodb", item.name, "id_key_file")
+end
+do
+    ---@type MongoDbServer
+    local item = MongoDbServer:new()
+    table.insert(mongo_cluster.mongodb_server_list, item)
+    item.name = string_concat(zone_name, "mongodb_22")
+    item.image = Image_Name.lxl_debian
+    item.locate_machine = machine_map[Machine_Name.ll]
+    item.docker_ip = DockerNetUse:new()
+    item.docker_ip.docker_net = docker_net
+    item.docker_ip.ip_suffix = "dhcp"
+    item.client_port = 27017
+    item.repl_set_name = Repl_Set_Name.rs_db_2
+    item.repl_set_role = ReplSet_Name_Role_Map[item.repl_set_name]
+    item.db_path = DockerVolumeUse:new()
+    item.db_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.db_path.relative_path = path_combine(zone_name, "mongodb", item.name, "db")
+    item.log_path = DockerVolumeUse:new()
+    item.log_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.log_path.relative_path = path_combine(zone_name, "mongodb", item.name, "log.txt")
+    item.pid_file_path = DockerVolumeUse:new()
+    item.pid_file_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.pid_file_path.relative_path = path_combine(zone_name, "mongodb", item.name, "pid.txt")
+    item.key_file_path = DockerVolumeUse:new()
+    item.key_file_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.key_file_path.relative_path = path_combine(zone_name, "mongodb", item.name, "id_key_file")
+end
+do
+    ---@type MongoDbServer
+    local item = MongoDbServer:new()
+    table.insert(mongo_cluster.mongodb_server_list, item)
+    item.name = string_concat(zone_name, "mongodb_23")
+    item.image = Image_Name.lxl_debian
+    item.locate_machine = machine_map[Machine_Name.ll]
+    item.docker_ip = DockerNetUse:new()
+    item.docker_ip.docker_net = docker_net
+    item.docker_ip.ip_suffix = "dhcp"
+    item.client_port = 27017
+    item.repl_set_name = Repl_Set_Name.rs_db_2
+    item.repl_set_role = ReplSet_Name_Role_Map[item.repl_set_name]
+    item.db_path = DockerVolumeUse:new()
+    item.db_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.db_path.relative_path = path_combine(zone_name, "mongodb", item.name, "db")
+    item.log_path = DockerVolumeUse:new()
+    item.log_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.log_path.relative_path = path_combine(zone_name, "mongodb", item.name, "log.txt")
+    item.pid_file_path = DockerVolumeUse:new()
+    item.pid_file_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.pid_file_path.relative_path = path_combine(zone_name, "mongodb", item.name, "pid.txt")
+    item.key_file_path = DockerVolumeUse:new()
+    item.key_file_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.key_file_path.relative_path = path_combine(zone_name, "mongodb", item.name, "id_key_file")
+end
+
+------------------------------------------------------------------------------------------------------
+
+do
+    ---@type MongoDbServer
+    local item = MongoDbServer:new()
+    table.insert(mongo_cluster.mongodb_server_list, item)
+    item.name = string_concat(zone_name, "mongodb_31")
+    item.image = Image_Name.lxl_debian
+    item.locate_machine = machine_map[Machine_Name.ll]
+    item.docker_ip = DockerNetUse:new()
+    item.docker_ip.docker_net = docker_net
+    item.docker_ip.ip_suffix = "dhcp"
+    item.client_port = 27017
+    item.repl_set_name = Repl_Set_Name.rs_db_3
+    item.repl_set_role = ReplSet_Name_Role_Map[item.repl_set_name]
+    item.db_path = DockerVolumeUse:new()
+    item.db_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.db_path.relative_path = path_combine(zone_name, "mongodb", item.name, "db")
+    item.log_path = DockerVolumeUse:new()
+    item.log_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.log_path.relative_path = path_combine(zone_name, "mongodb", item.name, "log.txt")
+    item.pid_file_path = DockerVolumeUse:new()
+    item.pid_file_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.pid_file_path.relative_path = path_combine(zone_name, "mongodb", item.name, "pid.txt")
+    item.key_file_path = DockerVolumeUse:new()
+    item.key_file_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.key_file_path.relative_path = path_combine(zone_name, "mongodb", item.name, "id_key_file")
+end
+do
+    ---@type MongoDbServer
+    local item = MongoDbServer:new()
+    table.insert(mongo_cluster.mongodb_server_list, item)
+    item.name = string_concat(zone_name, "mongodb_32")
+    item.image = Image_Name.lxl_debian
+    item.locate_machine = machine_map[Machine_Name.ll]
+    item.docker_ip = DockerNetUse:new()
+    item.docker_ip.docker_net = docker_net
+    item.docker_ip.ip_suffix = "dhcp"
+    item.client_port = 27017
+    item.repl_set_name = Repl_Set_Name.rs_db_3
+    item.repl_set_role = ReplSet_Name_Role_Map[item.repl_set_name]
+    item.db_path = DockerVolumeUse:new()
+    item.db_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.db_path.relative_path = path_combine(zone_name, "mongodb", item.name, "db")
+    item.log_path = DockerVolumeUse:new()
+    item.log_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.log_path.relative_path = path_combine(zone_name, "mongodb", item.name, "log.txt")
+    item.pid_file_path = DockerVolumeUse:new()
+    item.pid_file_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.pid_file_path.relative_path = path_combine(zone_name, "mongodb", item.name, "pid.txt")
+    item.key_file_path = DockerVolumeUse:new()
+    item.key_file_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.key_file_path.relative_path = path_combine(zone_name, "mongodb", item.name, "id_key_file")
+end
+do
+    ---@type MongoDbServer
+    local item = MongoDbServer:new()
+    table.insert(mongo_cluster.mongodb_server_list, item)
+    item.name = string_concat(zone_name, "mongodb_33")
+    item.image = Image_Name.lxl_debian
+    item.locate_machine = machine_map[Machine_Name.ll]
+    item.docker_ip = DockerNetUse:new()
+    item.docker_ip.docker_net = docker_net
+    item.docker_ip.ip_suffix = "dhcp"
+    item.client_port = 27017
+    item.repl_set_name = Repl_Set_Name.rs_db_3
+    item.repl_set_role = ReplSet_Name_Role_Map[item.repl_set_name]
+    item.db_path = DockerVolumeUse:new()
+    item.db_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.db_path.relative_path = path_combine(zone_name, "mongodb", item.name, "db")
+    item.log_path = DockerVolumeUse:new()
+    item.log_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.log_path.relative_path = path_combine(zone_name, "mongodb", item.name, "log.txt")
+    item.pid_file_path = DockerVolumeUse:new()
+    item.pid_file_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.pid_file_path.relative_path = path_combine(zone_name, "mongodb", item.name, "pid.txt")
+    item.key_file_path = DockerVolumeUse:new()
+    item.key_file_path.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
+    item.key_file_path.relative_path = path_combine(zone_name, "mongodb", item.name, "id_key_file")
+end
+
+------------------------------------------------------------------------------------------------------
 
 do
         ---@type MongosServer

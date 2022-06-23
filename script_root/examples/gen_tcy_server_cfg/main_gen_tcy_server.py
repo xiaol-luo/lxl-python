@@ -74,6 +74,7 @@ if __name__ == "__main__":
         render.render_mongo.export_mongodb_logs_file(parse_ret.out_setting, zone, mongo_cluster)
         render.render_mongo.export_mongos_start_file(parse_ret.out_setting, zone, mongo_cluster)
         render.render_mongo.export_mongos_stop_file(parse_ret.out_setting, zone, mongo_cluster)
+        render.render_mongo.export_mongos_clear_file(parse_ret.out_setting, zone, mongo_cluster)
         render.render_mongo.export_mongos_logs_file(parse_ret.out_setting, zone, mongo_cluster)
         render.render_mongo.export_setup_cluster_file(parse_ret.out_setting, zone, mongo_cluster)
         render.render_mongo.export_cluster_opera_file(parse_ret.out_setting, zone, mongo_cluster, "start", parse_ret.python_path)

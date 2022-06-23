@@ -75,6 +75,16 @@ def export_mongos_logs_file(out_root_dir: str, zone: typing.Dict[str, typing.Dic
             file_utils.write_file(out_file, tt_content)
 
 
+def export_mongos_clear_file(out_root_dir: str, zone: typing.Dict[str, typing.Dict[str, str]], mongo_cluster):
+    for mongos in mongo_cluster.mongos_server_list.values():
+        tt_ret, tt_content = tt.render("mongo/mongos/mongos_clear.py.j2", zone=zone, mongos=mongos,
+                                       mongo_cluster=mongo_cluster)
+        out_file = export_file.cal_mongos_clear_file_path(out_root_dir, zone, mongos)
+        os.makedirs(os.path.dirname(out_file), exist_ok=True)
+        if tt_ret:
+            file_utils.write_file(out_file, tt_content)
+
+
 def export_cluster_opera_file(out_root_dir:str, zone:typing.Dict[str, typing.Dict[str, str]], mongo_cluster, opera, python_path=None):
     if not python_path:
         python_path = "python"
@@ -97,6 +107,8 @@ def export_cluster_opera_file(out_root_dir:str, zone:typing.Dict[str, typing.Dic
             script_list.append(export_file.cal_mongos_stop_file_path(out_root_dir, zone, item))
         if "logs" == opera:
             script_list.append(export_file.cal_mongos_logs_file_path(out_root_dir, zone, item))
+        if "clear" == opera:
+            script_list.append(export_file.cal_mongos_clear_file_path(out_root_dir, zone, item))
     tt_ret, tt_content = tt.render("mongo/mongo_cluster_opera.py.j2", script_list=script_list, python_path=python_path)
     out_file = export_file.cal_mongo_cluster_opera_file_path(out_root_dir, zone, "{0}_cluster.py".format(opera))
     os.makedirs(os.path.dirname(out_file), exist_ok=True)

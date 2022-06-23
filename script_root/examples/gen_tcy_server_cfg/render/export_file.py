@@ -93,6 +93,10 @@ def cal_mongos_logs_file_path(root_dir, zone, mongos):
     return path_batch_join(root_dir, zone.name, "mongo", "mongos", mongos.name, "logs.py")
 
 
+def cal_mongos_clear_file_path(root_dir, zone, mongos):
+    return path_batch_join(root_dir, zone.name, "mongo", "mongos", mongos.name, "clear.py")
+
+
 def cal_mongo_cluster_opera_file_path(root_dir, zone, out_file):
     return path_batch_join(root_dir, zone.name, "mongo", out_file)
 
