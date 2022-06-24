@@ -73,7 +73,7 @@ with IndentFlag():
         print("docker exec: run docker container fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
         sys.exit(ret)
     # execute cmds in docker contianer
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.180:2379,//10.0.1.181:2379,//10.0.1.182:2379 ls / '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.199:2379,//10.0.1.200:2379,//10.0.1.201:2379 ls / '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:

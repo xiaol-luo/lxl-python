@@ -43,6 +43,7 @@ rm -rf {{volume_used.fo_abs_path}}
 {% macro run_container (ssh_client, container_name, image, cmd, opt="", volumes = None, network=None, net_used=None) -%}
 with IndentFlag():
     opt_mount_volumes = []
+    opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=~/tmp")
 {%- if volumes -%}{%- for e in volumes %}
     opt_mount_volumes.append("--mount type=volume,src={{e.name}},dst={{e.map_path}}")
 {%- endfor -%}{% endif %}

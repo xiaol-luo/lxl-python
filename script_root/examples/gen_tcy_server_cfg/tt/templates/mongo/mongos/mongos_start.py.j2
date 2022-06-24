@@ -23,7 +23,7 @@
 ] %}
 {{ docker_help.exec_cmds(ssh_client, mongos.image, run_cmd, network=mongos.docker_ip.docker_net, volumes=zone.fo_used_volume_map.values()) }}
 
-{% set run_cmd = mongo_help.mongos_start_cmd(mongo_cluster, mongos, True) %}
+{% set run_cmd = mongo_help.mongos_start_cmd(mongo_cluster, mongos, is_auth) %}
 {{ docker_help.run_container(ssh_client, mongos.name, mongos.image, run_cmd, opt="-d", volumes=zone.fo_used_volume_map.values(), network=mongos.docker_ip.docker_net, net_used=mongos.docker_ip) }}
 
 

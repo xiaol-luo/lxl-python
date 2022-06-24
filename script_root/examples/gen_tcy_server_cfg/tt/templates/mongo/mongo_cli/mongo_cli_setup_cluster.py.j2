@@ -5,6 +5,7 @@
 # docker_image string
 # repl_set_init_cmd_list
 # add_shard_cmd_list
+# mongos_server
 
 {% import 'common/ssh_help.py.j2' as ssh_help %}
 {% import 'common/docker_help.py.j2' as docker_help %}
@@ -22,11 +23,21 @@
 {{ docker_help.exec_cmds(ssh_client, docker_image, run_cmd, network=docker_net, volumes=zone.fo_used_volume_map.values(), print_fn_name="print") }}
 
 import time
-time.sleep(5)
+time.sleep(15)
 
 {% set run_cmd = [] -%}
 {% for item in add_shard_cmd_list %}
     {%- do run_cmd.append(mongo_help.mongo_cli_cmd(mongo_cluster, False, item.server, item.db, item.cmd)) -%}
 {% endfor %}
+
+{% set cmd = 'db.createUser({ "user":"%s", "pwd":"%s", "roles":["root"] })'|format(mongo_cluster.root_user.name, mongo_cluster.root_user.pwd) -%}
+{%- do run_cmd.append(mongo_help.mongo_cli_cmd(mongo_cluster, False, mongos_server, "admin", cmd)) -%}
+
+{% for item in mongo_cluster.user_list.values() %}
+    {% set cmd = 'db.createUser({ "user":"%s", "pwd":"%s", "roles":[ { role: "%s", db: "%s" } ] })'|format(item.name, item.pwd, item.role.name, item.role.db) -%}
+    {%- do run_cmd.append(mongo_help.mongo_cli_cmd(mongo_cluster, False, mongos_server, "admin", cmd)) -%}
+{% endfor %}
+
+
 {{ docker_help.exec_cmds(ssh_client, docker_image, run_cmd, network=docker_net, volumes=zone.fo_used_volume_map.values(), print_fn_name="print") }}
 

@@ -17,9 +17,9 @@
 
 {% macro mongo_cli_cmd (mongo_cluster, is_auth, server, cmd_db, cmd) -%}
 {%- if is_auth -%}
-    mongo --host {{server.docker_ip.fo_ip}} --port {{server.client_port}} {{cmd_db}} --eval '{{cmd}}'
+    mongosh --host {{server.docker_ip.fo_ip}} --port {{server.client_port}} {{cmd_db}} --eval '{{cmd}}'
 {%- else -%}
-    mongo --host {{server.docker_ip.fo_ip}} --port {{server.client_port}} {{cmd_db}} --eval '{{cmd}}'
+    mongosh --host {{server.docker_ip.fo_ip}} --port {{server.client_port}} {{cmd_db}} --eval '{{cmd}}'
 {%- endif -%}
 {%- endmacro -%}
 

@@ -89,12 +89,13 @@ with IndentFlag():
 
 with IndentFlag():
     opt_mount_volumes = []
+    opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=~/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.180"
+    opt_ip = "--ip 10.0.1.199"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_etcd_1", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
-        command=r"etcd --name zone_1_etcd_1 --data-dir /root/zone/zone_1/etcd/zone_1_etcd_1 --listen-peer-urls http://0.0.0.0:2380 --listen-client-urls http://0.0.0.0:2379 --initial-advertise-peer-urls http://10.0.1.180:2380 --advertise-client-urls http://10.0.1.180:2379  --log-output stdout --initial-cluster-token 'zone_1' --initial-cluster zone_1_etcd_1=http://10.0.1.180:2380,zone_1_etcd_2=http://10.0.1.181:2380,zone_1_etcd_3=http://10.0.1.182:2380"
+        command=r"etcd --name zone_1_etcd_1 --data-dir /root/zone/zone_1/etcd/zone_1_etcd_1 --listen-peer-urls http://0.0.0.0:2380 --listen-client-urls http://0.0.0.0:2379 --initial-advertise-peer-urls http://10.0.1.199:2380 --advertise-client-urls http://10.0.1.199:2379  --log-output stdout --initial-cluster-token 'zone_1' --initial-cluster zone_1_etcd_1=http://10.0.1.199:2380,zone_1_etcd_2=http://10.0.1.200:2380,zone_1_etcd_3=http://10.0.1.201:2380"
     )
     ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, run_cmd, exit_when_error=True)
     if 0 != ret:

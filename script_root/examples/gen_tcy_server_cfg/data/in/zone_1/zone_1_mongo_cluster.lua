@@ -16,6 +16,7 @@ ReplSet_Name_Role_Map[Repl_Set_Name.rs_db_3] = Mongo_Repl_Set_Role.shardsvr
 local docker_net = docker_net_map[Docker_Net_Name.net_zone_1]
 local zone_name = Zone_Name.zone_1
 
+---@type MongoServerCluster
 local mongo_cluster = MongoServerCluster:new()
 mongo_cluster.cluster_token = zone_name
 
@@ -39,8 +40,27 @@ ZSnKxj1SkcjiCvImYbBq1QDEK2VYleMp7QPkgt20tk1SDW2IbHUQe1IqO/Emih1L\\\
 cYn+h6iWGwuNkjFiNzML+Ny4CFeb"
 
 end
-mongo_cluster.user = zone_name
-mongo_cluster.pwd = zone_name
+
+do
+    ---@type MongoUser
+    mongo_cluster.root_user = {}
+    mongo_cluster.root_user.name = "root"
+    mongo_cluster.root_user.pwd = "xiaolzz"
+    mongo_cluster.user_list = {}
+    do
+        ---@type MongoUser
+        local user = {}
+        table.insert(mongo_cluster.user_list, user)
+        user.name = "lxl"
+        user.pwd = "xiaolzz"
+        ---@type MongoRole
+        user.role = {}
+        user.role.name = "readWriteAnyDatabase"
+        user.role.db = "admin"
+    end
+end
+
+
 mongo_cluster.mongodb_server_list = {}
 mongo_cluster.mongos_server_list = {}
 

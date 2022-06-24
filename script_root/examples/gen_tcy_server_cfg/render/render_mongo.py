@@ -9,7 +9,7 @@ from . import export_file
 
 def export_mongodb_start_file(out_root_dir:str, zone:typing.Dict[str, typing.Dict[str, str]], mongo_cluster):
     for mongodb in mongo_cluster.mongodb_server_list.values():
-        tt_ret, tt_content = tt.render("mongo/mongodb/mongodb_start.py.j2", zone=zone, mongodb=mongodb, mongo_cluster=mongo_cluster)
+        tt_ret, tt_content = tt.render("mongo/mongodb/mongodb_start.py.j2", zone=zone, mongodb=mongodb, mongo_cluster=mongo_cluster, is_auth=True)
         out_file = export_file.cal_mongodb_start_file_path(out_root_dir, zone, mongodb)
         os.makedirs(os.path.dirname(out_file), exist_ok=True)
         if tt_ret:
@@ -48,7 +48,7 @@ def export_mongodb_logs_file(out_root_dir: str, zone: typing.Dict[str, typing.Di
 
 def export_mongos_start_file(out_root_dir:str, zone:typing.Dict[str, typing.Dict[str, str]], mongo_cluster):
     for mongos in mongo_cluster.mongos_server_list.values():
-        tt_ret, tt_content = tt.render("mongo/mongos/mongos_start.py.j2", zone=zone, mongos=mongos, mongo_cluster=mongo_cluster)
+        tt_ret, tt_content = tt.render("mongo/mongos/mongos_start.py.j2", zone=zone, mongos=mongos, mongo_cluster=mongo_cluster, is_auth=True)
         out_file = export_file.cal_mongos_start_file_path(out_root_dir, zone, mongos)
         os.makedirs(os.path.dirname(out_file), exist_ok=True)
         if tt_ret:
@@ -117,6 +117,13 @@ def export_cluster_opera_file(out_root_dir:str, zone:typing.Dict[str, typing.Dic
 
 
 def export_setup_cluster_file(out_root_dir:str, zone:typing.Dict[str, typing.Dict[str, str]], mongo_cluster):
+    out_content = ""
+    for mongodb in mongo_cluster.mongodb_server_list.values():
+        tt_ret, tt_content = tt.render("mongo/mongodb/mongodb_start.py.j2", zone=zone, mongodb=mongodb, mongo_cluster=mongo_cluster, is_auth=False)
+        out_content += tt_content + "\n"
+    for mongos in mongo_cluster.mongos_server_list.values():
+        tt_ret, tt_content = tt.render("mongo/mongos/mongos_start.py.j2", zone=zone, mongos=mongos, mongo_cluster=mongo_cluster, is_auth=False)
+        out_content += tt_content + "\n"
     docker_locate_machine = mongo_cluster.mongodb_server_list[1].locate_machine
     docker_net = mongo_cluster.mongodb_server_list[1].docker_ip.docker_net
     docker_image = mongo_cluster.mongodb_server_list[1].image
@@ -146,12 +153,26 @@ def export_setup_cluster_file(out_root_dir:str, zone:typing.Dict[str, typing.Dic
         "mongo/mongo_cli/mongo_cli_setup_cluster.py.j2",
         zone=zone, mongo_cluster=mongo_cluster, docker_locate_machine=docker_locate_machine,
         docker_net=docker_net, docker_image=docker_image,
-        repl_set_init_cmd_list=repl_set_init_cmd_list, add_shard_cmd_list=add_shard_cmd_list
+        repl_set_init_cmd_list=repl_set_init_cmd_list, add_shard_cmd_list=add_shard_cmd_list,
+        mongos_server=mongo_cluster.mongos_server_list[1]
     )
+    out_content += tt_content
+    for mongodb in mongo_cluster.mongodb_server_list.values():
+        tt_ret, tt_content = tt.render("mongo/mongodb/mongodb_stop.py.j2", zone=zone, mongodb=mongodb, mongo_cluster=mongo_cluster)
+        out_content += tt_content + "\n"
+    for mongos in mongo_cluster.mongos_server_list.values():
+        tt_ret, tt_content = tt.render("mongo/mongos/mongos_stop.py.j2", zone=zone, mongos=mongos, mongo_cluster=mongo_cluster)
+        out_content += tt_content + "\n"
+    for mongodb in mongo_cluster.mongodb_server_list.values():
+        tt_ret, tt_content = tt.render("mongo/mongodb/mongodb_start.py.j2", zone=zone, mongodb=mongodb, mongo_cluster=mongo_cluster, is_auth=True)
+        out_content += tt_content + "\n"
+    for mongos in mongo_cluster.mongos_server_list.values():
+        tt_ret, tt_content = tt.render("mongo/mongos/mongos_start.py.j2", zone=zone, mongos=mongos, mongo_cluster=mongo_cluster, is_auth=True)
+        out_content += tt_content + "\n"
     out_file = export_file.cal_mongo_setup_cluster_file_path(out_root_dir, zone)
     os.makedirs(os.path.dirname(out_file), exist_ok=True)
     if tt_ret:
-        file_utils.write_file(out_file, tt_content)
+        file_utils.write_file(out_file, out_content)
 
 
 def export_cli_cmds_file(out_root_dir:str, zone:typing.Dict[str, typing.Dict[str, str]], mongo_cluster, out_file:str, cmd_db, cmd_list:typing.List[str], is_auth=False):

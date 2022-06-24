@@ -185,9 +185,9 @@ MongosServer = MongosServer or class("MongosServer", SettingBase)
 MongoRole = MongoRole or class("MongoRole", SettingBase)
 
 ---@class MongoUser
----@field user string
+---@field name string
 ---@field pwd string
----@field role_list table<number, MongoRole>
+---@field role MongoRole
 MongoUser = MongoUser or class("MongoUser", SettingBase)
 
 ---@class MongoReplSet
@@ -202,8 +202,7 @@ MongoReplSet = MongoReplSet or class("MongoReplSet", SettingBase)
 ---@field mongos_server_list table<number, MongosServer>
 ---@field mongodb_server_list table<number, MongoDbServer>
 ---@field private_key_file_content string @openssl rand -base64 741 可产生
----@field user string
----@field pwd string
+---@field root_user MongoUser
 ---@field user_list table<number, MongoUser>
 ---@field fo_repl_set_map table<string, MongoReplSet>
 ---@field fo_cfg_repl_set MongoReplSet
