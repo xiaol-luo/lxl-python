@@ -48,6 +48,30 @@ def paramiko_ssh_cmd(ssh_client: paramiko.SSHClient, cmd: ListOrStr, exit_when_e
         print("paramiko_ssh_cmd fail, exit_code is {0}\n out is {1}\n error is {2}".format(exit_status, "".join(out_lines), "".join(error_lines)))
         sys.exit(exit_status)
     return exit_status, "".join(out_lines), "".join(error_lines)
+
+
+def paramiko_sftp_put(ssh_client: paramiko.SSHClient, local_src:str, remote_dst:str):
+    ret = True
+    try:
+        sftp = ssh_client.open_sftp()
+        sftp_attrs = sftp.put(local_src, remote_dst)
+        return None != sftp_attrs
+    except Exception as e:
+        ret = False
+        print("paramiko_sftp_put raise exception src:{0}->dst:{1}, error:{2}".format(local_src, remote_dst, e))
+    return ret
+
+
+def paramiko_sftp_get(ssh_client: paramiko.SSHClient, remote_src:str, local_dst:str):
+    ret = True
+    try:
+        sftp = ssh_client.open_sftp()
+        sftp.get(remote_src, local_dst)
+    except Exception as e:
+        ret = False
+        print("paramiko_sftp_get raise exception src:{0}->dst:{1}, error:{2}".format(remote_src, local_dst, e))
+    return ret
+
 ssh_client = None
 with IndentFlag():
     ssh_client = paramiko.SSHClient()
@@ -68,6 +92,7 @@ with IndentFlag():
     import random
     ct_name = "ct_{}".format(random.randint(1, 99999999))
     opt_mount_volumes = []
+    opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
     run_cmd = "docker run -itd --name {name} {network} {mount_volumes} {image} {command}".format(
@@ -89,13 +114,13 @@ with IndentFlag():
 
 with IndentFlag():
     opt_mount_volumes = []
-    opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=~/tmp")
+    opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.200"
+    opt_ip = "--ip 10.0.1.194"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_etcd_2", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
-        command=r"etcd --name zone_1_etcd_2 --data-dir /root/zone/zone_1/etcd/zone_1_etcd_2 --listen-peer-urls http://0.0.0.0:2380 --listen-client-urls http://0.0.0.0:2379 --initial-advertise-peer-urls http://10.0.1.200:2380 --advertise-client-urls http://10.0.1.200:2379  --log-output stdout --initial-cluster-token 'zone_1' --initial-cluster zone_1_etcd_1=http://10.0.1.199:2380,zone_1_etcd_2=http://10.0.1.200:2380,zone_1_etcd_3=http://10.0.1.201:2380"
+        command=r"etcd --name zone_1_etcd_2 --data-dir /root/zone/zone_1/etcd/zone_1_etcd_2 --listen-peer-urls http://0.0.0.0:2380 --listen-client-urls http://0.0.0.0:2379 --initial-advertise-peer-urls http://10.0.1.194:2380 --advertise-client-urls http://10.0.1.194:2379  --log-output stdout --initial-cluster-token 'zone_1' --initial-cluster zone_1_etcd_1=http://10.0.1.193:2380,zone_1_etcd_2=http://10.0.1.194:2380,zone_1_etcd_3=http://10.0.1.195:2380"
     )
     ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, run_cmd, exit_when_error=True)
     if 0 != ret:

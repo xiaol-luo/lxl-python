@@ -1,7 +1,5 @@
-# machine Machine
-# mongo_cluster MongoServerCluster
-# mongodb MongoDbServer
-# zone Zone
+# zone
+# locate_machine
 
 
 
@@ -74,15 +72,11 @@ def paramiko_sftp_get(ssh_client: paramiko.SSHClient, remote_src:str, local_dst:
     return ret
 
 
-
 ssh_client = None
 with IndentFlag():
     ssh_client = paramiko.SSHClient()
     ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh_client.connect(hostname="119.91.239.128", port="22", username="root", \
         pkey=paramiko.RSAKey.from_private_key_file(r"C:/Users/luoxiaolong/.ssh/keys/root/id_rsa", "xiaolzz"))
-
-ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, [
-    "docker exec zone_1_mongodb_12 cat /root/zone/zone_1/mongodb/zone_1_mongodb_12/log.txt",
-])
-print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
+    paramiko_sftp_put(ssh_client, "E:/diff.txt", "/root/diff.txt")
+    paramiko_sftp_get(ssh_client, "/root/diff.txt", "xx.txt")

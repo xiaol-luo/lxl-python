@@ -24,8 +24,6 @@
 {%- endmacro -%}
 
 
-
-
 {# mongod --configsvr --replSet rs_cfg  --bind_ip 0.0.0.0 --port 27019 --dbpath /shared/tmp/mongodb/rs_cfg_1/db --logpath /shared/tmp/mongodb/rs_cfg_1/log.txt #}
 {# mongos --bind_ip 0.0.0.0 --port 27017 --configdb rs_cfg/127.0.0.1:9010,127.0.0.1:9011,127.0.0.1:9012 --logpath /shared/tmp/mongos/name_1/log.txt #}
 {# mongo -port 9400 -u lxl -p xiaolzz --authenticationDatabase admin testsh --eval 'db.role.count({})' #}

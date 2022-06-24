@@ -46,6 +46,30 @@ def paramiko_ssh_cmd(ssh_client: paramiko.SSHClient, cmd: ListOrStr, exit_when_e
     return exit_status, "".join(out_lines), "".join(error_lines)
 
 
+def paramiko_sftp_put(ssh_client: paramiko.SSHClient, local_src:str, remote_dst:str):
+    ret = True
+    try:
+        sftp = ssh_client.open_sftp()
+        sftp_attrs = sftp.put(local_src, remote_dst)
+        return None != sftp_attrs
+    except Exception as e:
+        ret = False
+        print("paramiko_sftp_put raise exception src:{0}->dst:{1}, error:{2}".format(local_src, remote_dst, e))
+    return ret
+
+
+def paramiko_sftp_get(ssh_client: paramiko.SSHClient, remote_src:str, local_dst:str):
+    ret = True
+    try:
+        sftp = ssh_client.open_sftp()
+        sftp.get(remote_src, local_dst)
+    except Exception as e:
+        ret = False
+        print("paramiko_sftp_get raise exception src:{0}->dst:{1}, error:{2}".format(remote_src, local_dst, e))
+    return ret
+
+
+
 ssh_client = None
 with IndentFlag():
     ssh_client = paramiko.SSHClient()
@@ -59,6 +83,7 @@ with IndentFlag():
     import random
     ct_name = "ct_{}".format(random.randint(1, 99999999))
     opt_mount_volumes = []
+    opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
     run_cmd = "docker run -itd --name {name} {network} {mount_volumes} {image} {command}".format(
@@ -68,22 +93,22 @@ with IndentFlag():
         print("docker exec: run docker container fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
         sys.exit(ret)
     # execute cmds in docker contianer
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' /bin/bash -c 'echo xiaolzz | etcdctl --endpoints //10.0.1.199:2379,//10.0.1.200:2379,//10.0.1.201:2379 user add root'  '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' /bin/bash -c 'echo xiaolzz | etcdctl --endpoints //10.0.1.193:2379,//10.0.1.194:2379,//10.0.1.195:2379 user add root'  '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl --endpoints //10.0.1.199:2379,//10.0.1.200:2379,//10.0.1.201:2379 --username root:xiaolzz auth enable '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl --endpoints //10.0.1.193:2379,//10.0.1.194:2379,//10.0.1.195:2379 --username root:xiaolzz auth enable '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' /bin/bash -c  'echo zone_1 | etcdctl --endpoints //10.0.1.199:2379,//10.0.1.200:2379,//10.0.1.201:2379 --username root:xiaolzz user add zone_1'  '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' /bin/bash -c  'echo zone_1 | etcdctl --endpoints //10.0.1.193:2379,//10.0.1.194:2379,//10.0.1.195:2379 --username root:xiaolzz user add zone_1'  '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl --endpoints //10.0.1.199:2379,//10.0.1.200:2379,//10.0.1.201:2379 --username root:xiaolzz role add rw_all '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl --endpoints //10.0.1.193:2379,//10.0.1.194:2379,//10.0.1.195:2379 --username root:xiaolzz role add rw_all '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl --endpoints //10.0.1.199:2379,//10.0.1.200:2379,//10.0.1.201:2379 --username root:xiaolzz role grant --readwrite --path / rw_all '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl --endpoints //10.0.1.193:2379,//10.0.1.194:2379,//10.0.1.195:2379 --username root:xiaolzz role grant --readwrite --path / rw_all '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl --endpoints //10.0.1.199:2379,//10.0.1.200:2379,//10.0.1.201:2379 --username root:xiaolzz user grant --roles rw_all zone_1 '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl --endpoints //10.0.1.193:2379,//10.0.1.194:2379,//10.0.1.195:2379 --username root:xiaolzz user grant --roles rw_all zone_1 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     # remove docker container

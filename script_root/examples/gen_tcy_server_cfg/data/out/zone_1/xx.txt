@@ -1,0 +1,455 @@
+diff --git a/client/game_card/LuaScript/app/logic/fight/game_play/bbf/bbf_game__app_rpc.lua b/client/game_card/LuaScript/app/logic/fight/game_play/bbf/bbf_game__app_rpc.lua
+index 24003d92..1bfe3dc7 100644
+--- a/client/game_card/LuaScript/app/logic/fight/game_play/bbf/bbf_game__app_rpc.lua
++++ b/client/game_card/LuaScript/app/logic/fight/game_play/bbf/bbf_game__app_rpc.lua
+@@ -117,7 +117,7 @@ function BbfGame:rpc_call_stop_move()
+     self._client_scene:fire(Bbf_Client_Event.main_role_input_move_stop, self.sandbox.curr_step_id, seq_id, logic_sec())
+ end
+ 
+-function BbfGame:rpc_call_use_skill(skill_name, target_eid, target_dir_x, target_dir_y)
++function BbfGame:rpc_call_use_skill(skill_name, target_eid, target_pos_x, target_pos_y, target_dir_x, target_dir_y)
+     -- log_print("BbfGame:rpc_call_use_skill ", skill_name)
+-    self:rpc_call(nil, Client_Rpc.fight.use_skill, skill_name, target_eid, target_dir_x, target_dir_y)
++    self:rpc_call(nil, Client_Rpc.fight.use_skill, skill_name, target_eid, target_pos_x, target_pos_y, target_dir_x, target_dir_y)
+ end
+diff --git a/client/game_card/LuaScript/app/ui/bbf_fight_panel/ui_bbf_play_panel.lua b/client/game_card/LuaScript/app/ui/bbf_fight_panel/ui_bbf_play_panel.lua
+index 0bbf8e18..fd1a98e6 100644
+--- a/client/game_card/LuaScript/app/ui/bbf_fight_panel/ui_bbf_play_panel.lua
++++ b/client/game_card/LuaScript/app/ui/bbf_fight_panel/ui_bbf_play_panel.lua
+@@ -38,7 +38,7 @@ function UIBbfPlayPanel:_on_attach_panel()
+         self._skill_run_btn = UnityHelp.attach_ui(UIButton, self._panel_root, "SkillView/SpeedUp")
+         self._skill_run_btn:set_onclick(function()
+             if self._game_play then
+-                self._game_play:rpc_call_use_skill(Bbf_Skill_Name.fish_run, -1, 0, 0)
++                self._game_play:rpc_call_use_skill(Bbf_Skill_Name.fish_run, -1, 0, 0, 0, 0)
+             end
+         end)
+         ---@type UIImage
+@@ -50,7 +50,7 @@ function UIBbfPlayPanel:_on_attach_panel()
+         self._skill_attack_btn:set_onclick(function()
+             local main_comp_fish = self:_get_main_fish()
+             if self._game_play and main_comp_fish then
+-                self._game_play:rpc_call_use_skill(Bbf_Skill_Name.fish_attack, -1, main_comp_fish.face_dir, 0)
++                self._game_play:rpc_call_use_skill(Bbf_Skill_Name.fish_attack, -1, 0, 0, main_comp_fish.face_dir, 0)
+             end
+         end)
+         ---@type UIImage
+diff --git a/client/game_card/LuaScript/common/logic/fight/bbf_client/bbf_client_sandbox_listener.lua b/client/game_card/LuaScript/common/logic/fight/bbf_client/bbf_client_sandbox_listener.lua
+index 54c1de93..ace8f36a 100644
+--- a/client/game_card/LuaScript/common/logic/fight/bbf_client/bbf_client_sandbox_listener.lua
++++ b/client/game_card/LuaScript/common/logic/fight/bbf_client/bbf_client_sandbox_listener.lua
+@@ -80,8 +80,8 @@ end
+ ---@param comp_fish sbCompBbfFish
+ ---@param skill_name string
+ ---@param skill_params table
+-function BbfClientSandboxListener:on_event_use_skill(comp_fish, skill_name, skill_params)
+-    self.event_mgr:fire(Bbf_Client_Event.sandbox_use_skill, comp_fish, skill_name, skill_params)
++function BbfClientSandboxListener:on_event_use_skill(comp_fish, msg, skill_name, target_eid, target_pos, target_dir)
++    self.event_mgr:fire(Bbf_Client_Event.sandbox_use_skill, comp_fish, msg, skill_name, target_eid, target_pos, target_dir)
+ end
+ 
+ ---@param comp_fish sbCompBbfFish
+diff --git a/client/game_card/LuaScript/common/logic/fight/bbf_client/bbf_client_scene.lua b/client/game_card/LuaScript/common/logic/fight/bbf_client/bbf_client_scene.lua
+index 26f7215b..556eb26e 100644
+--- a/client/game_card/LuaScript/common/logic/fight/bbf_client/bbf_client_scene.lua
++++ b/client/game_card/LuaScript/common/logic/fight/bbf_client/bbf_client_scene.lua
+@@ -157,6 +157,10 @@ function BbfClientScene:_on_init()
+         self._sys_map:set(sys:get_name(), sys)
+         self.sys_statist = sys
+     end
++    do
++        local sys = BbfClientSceneSysSkill:new(self)
++        self._sys_map:set(sys:get_name(), sys)
++    end
+ 
+     self._event_binder:bind(self._sandbox_listener.event_mgr,
+             Bbf_Client_Event.sandbox_step_begin, Functional.make_closure(self.on_step_begin, self))
+diff --git a/client/game_card/LuaScript/common/logic/fight/bbf_client/bbf_client_scene_sys/include.lua b/client/game_card/LuaScript/common/logic/fight/bbf_client/bbf_client_scene_sys/include.lua
+index 71660b57..de524cd8 100644
+--- a/client/game_card/LuaScript/common/logic/fight/bbf_client/bbf_client_scene_sys/include.lua
++++ b/client/game_card/LuaScript/common/logic/fight/bbf_client/bbf_client_scene_sys/include.lua
+@@ -11,6 +11,7 @@ return
+ 			"bbf_client_scene_sys_unity_go",
+ 			"bbf_client_scene_sys_main_role_move",
+ 			"bbf_client_scene_sys_statist",
++            "bbf_client_scene_sys_skill",
+ 
+         },
+         includes =
+diff --git a/server/lua_script/servers/common/logic/fight/game_play_impl/bbf_sandbox/bbf_sandbox_listener_base.lua b/server/lua_script/servers/common/logic/fight/game_play_impl/bbf_sandbox/bbf_sandbox_listener_base.lua
+index 329433d7..17255694 100644
+--- a/server/lua_script/servers/common/logic/fight/game_play_impl/bbf_sandbox/bbf_sandbox_listener_base.lua
++++ b/server/lua_script/servers/common/logic/fight/game_play_impl/bbf_sandbox/bbf_sandbox_listener_base.lua
+@@ -2,6 +2,9 @@
+ ---@class BbfSandboxListenerBase:SandboxListenerBase
+ BbfSandboxListenerBase = BbfSandboxListenerBase or class("BbfSandboxListenerBase", SandboxListenerBase)
+ 
++---@class DefaultBbfSandboxListener:BbfSandboxListenerBase
++DefaultBbfSandboxListener = DefaultBbfSandboxListener or class("DefaultBbfSandboxListener", BbfSandboxListenerBase)
++
+ ---@param comp sbCompBbfFish
+ function BbfSandboxListenerBase:on_event_change_fish_face_dir(comp, from_face_dir, to_face_dir) end
+ 
+@@ -16,9 +19,12 @@ function BbfSandboxListenerBase:on_event_change_fish_dizzy(comp) end
+ function BbfSandboxListenerBase:on_event_eat_fish(win_fish, lose_fish) end
+ 
+ ---@param comp_fish sbCompBbfFish
++---@param msg LockStepMap
+ ---@param skill_name string
+----@param skill_params table
+-function BbfSandboxListenerBase:on_event_use_skill(comp_fish, skill_name, skill_params) end
++---@param target_eid number
++---@param target_pos b2Vec2
++---@param target_dir b2Vec2
++function BbfSandboxListenerBase:on_event_use_skill(comp_fish, msg, skill_name, target_eid, target_pos, target_dir) end
+ 
+ ---@param comp_fish sbCompBbfFish
+ ---@param to_size number
+@@ -28,5 +34,4 @@ function BbfSandboxListenerBase:on_event_role_opera_move_forward(role_id, eid, d
+ 
+ function BbfSandboxListenerBase:on_event_role_opera_move_stop(role_id, eid, dir_x, dir_y, occur_step_id, seq_id) end
+ 
+----@class DefaultBbfSandboxListener:BbfSandboxListenerBase
+-DefaultBbfSandboxListener = DefaultBbfSandboxListener or class("DefaultBbfSandboxListener", BbfSandboxListenerBase)
+\ No newline at end of file
++
+diff --git a/server/lua_script/servers/common/logic/fight/game_play_impl/bbf_sandbox/system/sb_sys_bbf_fish.lua b/server/lua_script/servers/common/logic/fight/game_play_impl/bbf_sandbox/system/sb_sys_bbf_fish.lua
+deleted file mode 100644
+index 5766b9bb..00000000
+--- a/server/lua_script/servers/common/logic/fight/game_play_impl/bbf_sandbox/system/sb_sys_bbf_fish.lua
++++ /dev/null
+@@ -1,242 +0,0 @@
+-
+----@class sbSysBbfFish:SandboxSystem
+-sbSysBbfFish = sbSysBbfFish or class("sbSysBbfFish", SandboxSystem)
+-
+-function sbSysBbfFish:ctor(sandbox)
+-    sbSysBbfFish.super.ctor(self, sandbox, "sbSysBbfFish")
+-end
+-
+-function sbSysBbfFish:_on_init(init_data)
+-    self.sandbox:sub(self.mailbox_add, SandBoxUtils.table_to_lockstep_map({ cmd=Bbf_Sandbox_Cmd.body_rebirth }))
+-    self.sandbox:sub(self.mailbox_add, SandBoxUtils.table_to_lockstep_map({ cmd=Bbf_Sandbox_Cmd.fish_change_move_speed }))
+-    self.sandbox:sub(self.mailbox_add, SandBoxUtils.table_to_lockstep_map({ cmd=Bbf_Sandbox_Cmd.use_skill }))
+-    self.sandbox:sub(self.mailbox_add, SandBoxUtils.table_to_lockstep_map({ cmd=Bbf_Sandbox_Cmd.eat_fish }))
+-end
+-
+-function sbSysBbfFish:_on_release()
+-
+-end
+-
+-function sbSysBbfFish:_on_step(step_data)
+-    for _, msg in pairs(self.sandbox:get_msg_list(self.mailbox_add)) do
+-        local cmd = msg:get("cmd")
+-        if cmd then
+-            if Bbf_Sandbox_Cmd.body_rebirth == cmd then
+-                self:_on_cmd_rebirth(msg)
+-            end
+-            if Bbf_Sandbox_Cmd.fish_change_move_speed == cmd then
+-                self:_on_cmd_change_move_speed(msg)
+-            end
+-            if Bbf_Sandbox_Cmd.use_skill == cmd then
+-                self:_on_cmd_use_skill(msg)
+-            end
+-            if Bbf_Sandbox_Cmd.eat_fish == cmd then
+-                self:_on_cmd_eat_fish(msg)
+-            end
+-        end
+-    end
+-    self.sandbox:clear_mailbox(self.mailbox_add)
+-
+-    self:_tick_all_fish()
+-end
+-
+-function sbSysBbfFish:_tick_all_fish()
+-    local curr_step_id = self.sandbox.curr_step_id
+-    ---@param comp_fish sbCompBbfFish
+-    for eid, comp_fish in pairs(self.sandbox:get_comp_map(Bbf_Sandbox_Object_Type.fish)) do
+-        local recal_move_speed= false
+-        if comp_fish.run_end_step_id > 0 and curr_step_id > comp_fish.run_end_step_id then
+-            comp_fish.run_end_step_id = 0
+-            recal_move_speed = true
+-        end
+-        if comp_fish.dizzy_end_step_id > 0 and curr_step_id > comp_fish.dizzy_end_step_id then
+-            self:_do_set_dizzy(comp_fish, -1)
+-        end
+-        if recal_move_speed then
+-            self:_do_set_move_speed(comp_fish)
+-        end
+-        -- log_print("sbSysBbfFish:_tick_all_fish", curr_step_id, comp_fish.run_end_step_id)
+-    end
+-end
+-
+-function sbSysBbfFish:_on_cmd_rebirth(msg)
+-    local eid = msg:get("eid")
+-    local comp_fish = self.sandbox:get_comp(eid, Bbf_Sandbox_Object_Type.fish)
+-    if comp_fish then
+-        self:_do_rebirth(comp_fish)
+-    end
+-end
+-
+----@param comp_fish sbCompBbfFish
+-function sbSysBbfFish:_do_rebirth(comp_fish)
+-    ---@type sbCompBbfB2body
+-    self:_do_set_dizzy(comp_fish, -1)
+-    local comp_body = comp_fish:get_sibling(Bbf_Sandbox_Object_Type.b2body)
+-    if comp_body then
+-        ---@type sbCompBbfRandom
+-        local comp_random = self.sandbox:get_singleton_comp(Bbf_Sandbox_Object_Type.random)
+-        local pos = Box2dUtils.make_vec2(comp_random:rand_range("-20", "20"), comp_random:rand_range("-20", "20"))
+-        comp_body.body_ptr:SetTransform(pos, fixed_number.zero)
+-        comp_body.body_ptr:SetLinearVelocity(Box2dUtils.make_vec2(0, 0))
+-        comp_fish.fish_size = sbSysBbfFish.cal_fish_size(comp_fish)
+-        local shape = native.box2d.ToCircle(comp_body.body_shape_ptr:GetShape())
+-        shape.m_radius = comp_fish.fish_size
+-        -- todo: 加重生事件
+-        log_print("sbSysBbfFish:_do_rebirth", pos.x, pos.y)
+-    end
+-end
+-
+-function sbSysBbfFish:_on_cmd_change_move_speed(msg)
+-    local eid = msg:get("eid")
+-    ---@type sbCompBbfFish
+-    local comp_fish = self.sandbox:get_comp(eid, Bbf_Sandbox_Object_Type.fish)
+-    self:_do_set_move_speed(comp_fish)
+-end
+-
+-function sbSysBbfFish:_do_set_move_speed(comp_fish)
+-    ---@type sbCompBbfFish
+-    if comp_fish then
+-        local move_speed = self:eval_fish_move_speed(comp_fish)
+-        comp_fish.move_speed = move_speed
+-        log_print("sbSysBbfFish:_change_move_speed ", comp_fish.move_speed.x, comp_fish.move_speed.y)
+-        ---@type sbCompBbfB2body
+-        local comp_body = comp_fish:get_sibling(Bbf_Sandbox_Object_Type.b2body)
+-        if comp_body then
+-            comp_body.body_ptr:SetLinearVelocity(move_speed)
+-            self.sandbox.listener:on_event_change_fish_move_speed(comp_fish)
+-        end
+-    end
+-end
+-
+----@param comp_fish sbCompBbfFish
+-function sbSysBbfFish:eval_fish_move_speed(comp_fish)
+-    local move_speed = comp_fish.move_dir * comp_fish.base_move_speed
+-    if move_speed and not Bbf_Fish_State.can_move(comp_fish.curr_state) then
+-        move_speed = nil
+-    end
+-    if move_speed and not comp_fish.is_want_move then
+-        move_speed = nil
+-    end
+-    if move_speed and self.sandbox.curr_step_id <= comp_fish.run_end_step_id then
+-        move_speed = move_speed * fixed_number.make(10)
+-    end
+-     -- log_print("sbSysBbfFish.eval_fish_move_speed ", comp_fish.eid, comp_fish.is_want_move)
+-    if move_speed then
+-        return move_speed
+-    else
+-        return Box2dUtils.make_vec2(0, 0)
+-    end
+-end
+-
+----@param msg LockStepMap
+-function sbSysBbfFish:_on_cmd_use_skill(msg)
+-    ---@type sbCompBbfFish
+-    local eid = msg:get("eid")
+-    ---@type sbCompBbfFish
+-    local comp_fish = self.sandbox:get_comp(eid, Bbf_Sandbox_Object_Type.fish)
+-    if comp_fish then
+-        local skill_name = msg:get("skill_name", "")
+-        local target_eid = msg:get("target_eid", -1)
+-        local target_dir = Box2dUtils.make_vec2(
+-                fixed_number.make_from_raw(msg:get("target_dir_raw_x")),
+-                fixed_number.make_from_raw(msg:get("target_dir_raw_y")))
+-        if Bbf_Skill_Name.fish_run == skill_name then
+-            comp_fish.run_end_step_id = self.sandbox.curr_step_id + Bbf_Fight_Def.frame_per_sec * 10
+-            self:_do_set_move_speed(comp_fish)
+-        end
+-        if Bbf_Skill_Name.fish_attack == skill_name then
+-            ---@type sbCompBbfB2body
+-            local comp_body = comp_fish:get_sibling(Bbf_Sandbox_Object_Type.b2body)
+-            ---@type sbCompBbfB2world
+-            local comp_world = self.sandbox:get_singleton_comp(Bbf_Sandbox_Object_Type.b2world)
+-            local fish_pos = comp_body.body_ptr:GetPosition()
+-            local aabb_lower_y = fish_pos.y - fixed_number.make(5)
+-            local aabb_upper_y = fish_pos.y + fixed_number.make(5)
+-            local aabb_lower_x = fish_pos.x + fixed_number.make(comp_fish.face_dir) * fixed_number.make(20)
+-            local aabb_upper_x = fish_pos.x
+-            log_print("--- ll uu", aabb_lower_x, aabb_lower_y, aabb_upper_x, aabb_upper_y)
+-            local aabb = Box2dUtils.make_aabb(aabb_lower_x, aabb_lower_y, aabb_upper_x, aabb_upper_y)
+-            ---@param fixture b2Fixture
+-            Box2dUtils.query_aabb(comp_world.world, aabb, function(fixture)
+-                local hit_eid = fixture:GetBody():GetUserDataInt64()
+-                if hit_eid ~= comp_fish.eid then
+-                    log_print("Box2dUtils.query_aabb hit ", hit_eid)
+-                    local hit_comp_fish = self.sandbox:get_comp(hit_eid, Bbf_Sandbox_Object_Type.fish)
+-                    if hit_comp_fish then
+-                        self:_do_set_dizzy(hit_comp_fish, Bbf_Fight_Def.frame_per_sec * 10)
+-                        self:_do_set_move_speed(hit_comp_fish)
+-                    end
+-                end
+-                return true
+-            end)
+-        end
+-    end
+-end
+-
+----@param comp_fish  sbCompBbfFish
+-function sbSysBbfFish:_do_set_dizzy(comp_fish, dizzy_steps)
+-    if dizzy_steps >= 0 then
+-        local end_step_id = self.sandbox.curr_step_id + dizzy_steps
+-        if end_step_id > comp_fish.dizzy_end_step_id then
+-            comp_fish.dizzy_end_step_id = end_step_id
+-            comp_fish.curr_state = comp_fish.curr_state | Bbf_Fish_State.dizzy
+-        end
+-    else
+-        comp_fish.dizzy_end_step_id = 0
+-        comp_fish.curr_state = comp_fish.curr_state | (~Bbf_Fish_State.dizzy)
+-    end
+-    self.sandbox.listener:on_event_change_fish_dizzy(comp_fish)
+-end
+-
+----@param msg LockStepMap
+-function sbSysBbfFish:_on_cmd_eat_fish(msg)
+-    local win_eid = msg:get("win_eid")
+-    local lose_eid = msg:get("lose_eid")
+-    ---@type sbCompBbfFish
+-    local win_fish = self.sandbox:get_comp(win_eid, Bbf_Sandbox_Object_Type.fish)
+-    ---@type sbCompBbfFish
+-    local lose_fish = self.sandbox:get_comp(lose_eid, Bbf_Sandbox_Object_Type.fish)
+-    if win_fish then
+-        ---@type sbCompBbfRole
+-        local win_role = win_fish:get_sibling(Bbf_Sandbox_Object_Type.role)
+-        if win_role then
+-            if win_role.enhance_stage < Bbf_Fish_Enhance_Stage_Max then
+-                win_role.enhance_stage_progress = win_role.enhance_stage_progress + 1
+-                if win_role.enhance_stage_progress >= Bbf_Fish_Enhance_Stage_Progress_Max then
+-                    win_role.enhance_stage = win_role.enhance_stage + 1
+-                    win_role.enhance_stage_progress = 0
+-                    win_fish.fish_size = sbSysBbfFish.cal_fish_size(win_fish)
+-                    local comp_body = win_fish:get_sibling(Bbf_Sandbox_Object_Type.b2body)
+-                    if comp_body then
+-                        local shape = native.box2d.ToCircle(comp_body.body_shape_ptr:GetShape())
+-                        shape.m_radius = win_fish.fish_size
+-                    end
+-                    -- todo: size变化事件
+-                end
+-            end
+-        end
+-    end
+-    if lose_fish then
+-        ---@type sbCompBbfRole
+-        local lose_role = lose_fish:get_sibling(Bbf_Sandbox_Object_Type.role)
+-        if lose_role then
+-            lose_role.enhance_stage_progress = 0
+-            -- todo: 进度变化事件
+-        end
+-        self:_do_rebirth(lose_fish)
+-    end
+-    if win_fish and lose_fish then
+-        self.sandbox.listener:on_event_eat_fish(win_fish, lose_fish)
+-    end
+-end
+-
+-function sbSysBbfFish.cal_fish_size(comp_fish)
+-    local ret = comp_fish.fish_size_base
+-    ---@type sbCompBbfFish
+-    local comp_role = comp_fish:get_sibling(Bbf_Sandbox_Object_Type.role)
+-    if comp_role then
+-        ret = ret + fixed_number.make(comp_role.enhance_stage)
+-    end
+-    return ret
+-end
+-
+diff --git a/server/lua_script/servers/common/logic/fight/game_play_impl/bbf_sandbox/system/sb_sys_bbf_fish/sb_sys_bbf_fish.lua b/server/lua_script/servers/common/logic/fight/game_play_impl/bbf_sandbox/system/sb_sys_bbf_fish/sb_sys_bbf_fish.lua
+index 23be7baf..25f976ad 100644
+--- a/server/lua_script/servers/common/logic/fight/game_play_impl/bbf_sandbox/system/sb_sys_bbf_fish/sb_sys_bbf_fish.lua
++++ b/server/lua_script/servers/common/logic/fight/game_play_impl/bbf_sandbox/system/sb_sys_bbf_fish/sb_sys_bbf_fish.lua
+@@ -147,13 +147,15 @@ function sbSysBbfFish:_on_cmd_use_skill(msg)
+     ---@type sbCompBbfFish
+     local comp_fish = self.sandbox:get_comp(eid, Bbf_Sandbox_Object_Type.fish)
+     if comp_fish then
++        local target_eid, target_pos, target_dir = self:_skill_util_extract_params(msg)
+         local skill_name = msg:get("skill_name", "")
+         if Bbf_Skill_Name.fish_run == skill_name then
+-            self:_impl_skill_run(comp_fish, skill_name, msg)
++            self:_impl_skill_run(comp_fish, msg, skill_name, target_eid, target_pos, target_pos, target_dir)
+         end
+         if Bbf_Skill_Name.fish_attack == skill_name then
+-            self:_impl_skill_attack(comp_fish, skill_name, msg)
++            self:_impl_skill_attack(comp_fish, msg, skill_name, target_eid, target_pos, target_pos, target_dir)
+         end
++        self.sandbox.listener:on_event_use_skill(comp_fish, msg, skill_name, target_eid, target_pos, target_dir)
+     end
+ end
+ 
+diff --git a/server/lua_script/servers/common/logic/fight/game_play_impl/bbf_sandbox/system/sb_sys_bbf_fish/sb_sys_bbf_fish__skill.lua b/server/lua_script/servers/common/logic/fight/game_play_impl/bbf_sandbox/system/sb_sys_bbf_fish/sb_sys_bbf_fish__skill.lua
+index 855bdcc9..96310d49 100644
+--- a/server/lua_script/servers/common/logic/fight/game_play_impl/bbf_sandbox/system/sb_sys_bbf_fish/sb_sys_bbf_fish__skill.lua
++++ b/server/lua_script/servers/common/logic/fight/game_play_impl/bbf_sandbox/system/sb_sys_bbf_fish/sb_sys_bbf_fish__skill.lua
+@@ -2,15 +2,14 @@
+ ---@param msg LockStepMap
+ function sbSysBbfFish._skill_util_extract_params(msg)
+     local target_eid = msg:get("target_eid", -1)
+-    local target_dir = Box2dUtils.make_vec2(
+-            fixed_number.make_from_raw(msg:get("target_dir_raw_x")),
+-            fixed_number.make_from_raw(msg:get("target_dir_raw_y")))
+-    return target_eid, target_dir
++    local target_dir = Box2dUtils.make_vec2(msg:get("target_dir_x"), msg:get("target_dir_y"))
++    local target_pos = Box2dUtils.make_vec2(msg:get("target_pos_x"), msg:get("target_pos_y"))
++    return target_eid, target_pos, target_dir
+ end
+ 
+ ---@param comp_fish sbCompBbfFish
+ ---@param msg LockStepMap
+-function sbSysBbfFish:_impl_skill_run(comp_fish, skill_name, msg)
++function sbSysBbfFish:_impl_skill_run(comp_fish, msg, skill_name, target_eid, target_pos, target_dir)
+     if comp_fish.sandbox.curr_step_id < comp_fish.skill_run_cd_end_step_id then
+         return
+     end
+@@ -22,7 +21,7 @@ end
+ 
+ ---@param comp_fish sbCompBbfFish
+ ---@param msg LockStepMap
+-function sbSysBbfFish:_impl_skill_attack(comp_fish, skill_name, msg)
++function sbSysBbfFish:_impl_skill_attack(comp_fish, msg, skill_name, target_eid, target_pos, target_dir)
+     if comp_fish.sandbox.curr_step_id < comp_fish.skill_attack_cd_end_step_id then
+         return
+     end
+diff --git a/server/lua_script/servers/common/logic/fight/srv_fight_impl/bbf_fight/bbf_fight__client_rpc.lua b/server/lua_script/servers/common/logic/fight/srv_fight_impl/bbf_fight/bbf_fight__client_rpc.lua
+index 42d01558..e266b23e 100644
+--- a/server/lua_script/servers/common/logic/fight/srv_fight_impl/bbf_fight/bbf_fight__client_rpc.lua
++++ b/server/lua_script/servers/common/logic/fight/srv_fight_impl/bbf_fight/bbf_fight__client_rpc.lua
+@@ -170,7 +170,7 @@ function BbfFight:_on_rpc_rollback_bbf_fight(rpc_rsp, step_id)
+     end
+ end
+ 
+-function BbfFight:_on_rpc_use_skill(rpc_rsp, skill_name, target_eid, target_dir_x, target_dir_y)
++function BbfFight:_on_rpc_use_skill(rpc_rsp, skill_name, target_eid, target_pos_x, target_pos_y, target_dir_x, target_dir_y)
+     rpc_rsp:response()
+     local fight_client = rpc_rsp.peer_target
+     local opera = LockStepMap:new()
+@@ -178,8 +178,10 @@ function BbfFight:_on_rpc_use_skill(rpc_rsp, skill_name, target_eid, target_dir_
+     opera:set("role_id", fight_client.wt.role.role_id)
+     opera:set("skill_name", skill_name)
+     opera:set("target_eid", target_eid or -1)
+-    opera:set("target_dir_raw_x", fixed_number.make(target_dir_x or 0).raw_data)
+-    opera:set("target_dir_raw_y", fixed_number.make(target_dir_y or 0).raw_data)
++    opera:set("target_pos_x", fixed_number.make(target_pos_x or 0))
++    opera:set("target_pos_y", fixed_number.make(target_pos_y or 0))
++    opera:set("target_dir_x", fixed_number.make(target_dir_x or 0))
++    opera:set("target_dir_y", fixed_number.make(target_dir_y or 0))
+     self._sandbox_next_step_data.opera_list:push_back(opera)
+ end
+ 
+diff --git a/server/lua_script/servers/server_impl/world_sentinel/world_sentinel_service_mgr.lua b/server/lua_script/servers/server_impl/world_sentinel/world_sentinel_service_mgr.lua
+index a1285ea2..542c3c22 100644
+--- a/server/lua_script/servers/server_impl/world_sentinel/world_sentinel_service_mgr.lua
++++ b/server/lua_script/servers/server_impl/world_sentinel/world_sentinel_service_mgr.lua
+@@ -13,6 +13,5 @@ function WorldSentinelServiceMgr:_on_init()
+         svc:init()
+         self:add_service(svc)
+     end
+-
+     return true
+ end

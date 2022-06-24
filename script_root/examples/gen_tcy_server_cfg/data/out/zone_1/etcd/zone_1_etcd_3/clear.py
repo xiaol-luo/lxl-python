@@ -50,6 +50,30 @@ def paramiko_ssh_cmd(ssh_client: paramiko.SSHClient, cmd: ListOrStr, exit_when_e
     return exit_status, "".join(out_lines), "".join(error_lines)
 
 
+def paramiko_sftp_put(ssh_client: paramiko.SSHClient, local_src:str, remote_dst:str):
+    ret = True
+    try:
+        sftp = ssh_client.open_sftp()
+        sftp_attrs = sftp.put(local_src, remote_dst)
+        return None != sftp_attrs
+    except Exception as e:
+        ret = False
+        print("paramiko_sftp_put raise exception src:{0}->dst:{1}, error:{2}".format(local_src, remote_dst, e))
+    return ret
+
+
+def paramiko_sftp_get(ssh_client: paramiko.SSHClient, remote_src:str, local_dst:str):
+    ret = True
+    try:
+        sftp = ssh_client.open_sftp()
+        sftp.get(remote_src, local_dst)
+    except Exception as e:
+        ret = False
+        print("paramiko_sftp_get raise exception src:{0}->dst:{1}, error:{2}".format(remote_src, local_dst, e))
+    return ret
+
+
+
 ssh_client = None
 with IndentFlag():
     ssh_client = paramiko.SSHClient()
@@ -70,6 +94,7 @@ with IndentFlag():
     import random
     ct_name = "ct_{}".format(random.randint(1, 99999999))
     opt_mount_volumes = []
+    opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = ""
     run_cmd = "docker run -itd --name {name} {network} {mount_volumes} {image} {command}".format(

@@ -42,6 +42,9 @@ if __name__ == "__main__":
     logbook.debug("lua.globals.all_setting_json {}", json.dumps(tmp, indent=2))
 
     with IndentFlag():
+        render.render_test.export_test_file(parse_ret.out_setting, zone, None)
+
+    with IndentFlag():
         # etcd
         render.render_etcd.export_cluster_start_file(parse_ret.out_setting, zone, etcd_cluster)
         render.render_etcd.export_cluster_stop_file(parse_ret.out_setting, zone, etcd_cluster)

@@ -1,0 +1,15 @@
+# zone
+# locate_machine
+# to_docker_file_list
+# image
+
+{% import 'common/ssh_help.py.j2' as ssh_help %}
+{% import 'common/docker_help.py.j2' as docker_help %}
+{% import 'common/etcd_help.py.j2' as etcd_help %}
+
+{%- include "common/common_head.py.j2" %}
+
+{% set ssh_client = "ssh_client" %}
+{{ ssh_help.invoke_shell(ssh_client, locate_machine) }}
+{{ docker_help.put_to_docker(ssh_client, image, zone.fo_used_volume_map.values(), to_docker_file_list, "print") }}
+{{ docker_help.get_from_docker(ssh_client, image, zone.fo_used_volume_map.values(), to_docker_file_list, "print") }}

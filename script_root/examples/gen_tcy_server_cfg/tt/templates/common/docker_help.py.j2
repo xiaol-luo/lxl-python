@@ -43,8 +43,9 @@ rm -rf {{volume_used.fo_abs_path}}
 {% macro run_container (ssh_client, container_name, image, cmd, opt="", volumes = None, network=None, net_used=None) -%}
 with IndentFlag():
     opt_mount_volumes = []
-    opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=~/tmp")
-{%- if volumes -%}{%- for e in volumes %}
+    opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
+{%- if volumes -%}
+{%- for e in volumes %}
     opt_mount_volumes.append("--mount type=volume,src={{e.name}},dst={{e.map_path}}")
 {%- endfor -%}{% endif %}
 {% if network %}    opt_network = "{{ opt_network(network) }}"{% else %}    opt_network = ""{% endif %}
@@ -80,6 +81,7 @@ with IndentFlag():
     import random
     ct_name = "ct_{}".format(random.randint(1, 99999999))
     opt_mount_volumes = []
+    opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
 {%- if volumes -%}
 {%- for e in volumes %}
     opt_mount_volumes.append("--mount type=volume,src={{e.name}},dst={{e.map_path}}")
@@ -112,6 +114,42 @@ with IndentFlag():
         "docker container kill {0}".format(ct_name),
         "docker container prune -f",
     ])
+{%- endmacro -%}
+
+
+## ssh_client str
+## image str
+## to_docker_file_list typing.List[LocalAndDockerVolumeUse]
+{% macro put_to_docker (ssh_client, image,  volume_list, to_docker_file_list, print_fn_name=None) -%}
+{%- set volumes = [] -%}
+{%- for e in volume_list %}
+    {%- do volumes.append(e) -%}
+{%- endfor -%}
+{%- for e in to_docker_file_list.values() %}
+paramiko_sftp_put(ssh_client, '{{e.local_path}}', "/tmp/docker_put_to_data.dat")
+{% set run_cmd = [
+    cmd_mkdir_volume_used(e.volume_use, True),
+    "cp -f /root/tmp/docker_put_to_data.dat %s "|format(e.volume_use.fo_abs_path),
+] -%}
+{{ exec_cmds(ssh_client, image, run_cmd, volumes=volumes, print_fn_name=print_fn_name) }}
+{%- endfor %}
+{%- endmacro -%}
+
+## ssh_client str
+## image str
+## from_docker_file_list typing.List[LocalAndDockerVolumeUse]
+{% macro get_from_docker (ssh_client, image,  volume_list, from_docker_file_list, print_fn_name=None) -%}
+{%- set volumes = [] -%}
+{%- for e in volume_list %}
+    {%- do volumes.append(e) -%}
+{%- endfor -%}
+{%- for e in from_docker_file_list.values() %}
+{% set run_cmd = [
+    "cp -f %s /root/tmp/docker_put_to_data.dat"|format(e.volume_use.fo_abs_path),
+] -%}
+{{ exec_cmds(ssh_client, image, run_cmd, volumes=volumes, print_fn_name=print_fn_name) }}
+paramiko_sftp_get(ssh_client, "/tmp/docker_put_to_data.dat", '{{e.local_path}}')
+{%- endfor %}
 {%- endmacro -%}
 
 

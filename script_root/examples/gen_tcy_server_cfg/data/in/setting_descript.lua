@@ -37,6 +37,15 @@ function DockerVolumeUse:figure_out_fields()
     self.fo_abs_path = path_combine(self.docker_volume.map_path, self.relative_path)
 end
 
+---@class LocalAndDockerVolumeUse
+---@field volume_use DockerVolumeUse
+---@field local_path string
+LocalAndDockerVolumeUse = LocalAndDockerVolumeUse or class("LocalAndDockerVolumeUse", SettingBase)
+
+function LocalAndDockerVolumeUse:figure_out_fields()
+    self.volume_use:figure_out_fields()
+end
+
 ---@class DockerNet
 ---@field name string
 ---@field subnet string

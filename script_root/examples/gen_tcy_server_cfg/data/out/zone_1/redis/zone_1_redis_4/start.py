@@ -49,6 +49,30 @@ def paramiko_ssh_cmd(ssh_client: paramiko.SSHClient, cmd: ListOrStr, exit_when_e
         print("paramiko_ssh_cmd fail, exit_code is {0}\n out is {1}\n error is {2}".format(exit_status, "".join(out_lines), "".join(error_lines)))
         sys.exit(exit_status)
     return exit_status, "".join(out_lines), "".join(error_lines)
+
+
+def paramiko_sftp_put(ssh_client: paramiko.SSHClient, local_src:str, remote_dst:str):
+    ret = True
+    try:
+        sftp = ssh_client.open_sftp()
+        sftp_attrs = sftp.put(local_src, remote_dst)
+        return None != sftp_attrs
+    except Exception as e:
+        ret = False
+        print("paramiko_sftp_put raise exception src:{0}->dst:{1}, error:{2}".format(local_src, remote_dst, e))
+    return ret
+
+
+def paramiko_sftp_get(ssh_client: paramiko.SSHClient, remote_src:str, local_dst:str):
+    ret = True
+    try:
+        sftp = ssh_client.open_sftp()
+        sftp.get(remote_src, local_dst)
+    except Exception as e:
+        ret = False
+        print("paramiko_sftp_get raise exception src:{0}->dst:{1}, error:{2}".format(remote_src, local_dst, e))
+    return ret
+
 ssh_client = None
 with IndentFlag():
     ssh_client = paramiko.SSHClient()
@@ -69,6 +93,7 @@ with IndentFlag():
     import random
     ct_name = "ct_{}".format(random.randint(1, 99999999))
     opt_mount_volumes = []
+    opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
     run_cmd = "docker run -itd --name {name} {network} {mount_volumes} {image} {command}".format(
@@ -90,10 +115,10 @@ with IndentFlag():
 
 with IndentFlag():
     opt_mount_volumes = []
-    opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=~/tmp")
+    opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.183"
+    opt_ip = "--ip 10.0.1.199"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_redis_4", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"redis-server --port 6379 --dir /root/zone/zone_1/redis/zone_1_redis_4 --cluster-enabled yes --bind 0.0.0.0"
