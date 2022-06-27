@@ -120,34 +120,34 @@ with IndentFlag():
 ## ssh_client str
 ## image str
 ## to_docker_file_list typing.List[LocalAndDockerVolumeUse]
-{% macro put_to_docker (ssh_client, image,  volume_list, to_docker_file_list, print_fn_name=None) -%}
-{%- set volumes = [] -%}
-{%- for e in volume_list %}
-    {%- do volumes.append(e) -%}
-{%- endfor -%}
+{% macro put_to_docker (ssh_client, image, to_docker_file_list, print_fn_name=None) -%}
+{%- set volume_map = {} -%}
+{%- for e in to_docker_file_list.values() %}
+    {%- do volume_map.update({e.volume_use.docker_volume.name: e.volume_use.docker_volume}) -%}
+{%- endfor %}
 {%- for e in to_docker_file_list.values() %}
 paramiko_sftp_put(ssh_client, '{{e.local_path}}', "/tmp/docker_put_to_data.dat")
 {% set run_cmd = [
     cmd_mkdir_volume_used(e.volume_use, True),
     "cp -f /root/tmp/docker_put_to_data.dat %s "|format(e.volume_use.fo_abs_path),
 ] -%}
-{{ exec_cmds(ssh_client, image, run_cmd, volumes=volumes, print_fn_name=print_fn_name) }}
+{{ exec_cmds(ssh_client, image, run_cmd, volumes=volume_map.values(), print_fn_name=print_fn_name) }}
 {%- endfor %}
 {%- endmacro -%}
 
 ## ssh_client str
 ## image str
 ## from_docker_file_list typing.List[LocalAndDockerVolumeUse]
-{% macro get_from_docker (ssh_client, image,  volume_list, from_docker_file_list, print_fn_name=None) -%}
-{%- set volumes = [] -%}
-{%- for e in volume_list %}
-    {%- do volumes.append(e) -%}
-{%- endfor -%}
+{% macro get_from_docker (ssh_client, image, from_docker_file_list, print_fn_name=None) -%}
+{%- set volume_map = {} -%}
+{%- for e in from_docker_file_list.values() %}
+    {%- do volume_map.update({e.volume_use.docker_volume.name: e.volume_use.docker_volume}) -%}
+{%- endfor %}
 {%- for e in from_docker_file_list.values() %}
 {% set run_cmd = [
     "cp -f %s /root/tmp/docker_put_to_data.dat"|format(e.volume_use.fo_abs_path),
 ] -%}
-{{ exec_cmds(ssh_client, image, run_cmd, volumes=volumes, print_fn_name=print_fn_name) }}
+{{ exec_cmds(ssh_client, image, run_cmd, volumes=volume_map.values(), print_fn_name=print_fn_name) }}
 paramiko_sftp_get(ssh_client, "/tmp/docker_put_to_data.dat", '{{e.local_path}}')
 {%- endfor %}
 {%- endmacro -%}

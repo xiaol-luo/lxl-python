@@ -11,5 +11,5 @@
 
 {% set ssh_client = "ssh_client" %}
 {{ ssh_help.invoke_shell(ssh_client, locate_machine) }}
-{{ docker_help.put_to_docker(ssh_client, image, zone.fo_used_volume_map.values(), to_docker_file_list, "print") }}
-{{ docker_help.get_from_docker(ssh_client, image, zone.fo_used_volume_map.values(), to_docker_file_list, "print") }}
+{{ docker_help.put_to_docker(ssh_client, image, to_docker_file_list, "print") }}
+{{ docker_help.get_from_docker(ssh_client, image, to_docker_file_list, "print") }}
