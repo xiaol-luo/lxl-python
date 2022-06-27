@@ -6,6 +6,7 @@ zone.main_network = docker_net_map[Docker_Net_Name.net_zone_1]
 zone.etcd_cluster = require("zone_1.zone_1_etcd_cluster")
 zone.redis_cluster = require("zone_1.zone_1_redis_cluster")
 zone.mongo_cluster = require("zone_1.zone_1_mongo_cluster")
+zone.game_server_cluster = require("zone_1.zone_1_game_server_cluster")
 
 do
     ---@type LocalAndDockerVolumeUse[]

@@ -82,7 +82,8 @@ with IndentFlag():
     ssh_client.connect(hostname="119.91.239.128", port="22", username="root", \
         pkey=paramiko.RSAKey.from_private_key_file(r"C:/Users/luoxiaolong/.ssh/keys/root/id_rsa", "xiaolzz"))
 
-paramiko_sftp_put(ssh_client, 'E:/diff.txt', "/tmp/docker_put_to_data.dat")
+paramiko_sftp_put(ssh_client, 'E:/diff.txt', "/tmp/docker_put_to_data_{0}".format(1))
+paramiko_sftp_put(ssh_client, 'E:/diff.txt', "/tmp/docker_put_to_data_{0}".format(2))
 with IndentFlag():
     # run docker container
     import random
@@ -103,38 +104,17 @@ with IndentFlag():
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' cp -f /root/tmp/docker_put_to_data.dat /root/zone/test/diff.txt  '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' cp -f /root/tmp/docker_put_to_data_1 /root/zone/test/diff.txt  '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    # remove docker container
-    paramiko_ssh_cmd(ssh_client, [
-        "docker container kill {0}".format(ct_name),
-        "docker container prune -f",
-    ])
-paramiko_sftp_put(ssh_client, 'E:/diff.txt', "/tmp/docker_put_to_data.dat")
-with IndentFlag():
-    # run docker container
-    import random
-    ct_name = "ct_{}".format(random.randint(1, 99999999))
-    opt_mount_volumes = []
-    opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
-    opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
-    opt_network = ""
-    run_cmd = "docker run -itd --name {name} {network} {mount_volumes} {image} {command}".format(
-        name=ct_name, network=opt_network,  mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian", command="/bin/bash")
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, run_cmd)
-    if 0 != ret:
-        print("docker exec: run docker container fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-        sys.exit(ret)
-    # execute cmds in docker contianer
     ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mkdir -p `dirname /root/zone/test/diff2.txt` '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' cp -f /root/tmp/docker_put_to_data.dat /root/zone/test/diff2.txt  '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' cp -f /root/tmp/docker_put_to_data_2 /root/zone/test/diff2.txt  '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
@@ -144,6 +124,8 @@ with IndentFlag():
         "docker container kill {0}".format(ct_name),
         "docker container prune -f",
     ])
+
+
 
 with IndentFlag():
     # run docker container
@@ -160,7 +142,12 @@ with IndentFlag():
         print("docker exec: run docker container fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
         sys.exit(ret)
     # execute cmds in docker contianer
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' cp -f /root/zone/test/diff.txt /root/tmp/docker_put_to_data.dat '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' cp -f /root/zone/test/diff.txt /root/tmp/docker_get_from_data_1 '''))
+    if 0 != ret:
+        print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
+    else:
+        print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' cp -f /root/zone/test/diff2.txt /root/tmp/docker_get_from_data_2 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
@@ -170,30 +157,5 @@ with IndentFlag():
         "docker container kill {0}".format(ct_name),
         "docker container prune -f",
     ])
-paramiko_sftp_get(ssh_client, "/tmp/docker_put_to_data.dat", 'E:/diff.txt')
-with IndentFlag():
-    # run docker container
-    import random
-    ct_name = "ct_{}".format(random.randint(1, 99999999))
-    opt_mount_volumes = []
-    opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
-    opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
-    opt_network = ""
-    run_cmd = "docker run -itd --name {name} {network} {mount_volumes} {image} {command}".format(
-        name=ct_name, network=opt_network,  mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian", command="/bin/bash")
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, run_cmd)
-    if 0 != ret:
-        print("docker exec: run docker container fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-        sys.exit(ret)
-    # execute cmds in docker contianer
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' cp -f /root/zone/test/diff2.txt /root/tmp/docker_put_to_data.dat '''))
-    if 0 != ret:
-        print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    else:
-        print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    # remove docker container
-    paramiko_ssh_cmd(ssh_client, [
-        "docker container kill {0}".format(ct_name),
-        "docker container prune -f",
-    ])
-paramiko_sftp_get(ssh_client, "/tmp/docker_put_to_data.dat", 'E:/diff.txt')
+paramiko_sftp_get(ssh_client, "/tmp/docker_get_from_data_{}".format(1), 'E:/diff.txt')
+paramiko_sftp_get(ssh_client, "/tmp/docker_get_from_data_{}".format(2), 'E:/diff.txt')

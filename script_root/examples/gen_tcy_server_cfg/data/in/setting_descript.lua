@@ -81,7 +81,7 @@ function DockerNet:cal_ip(ip_suffix, is_apply)
     else
         ret = string.format("%s.%s", self.fo_ip_prefix, ip_suffix)
     end
-    print("DockerNet:cal_ip ", ip_suffix, is_apply, self._ip_dhcp_val)
+    print("DockerNet:cal_ip ", ret, ip_suffix, is_apply, self._ip_dhcp_val)
     return ret
 end
 
@@ -101,7 +101,7 @@ end
 PortPublish = PortPublish or class("PortPublish", SettingBase)
 
 ---@class EtcdServer
----@field namesubprocess
+---@field name string
 ---@field locate_machine Machine
 ---@field docker_ip DockerNetUse
 ---@field client_port number
@@ -254,11 +254,23 @@ end
 ---@field mongo_cluster MongoServerCluster
 ---@field redis_cluster RedisServerCluster
 ---@field etcd_cluster EtcdServerCluster
----@field game_servers
+---@field game_server_cluster
 ---@field main_network DockerNet
 ---@field fo_used_network_map table<string, DockerNet> @不包含main_network
 ---@field fo_used_volume_map table<string, DockerVolume>
 Zone = Zone or class("Zone", SettingBase)
+
+---@return GameServer
+function Zone:get_game_server(server_name)
+    local ret = nil
+    for _, v in ipairs(self.game_server_cluster.server_list) do
+        if v.server_name == server_name then
+            ret = v
+            break
+        end
+    end
+    return ret
+end
 
 function Zone:figure_out_fields()
     self.fo_used_network_map = {}
@@ -273,12 +285,111 @@ function Zone:figure_out_fields()
             self.fo_used_volume_map[elem.name] = elem
         end
     end)
+    ---@param server GameServer
+    for server_idx, server in ipairs(self.game_server_cluster.server_list) do
+        do
+            local remote_server_map = server.remote_server_map
+            server.remote_server_map = {}
+            for k, v in pairs(remote_server_map) do
+                ---@type GameServer
+                local other_server = self:get_game_server(v.ext_params)
+                if other_server then
+                    ---@type RemoteServer
+                    local rs = {}
+                    server.remote_server_map[k] = rs
+                    rs.ip = other_server.docker_ip.fo_ip
+                    if Regular_Replace_Flag.zone_game_server_http_ip then
+                        rs.port = other_server.http_port
+                    end
+                    if Regular_Replace_Flag.zone_game_server_client_ip then
+                        rs.port = other_server.client_port
+                    end
+                end
+            end
+        end
+        do
+            local etcd_cluster_map = server.etcd_cluster_map
+            server.etcd_cluster_map = {}
+            for k, v in pairs(etcd_cluster_map) do
+                if Regular_Replace_Flag.zone_db_cluster == v.flag then
+                   server.etcd_cluster_map[k] = self.etcd_cluster
+                end
+            end
+        end
+        do
+            local redis_cluster_map = server.redis_cluster_map
+            server.redis_cluster_map = {}
+            for k, v in pairs(redis_cluster_map) do
+                if Regular_Replace_Flag.zone_db_cluster == v.flag then
+                   server.redis_cluster_map[k] = self.redis_cluster
+                end
+            end
+        end
+        do
+            local mongo_cluster_map = server.mongo_cluster_map
+            server.mongo_cluster_map = {}
+            for k, v in pairs(mongo_cluster_map) do
+                if Regular_Replace_Flag.zone_db_cluster == v.flag then
+                   server.mongo_cluster_map[k] = self.mongo_cluster
+                end
+            end
+        end
+    end
 end
 
+---@class RemoteServer
+---@field ip string
+---@field port string
+RemoteServer = RemoteServer or class("RemoteServer", SettingBase)
+
+---@class GameServer
+---@field server_role string
+---@field server_name string
+---@field locate_machine Machine
+---@field image string
+---@field docker_ip DockerNetUse
+---@field client_port number
+---@field peer_port number
+---@field http_port number
+---@field work_dir DockerVolumeUse
+---@field config_file DockerVolumeUse
+---@field remote_server_map table<string, RemoteServer>
+---@field etcd_cluster_map table<string, EtcdServerCluster>
+---@field redis_cluster_map table<string, RedisServerCluster>
+---@field mongo_cluster_map table<string, MongoServerCluster>
+GameServer = GameServer or class("GameServer", SettingBase)
+
+---@class GameServerCluster
+---@field server_list GameServer[]
+GameServerCluster = GameServerCluster or class("GameServerCluster", SettingBase)
 
 
 ---@class Mongo_Repl_Set_Role
 Mongo_Repl_Set_Role = {}
 Mongo_Repl_Set_Role.configsvr = "configsvr"
 Mongo_Repl_Set_Role.shardsvr = "shardsvr"
+
+
+---@class Game_Server_Role
+Game_Server_Role = {}
+Game_Server_Role.platform = "platform"
+Game_Server_Role.auth = "auth"
+Game_Server_Role.login = "login"
+Game_Server_Role.world = "world"
+Game_Server_Role.game = "game"
+Game_Server_Role.gate = "gate"
+Game_Server_Role.match = "match"
+Game_Server_Role.fight = "fight"
+Game_Server_Role.room = "room"
+Game_Server_Role.create_role = "create_role"
+Game_Server_Role.world_sentinel = "world_sentinel"
+Game_Server_Role.workbench = "workbench"
+Game_Server_Role.message_hub = "message_hub"
+
+---@class Regular_Replace_Flag
+Regular_Replace_Flag = {}
+Regular_Replace_Flag.zone_db_cluster = "zone_db_cluster"
+Regular_Replace_Flag.zone_game_server_client_ip = "zone_game_server_client_ip"
+Regular_Replace_Flag.zone_game_server_http_ip = "zone_game_server_http_ip"
+
 

@@ -125,14 +125,16 @@ with IndentFlag():
 {%- for e in to_docker_file_list.values() %}
     {%- do volume_map.update({e.volume_use.docker_volume.name: e.volume_use.docker_volume}) -%}
 {%- endfor %}
+{%- set run_cmd_list = [] -%}
 {%- for e in to_docker_file_list.values() %}
-paramiko_sftp_put(ssh_client, '{{e.local_path}}', "/tmp/docker_put_to_data.dat")
-{% set run_cmd = [
+paramiko_sftp_put(ssh_client, '{{e.local_path}}', "/tmp/docker_put_to_data_{0}".format({{loop.index}}))
+{%- set run_cmd = [
     cmd_mkdir_volume_used(e.volume_use, True),
-    "cp -f /root/tmp/docker_put_to_data.dat %s "|format(e.volume_use.fo_abs_path),
+    "cp -f /root/tmp/docker_put_to_data_%s %s "|format(loop.index, e.volume_use.fo_abs_path),
 ] -%}
-{{ exec_cmds(ssh_client, image, run_cmd, volumes=volume_map.values(), print_fn_name=print_fn_name) }}
+{%- do run_cmd_list.extend(run_cmd) -%}
 {%- endfor %}
+{{ exec_cmds(ssh_client, image, run_cmd_list, volumes=volume_map.values(), print_fn_name=print_fn_name) }}
 {%- endmacro -%}
 
 ## ssh_client str
@@ -143,14 +145,61 @@ paramiko_sftp_put(ssh_client, '{{e.local_path}}', "/tmp/docker_put_to_data.dat")
 {%- for e in from_docker_file_list.values() %}
     {%- do volume_map.update({e.volume_use.docker_volume.name: e.volume_use.docker_volume}) -%}
 {%- endfor %}
+{%- set run_cmd_list = [] -%}
 {%- for e in from_docker_file_list.values() %}
 {% set run_cmd = [
-    "cp -f %s /root/tmp/docker_put_to_data.dat"|format(e.volume_use.fo_abs_path),
+    "cp -f %s /root/tmp/docker_get_from_data_%s"|format(e.volume_use.fo_abs_path, loop.index),
 ] -%}
-{{ exec_cmds(ssh_client, image, run_cmd, volumes=volume_map.values(), print_fn_name=print_fn_name) }}
-paramiko_sftp_get(ssh_client, "/tmp/docker_put_to_data.dat", '{{e.local_path}}')
+{%- do run_cmd_list.extend(run_cmd) -%}
+{%- endfor %}
+{{ exec_cmds(ssh_client, image, run_cmd_list, volumes=volume_map.values(), print_fn_name=print_fn_name) }}
+{%- for e in from_docker_file_list.values() %}
+paramiko_sftp_get(ssh_client, "/tmp/docker_get_from_data_{}".format({{loop.index}}), '{{e.local_path}}')
 {%- endfor %}
 {%- endmacro -%}
+
+
+## ssh_client str
+## image str
+{% macro copy_to_docker (ssh_client, image, volume_list, file_map, print_fn_name=None) -%}
+{%- set volume_map = {} -%}
+{%- for k, v in volume_list.items()() %}
+    {%- do volume_map.update({k: v}) -%}
+{%- endfor %}
+{%- set run_cmd_list = [] -%}
+{%- for k, v in file_map.items() %}
+paramiko_sftp_put(ssh_client, '{{k}}', "/tmp/docker_put_to_data_{0}".format({{loop.index}}))
+{%- set run_cmd = [
+    cmd_mkdir_volume_used(v, True),
+    "cp -f /root/tmp/docker_put_to_data_%s %s "|format(loop.index, v),
+] -%}
+{%- do run_cmd_list.extend(run_cmd) -%}
+{%- endfor %}
+{{ exec_cmds(ssh_client, image, run_cmd_list, volumes=volume_map.values(), print_fn_name=print_fn_name) }}
+{%- endmacro -%}
+
+## ssh_client str
+## image str
+{% macro copy_from_docker (ssh_client, image, volume_list, file_map, print_fn_name=None) -%}
+{%- set volume_map = {} -%}
+{%- for k, v in volume_list.items()() %}
+    {%- do volume_map.update({k: v}) -%}
+{%- endfor %}
+{%- set run_cmd_list = [] -%}
+{%- for k, v in file_map.items() %}
+{% set run_cmd = [
+    "cp -f %s /root/tmp/docker_get_from_data_%s"|format(k, loop.index),
+] -%}
+{%- do run_cmd_list.extend(run_cmd) -%}
+{%- endfor %}
+{{ exec_cmds(ssh_client, image, run_cmd_list, volumes=volume_map.values(), print_fn_name=print_fn_name) }}
+{%- for k, v in file_map.items() %}
+paramiko_sftp_get(ssh_client, "/tmp/docker_get_from_data_{}".format({{loop.index}}), '{{v}}')
+{%- endfor %}
+{%- endmacro -%}
+
+
+
 
 
 
