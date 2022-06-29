@@ -117,18 +117,22 @@ EtcdServer = EtcdServer or class("EtcdServer", SettingBase)
 ---@field cluster_token string
 ---@field fo_initial_cluster string
 ---@field fo_end_points string
+---@field fo_game_server_hosts string @给生成game_config.xml用
 EtcdServerCluster = EtcdServerCluster or class("EtcdServerCluster", SettingBase)
 
 function EtcdServerCluster:figure_out_fields()
     do
         local elems = {}
         local end_points = {}
+        local game_server_hosts = {}
         for _, v in ipairs(self.server_list) do
             table.insert(elems, string.format("%s=http://%s:%s", v.name, v.docker_ip.fo_ip, v.peer_port))
             table.insert(end_points, string.format("//%s:%s", v.docker_ip.fo_ip, v.client_port))
+            table.insert(game_server_hosts, string.format("http://%s:%s", v.docker_ip.fo_ip, v.peer_port))
         end
         self.fo_initial_cluster = table.concat(elems, ",")
         self.fo_end_points = table.concat(end_points, ",")
+        self.fo_game_server_hosts = table.concat(game_server_hosts, ";")
     end
 end
 
@@ -147,7 +151,8 @@ RedisServer = RedisServer or class("RedisServer", SettingBase)
 ---@field server_list table<number, RedisServer>
 ---@field fo_cli_visit_ip string @提供给redis-cli访问
 ---@field fo_cli_visit_port string @提供给redis-cli访问
----@field fo_all_hosts table<string, string>
+---@field fo_all_hosts string
+---@field fo_comma_separate_all_hosts string
 RedisServerCluster = RedisServerCluster or class("RedisServerCluster", SettingBase)
 
 function RedisServerCluster:figure_out_fields()
@@ -161,6 +166,7 @@ function RedisServerCluster:figure_out_fields()
             end
         end
         self.fo_all_hosts = table.concat(all_hosts, " ")
+        self.fo_comma_separate_all_hosts = table.concat(all_hosts, ",")
     end
 end
 
@@ -254,7 +260,7 @@ end
 ---@field mongo_cluster MongoServerCluster
 ---@field redis_cluster RedisServerCluster
 ---@field etcd_cluster EtcdServerCluster
----@field game_server_cluster
+---@field game_server_cluster GameServerCluster
 ---@field main_network DockerNet
 ---@field fo_used_network_map table<string, DockerNet> @不包含main_network
 ---@field fo_used_volume_map table<string, DockerVolume>

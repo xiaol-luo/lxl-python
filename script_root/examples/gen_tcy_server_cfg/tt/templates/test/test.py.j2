@@ -1,15 +1,65 @@
-# zone
-# locate_machine
-# to_docker_file_list
-# image
+# zone Zone
+# server GameServer
 
-{% import 'common/ssh_help.py.j2' as ssh_help %}
-{% import 'common/docker_help.py.j2' as docker_help %}
-{% import 'common/etcd_help.py.j2' as etcd_help %}
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<zone>{{zone.name}}</zone>
+	<server_role>{{server.server_role}}</server_role>
+	<server_name>{{server.server_name}}</server_name>
 
-{%- include "common/common_head.py.j2" %}
+	<etcd_server>
+		<element>for_make_array</element>
+        <element>for_make_array</element>
+{% for k, v in server.etcd_cluster_map.items() -%}		
+		<element>
+			<name>{{ k }}</name>
+			<host>{{ v.fo_game_server_hosts }}</host>
+			<user>{{ v.user }}</user>
+			<pwd>{{ v.pwd }}</pwd>
+		</element>
+{%- endfor %}		
+	</etcd_server>
 
-{% set ssh_client = "ssh_client" %}
-{{ ssh_help.invoke_shell(ssh_client, locate_machine) }}
-{{ docker_help.put_to_docker(ssh_client, image, to_docker_file_list, "print") }}
-{{ docker_help.get_from_docker(ssh_client, image, to_docker_file_list, "print") }}
+	<redis_service>
+		<element>for_make_array</element>
+		<element>for_make_array</element>
+{% for k, v in server.redis_cluster_map.items() -%}
+		<element>
+			<name>{{k}}</name>
+			<is_cluster>1</is_cluster>
+			<host>{{ v.fo_comma_separate_all_hosts }}</host>
+			<pwd>{{ v.pwd }}</pwd>
+			<thread_num>3</thread_num>
+			<cnn_timeout_ms>3000</cnn_timeout_ms>
+			<cmd_timeout_ms>3000</cmd_timeout_ms>
+		</element>
+{%- endfor %}
+	</redis_service>
+
+	<mongo_service>
+		<element>for_make_array</element>
+		<element>for_make_array</element>
+{% for k, v in server.mongo_cluster_map.items() -%}		
+		<element>
+			<name>{{ k }}</name>
+			<host>{{ v.mongos_server_list[1].docker_ip.fo_ip}}:{{ v.mongos_server_list[1].client_port }}</host>
+			<auth_db>{{ v.user_list[1].role.db }}</auth_db>
+			<user>{{ v.user_list[1].name }}</user>
+			<pwd>{{ v.user_list[1].pwd }}</pwd>
+			<thread_num>3</thread_num>
+		</element>
+{%- endfor %}
+	</mongo_service>
+
+	<advertise_peer_ip>{{ server.docker_ip.fo_ip }}</advertise_peer_ip>
+	<advertise_peer_port>{{ server.peer_port }}</advertise_peer_port>
+	<advertise_client_ip>{{ server.docker_ip.fo_ip }}</advertise_client_ip>
+	<advertise_client_port>{{ server.client_port }}</advertise_client_port>
+	<advertise_http_ip>127.0.0.1</advertise_http_ip>
+	<advertise_http_port>30103</advertise_http_port>
+	<platform_http_ip>127.0.0.1</platform_http_ip>
+	<platform_http_port>30053</platform_http_port>
+</root>
+
+
+

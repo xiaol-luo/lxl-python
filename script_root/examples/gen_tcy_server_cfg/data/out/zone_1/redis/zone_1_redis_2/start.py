@@ -118,7 +118,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.203"
+    opt_ip = "--ip 10.0.1.181"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_redis_2", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"redis-server --port 6379 --dir /root/zone/zone_1/redis/zone_1_redis_2 --cluster-enabled yes --bind 0.0.0.0"

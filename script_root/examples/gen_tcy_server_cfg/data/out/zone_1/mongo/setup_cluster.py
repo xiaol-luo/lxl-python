@@ -146,7 +146,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.180"
+    opt_ip = "--ip 10.0.1.198"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_1", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --configsvr --replSet rs_cfg  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_1/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_1/log.txt"
@@ -305,7 +305,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.181"
+    opt_ip = "--ip 10.0.1.199"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_2", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --configsvr --replSet rs_cfg  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_2/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_2/log.txt"
@@ -464,7 +464,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.182"
+    opt_ip = "--ip 10.0.1.200"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_3", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --configsvr --replSet rs_cfg  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_3/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_3/log.txt"
@@ -623,7 +623,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.183"
+    opt_ip = "--ip 10.0.1.201"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_11", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --shardsvr --replSet rs_db_1  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_11/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_11/log.txt"
@@ -782,7 +782,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.184"
+    opt_ip = "--ip 10.0.1.202"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_12", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --shardsvr --replSet rs_db_1  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_12/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_12/log.txt"
@@ -941,7 +941,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.185"
+    opt_ip = "--ip 10.0.1.203"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_13", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --shardsvr --replSet rs_db_1  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_13/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_13/log.txt"
@@ -1100,7 +1100,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.186"
+    opt_ip = "--ip 10.0.1.204"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_21", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --shardsvr --replSet rs_db_2  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_21/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_21/log.txt"
@@ -1259,7 +1259,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.187"
+    opt_ip = "--ip 10.0.1.205"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_22", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --shardsvr --replSet rs_db_2  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_22/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_22/log.txt"
@@ -1418,7 +1418,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.188"
+    opt_ip = "--ip 10.0.1.206"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_23", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --shardsvr --replSet rs_db_2  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_23/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_23/log.txt"
@@ -1577,7 +1577,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.189"
+    opt_ip = "--ip 10.0.1.207"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_31", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --shardsvr --replSet rs_db_3  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_31/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_31/log.txt"
@@ -1736,7 +1736,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.190"
+    opt_ip = "--ip 10.0.1.208"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_32", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --shardsvr --replSet rs_db_3  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_32/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_32/log.txt"
@@ -1895,7 +1895,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.191"
+    opt_ip = "--ip 10.0.1.209"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_33", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --shardsvr --replSet rs_db_3  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_33/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_33/log.txt"
@@ -2049,10 +2049,10 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.192"
+    opt_ip = "--ip 10.0.1.210"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongos_1", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
-        command=r"mongos --bind_ip 0.0.0.0 --port 27017 --logpath /root/zone/zone_1/mongos/zone_1_mongos_1/log.txt --configdb rs_cfg/10.0.1.180:27017,10.0.1.181:27017,10.0.1.182:27017"
+        command=r"mongos --bind_ip 0.0.0.0 --port 27017 --logpath /root/zone/zone_1/mongos/zone_1_mongos_1/log.txt --configdb rs_cfg/10.0.1.198:27017,10.0.1.199:27017,10.0.1.200:27017"
     )
     ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, run_cmd, exit_when_error=True)
     if 0 != ret:
@@ -2163,22 +2163,22 @@ with IndentFlag():
         print("docker exec: run docker container fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
         sys.exit(ret)
     # execute cmds in docker contianer
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mongosh --host 10.0.1.180 --port 27017  --eval 'rs.initiate({ _id:\"rs_cfg\", members:[ {_id:0, host:\"10.0.1.180:27017\"},{_id:1, host:\"10.0.1.181:27017\"},{_id:2, host:\"10.0.1.182:27017\"} ] }); rs.secondaryOk()' '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mongosh --host 10.0.1.207 --port 27017  --eval 'rs.initiate({ _id:\"rs_db_3\", members:[ {_id:0, host:\"10.0.1.207:27017\"},{_id:1, host:\"10.0.1.208:27017\"},{_id:2, host:\"10.0.1.209:27017\"} ] }); rs.secondaryOk()' '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mongosh --host 10.0.1.183 --port 27017  --eval 'rs.initiate({ _id:\"rs_db_1\", members:[ {_id:0, host:\"10.0.1.183:27017\"},{_id:1, host:\"10.0.1.184:27017\"},{_id:2, host:\"10.0.1.185:27017\"} ] }); rs.secondaryOk()' '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mongosh --host 10.0.1.198 --port 27017  --eval 'rs.initiate({ _id:\"rs_cfg\", members:[ {_id:0, host:\"10.0.1.198:27017\"},{_id:1, host:\"10.0.1.199:27017\"},{_id:2, host:\"10.0.1.200:27017\"} ] }); rs.secondaryOk()' '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mongosh --host 10.0.1.186 --port 27017  --eval 'rs.initiate({ _id:\"rs_db_2\", members:[ {_id:0, host:\"10.0.1.186:27017\"},{_id:1, host:\"10.0.1.187:27017\"},{_id:2, host:\"10.0.1.188:27017\"} ] }); rs.secondaryOk()' '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mongosh --host 10.0.1.204 --port 27017  --eval 'rs.initiate({ _id:\"rs_db_2\", members:[ {_id:0, host:\"10.0.1.204:27017\"},{_id:1, host:\"10.0.1.205:27017\"},{_id:2, host:\"10.0.1.206:27017\"} ] }); rs.secondaryOk()' '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mongosh --host 10.0.1.189 --port 27017  --eval 'rs.initiate({ _id:\"rs_db_3\", members:[ {_id:0, host:\"10.0.1.189:27017\"},{_id:1, host:\"10.0.1.190:27017\"},{_id:2, host:\"10.0.1.191:27017\"} ] }); rs.secondaryOk()' '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mongosh --host 10.0.1.201 --port 27017  --eval 'rs.initiate({ _id:\"rs_db_1\", members:[ {_id:0, host:\"10.0.1.201:27017\"},{_id:1, host:\"10.0.1.202:27017\"},{_id:2, host:\"10.0.1.203:27017\"} ] }); rs.secondaryOk()' '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
@@ -2213,27 +2213,27 @@ with IndentFlag():
         print("docker exec: run docker container fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
         sys.exit(ret)
     # execute cmds in docker contianer
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mongosh --host 10.0.1.192 --port 27017  --eval 'sh.addShard(\"rs_db_1/10.0.1.183:27017,10.0.1.184:27017,10.0.1.185:27017\")' '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mongosh --host 10.0.1.210 --port 27017  --eval 'sh.addShard(\"rs_db_3/10.0.1.207:27017,10.0.1.208:27017,10.0.1.209:27017\")' '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mongosh --host 10.0.1.192 --port 27017  --eval 'sh.addShard(\"rs_db_2/10.0.1.186:27017,10.0.1.187:27017,10.0.1.188:27017\")' '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mongosh --host 10.0.1.210 --port 27017  --eval 'sh.addShard(\"rs_db_2/10.0.1.204:27017,10.0.1.205:27017,10.0.1.206:27017\")' '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mongosh --host 10.0.1.192 --port 27017  --eval 'sh.addShard(\"rs_db_3/10.0.1.189:27017,10.0.1.190:27017,10.0.1.191:27017\")' '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mongosh --host 10.0.1.210 --port 27017  --eval 'sh.addShard(\"rs_db_1/10.0.1.201:27017,10.0.1.202:27017,10.0.1.203:27017\")' '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mongosh --host 10.0.1.192 --port 27017 admin --eval 'db.createUser({ "user":"root", "pwd":"xiaolzz", "roles":["root"] })' '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mongosh --host 10.0.1.210 --port 27017 admin --eval 'db.createUser({ "user":"root", "pwd":"xiaolzz", "roles":["root"] })' '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mongosh --host 10.0.1.192 --port 27017 admin --eval 'db.createUser({ "user":"lxl", "pwd":"xiaolzz", "roles":[ { role: "readWriteAnyDatabase", db: "admin" } ] })' '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mongosh --host 10.0.1.210 --port 27017 admin --eval 'db.createUser({ "user":"lxl", "pwd":"xiaolzz", "roles":[ { role: "readWriteAnyDatabase", db: "admin" } ] })' '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
@@ -3535,7 +3535,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.180"
+    opt_ip = "--ip 10.0.1.198"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_1", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --configsvr --keyFile /root/zone/zone_1/mongodb/zone_1_mongodb_1/id_key_file --replSet rs_cfg  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_1/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_1/log.txt"
@@ -3694,7 +3694,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.181"
+    opt_ip = "--ip 10.0.1.199"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_2", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --configsvr --keyFile /root/zone/zone_1/mongodb/zone_1_mongodb_2/id_key_file --replSet rs_cfg  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_2/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_2/log.txt"
@@ -3853,7 +3853,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.182"
+    opt_ip = "--ip 10.0.1.200"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_3", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --configsvr --keyFile /root/zone/zone_1/mongodb/zone_1_mongodb_3/id_key_file --replSet rs_cfg  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_3/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_3/log.txt"
@@ -4012,7 +4012,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.183"
+    opt_ip = "--ip 10.0.1.201"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_11", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --shardsvr --keyFile /root/zone/zone_1/mongodb/zone_1_mongodb_11/id_key_file --replSet rs_db_1  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_11/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_11/log.txt"
@@ -4171,7 +4171,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.184"
+    opt_ip = "--ip 10.0.1.202"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_12", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --shardsvr --keyFile /root/zone/zone_1/mongodb/zone_1_mongodb_12/id_key_file --replSet rs_db_1  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_12/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_12/log.txt"
@@ -4330,7 +4330,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.185"
+    opt_ip = "--ip 10.0.1.203"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_13", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --shardsvr --keyFile /root/zone/zone_1/mongodb/zone_1_mongodb_13/id_key_file --replSet rs_db_1  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_13/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_13/log.txt"
@@ -4489,7 +4489,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.186"
+    opt_ip = "--ip 10.0.1.204"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_21", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --shardsvr --keyFile /root/zone/zone_1/mongodb/zone_1_mongodb_21/id_key_file --replSet rs_db_2  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_21/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_21/log.txt"
@@ -4648,7 +4648,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.187"
+    opt_ip = "--ip 10.0.1.205"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_22", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --shardsvr --keyFile /root/zone/zone_1/mongodb/zone_1_mongodb_22/id_key_file --replSet rs_db_2  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_22/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_22/log.txt"
@@ -4807,7 +4807,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.188"
+    opt_ip = "--ip 10.0.1.206"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_23", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --shardsvr --keyFile /root/zone/zone_1/mongodb/zone_1_mongodb_23/id_key_file --replSet rs_db_2  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_23/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_23/log.txt"
@@ -4966,7 +4966,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.189"
+    opt_ip = "--ip 10.0.1.207"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_31", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --shardsvr --keyFile /root/zone/zone_1/mongodb/zone_1_mongodb_31/id_key_file --replSet rs_db_3  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_31/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_31/log.txt"
@@ -5125,7 +5125,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.190"
+    opt_ip = "--ip 10.0.1.208"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_32", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --shardsvr --keyFile /root/zone/zone_1/mongodb/zone_1_mongodb_32/id_key_file --replSet rs_db_3  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_32/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_32/log.txt"
@@ -5284,7 +5284,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.191"
+    opt_ip = "--ip 10.0.1.209"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_33", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --shardsvr --keyFile /root/zone/zone_1/mongodb/zone_1_mongodb_33/id_key_file --replSet rs_db_3  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_33/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_33/log.txt"
@@ -5438,10 +5438,10 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.192"
+    opt_ip = "--ip 10.0.1.210"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongos_1", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
-        command=r"mongos --bind_ip 0.0.0.0 --port 27017 --keyFile /root/zone/zone_1/mongos/zone_1_mongos_1/id_key_file --logpath /root/zone/zone_1/mongos/zone_1_mongos_1/log.txt --configdb rs_cfg/10.0.1.180:27017,10.0.1.181:27017,10.0.1.182:27017"
+        command=r"mongos --bind_ip 0.0.0.0 --port 27017 --keyFile /root/zone/zone_1/mongos/zone_1_mongos_1/id_key_file --logpath /root/zone/zone_1/mongos/zone_1_mongos_1/log.txt --configdb rs_cfg/10.0.1.198:27017,10.0.1.199:27017,10.0.1.200:27017"
     )
     ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, run_cmd, exit_when_error=True)
     if 0 != ret:
