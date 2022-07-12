@@ -92,13 +92,41 @@ end
 DockerNetUse = DockerNetUse or class("DockerNetUse", SettingBase)
 
 function DockerNetUse:init_self()
-    self.fo_ip = self.docker_net:cal_ip(self.ip_suffix, true)
+    if not self.fo_ip then
+       self.fo_ip = self.docker_net:cal_ip(self.ip_suffix, true)
+    end
 end
 
----@class PortPublish
----@field docker_port
----@field machine_port
-PortPublish = PortPublish or class("PortPublish", SettingBase)
+
+-- 处理端口映射问题
+---@class DockerNetMachinePort
+---@field machine Machine
+---@field machine_port number
+---@field docker_ip DockerNetUse
+---@field docker_port number
+---@field fo_need_public_port boolean
+---@field fo_ip string
+---@field fo_port number
+DockerNetMachinePort = DockerNetMachinePort or class("DockerNetMachinePort", SettingBase)
+
+function DockerNetMachinePort:init_self()
+    if not self.machine_port then
+        self.fo_need_public_port = false
+    else
+        self.fo_need_public_port = true
+    end
+end
+
+function DockerNetMachinePort:figure_out_fields()
+    if self.fo_need_public_port then
+        self.fo_ip = self.machine.ip
+        self.fo_port = self.machine_port
+    else
+        self.fo_ip = self.docker_ip.fo_ip
+        self.fo_port = self.docker_port
+    end
+end
+
 
 ---@class EtcdServer
 ---@field name string
@@ -303,12 +331,15 @@ function Zone:figure_out_fields()
                     ---@type RemoteServer
                     local rs = {}
                     server.remote_server_map[k] = rs
-                    rs.ip = other_server.docker_ip.fo_ip
-                    if Regular_Replace_Flag.zone_game_server_http_ip then
-                        rs.port = other_server.http_port
+                    if Regular_Replace_Flag.zone_game_server_http_ip == v.flag then
+                        other_server.http_net_add:figure_out_fields() -- 因为时序不能保证，主动调用一下
+                        rs.ip = other_server.http_net_add.fo_ip
+                        rs.port = other_server.http_net_add.fo_port
                     end
-                    if Regular_Replace_Flag.zone_game_server_client_ip then
-                        rs.port = other_server.client_port
+                    if Regular_Replace_Flag.zone_game_server_client_ip == v.flag then
+                        other_server.client_net_add:figure_out_fields() -- 因为时序不能保证，主动调用一下
+                        rs.ip = other_server.client_net_add.fo_ip
+                        rs.port = other_server.client_net_add.fo_port
                     end
                 end
             end
@@ -354,9 +385,9 @@ RemoteServer = RemoteServer or class("RemoteServer", SettingBase)
 ---@field locate_machine Machine
 ---@field image string
 ---@field docker_ip DockerNetUse
----@field client_port number
 ---@field peer_port number
----@field http_port number
+---@field client_net_add DockerNetMachinePort
+---@field http_net_add DockerNetMachinePort
 ---@field work_dir DockerVolumeUse
 ---@field config_file DockerVolumeUse
 ---@field remote_server_map table<string, RemoteServer>

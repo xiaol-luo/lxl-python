@@ -10,7 +10,7 @@ from . import export_file
 def export_test_file(out_root_dir:str, zone:typing.Dict[str, typing.Dict[str, str]], ext_params):
     server = None
     for item in zone.game_server_cluster.server_list.values():
-        if item.server_role == "world":
+        if item.server_role == "auth":
             server = item
             break
     tt_ret, tt_content = tt.render("test/test.py.j2",

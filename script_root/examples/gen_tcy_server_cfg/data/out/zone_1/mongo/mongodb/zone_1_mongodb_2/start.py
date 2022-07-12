@@ -146,7 +146,7 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.199"
+    opt_ip = "--ip 10.0.1.190"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongodb_2", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"mongod --configsvr --keyFile /root/zone/zone_1/mongodb/zone_1_mongodb_2/id_key_file --replSet rs_cfg  --bind_ip 0.0.0.0 --port 27017 --dbpath /root/zone/zone_1/mongodb/zone_1_mongodb_2/db --logpath /root/zone/zone_1/mongodb/zone_1_mongodb_2/log.txt"

@@ -18,9 +18,23 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "10"
-    item.client_port = 100001
     item.peer_port = 100002
-    item.http_port = 100003
+    do
+        ---@type DockerNetMachinePort
+        item.client_net_add = DockerNetMachinePort:new()
+        item.client_net_add.machine = item.locate_machine
+        item.client_net_add.docker_ip = item.docker_ip
+        item.client_net_add.docker_port = 100001
+        item.client_net_add.machine_port = 41101
+    end
+    do
+        ---@type DockerNetMachinePort
+        item.http_net_add = DockerNetMachinePort:new()
+        item.http_net_add.machine = item.locate_machine
+        item.http_net_add.docker_ip = item.docker_ip
+        item.http_net_add.docker_port = 100003
+        item.http_net_add.machine_port = 41102
+    end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
@@ -51,9 +65,23 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "11"
-    item.client_port = 100001
     item.peer_port = 100002
-    item.http_port = 100003
+    do
+        ---@type DockerNetMachinePort
+        item.client_net_add = DockerNetMachinePort:new()
+        item.client_net_add.machine = item.locate_machine
+        item.client_net_add.docker_ip = item.docker_ip
+        item.client_net_add.docker_port = 100001
+        item.client_net_add.machine_port = 41201
+    end
+    do
+        ---@type DockerNetMachinePort
+        item.http_net_add = DockerNetMachinePort:new()
+        item.http_net_add.machine = item.locate_machine
+        item.http_net_add.docker_ip = item.docker_ip
+        item.http_net_add.docker_port = 100003
+        item.http_net_add.machine_port = 41202
+    end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
@@ -88,9 +116,23 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "20"
-    item.client_port = 100001
     item.peer_port = 100002
-    item.http_port = 100003
+    do
+        ---@type DockerNetMachinePort
+        item.client_net_add = DockerNetMachinePort:new()
+        item.client_net_add.machine = item.locate_machine
+        item.client_net_add.docker_ip = item.docker_ip
+        item.client_net_add.docker_port = 100001
+        item.client_net_add.machine_port = 41301
+    end
+    do
+        ---@type DockerNetMachinePort
+        item.http_net_add = DockerNetMachinePort:new()
+        item.http_net_add.machine = item.locate_machine
+        item.http_net_add.docker_ip = item.docker_ip
+        item.http_net_add.docker_port = 100003
+        item.http_net_add.machine_port = 41302
+    end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
@@ -128,9 +170,23 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "dhcp"
-    item.client_port = 100001
     item.peer_port = 100002
-    item.http_port = 100003
+    do
+        ---@type DockerNetMachinePort
+        item.client_net_add = DockerNetMachinePort:new()
+        item.client_net_add.machine = item.locate_machine
+        item.client_net_add.docker_ip = item.docker_ip
+        item.client_net_add.docker_port = 100001
+        item.client_net_add.machine_port = nil
+    end
+    do
+        ---@type DockerNetMachinePort
+        item.http_net_add = DockerNetMachinePort:new()
+        item.http_net_add.machine = item.locate_machine
+        item.http_net_add.docker_ip = item.docker_ip
+        item.http_net_add.docker_port = 100003
+        item.http_net_add.machine_port = nil
+    end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
@@ -166,9 +222,23 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "dhcp"
-    item.client_port = 100001
     item.peer_port = 100002
-    item.http_port = 100003
+    do
+        ---@type DockerNetMachinePort
+        item.client_net_add = DockerNetMachinePort:new()
+        item.client_net_add.machine = item.locate_machine
+        item.client_net_add.docker_ip = item.docker_ip
+        item.client_net_add.docker_port = 100001
+        item.client_net_add.machine_port = nil
+    end
+    do
+        ---@type DockerNetMachinePort
+        item.http_net_add = DockerNetMachinePort:new()
+        item.http_net_add.machine = item.locate_machine
+        item.http_net_add.docker_ip = item.docker_ip
+        item.http_net_add.docker_port = 100003
+        item.http_net_add.machine_port = nil
+    end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
@@ -206,9 +276,23 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "dhcp"
-    item.client_port = 100001
     item.peer_port = 100002
-    item.http_port = 100003
+    do
+        ---@type DockerNetMachinePort
+        item.client_net_add = DockerNetMachinePort:new()
+        item.client_net_add.machine = item.locate_machine
+        item.client_net_add.docker_ip = item.docker_ip
+        item.client_net_add.docker_port = 100001
+        item.client_net_add.machine_port = nil
+    end
+    do
+        ---@type DockerNetMachinePort
+        item.http_net_add = DockerNetMachinePort:new()
+        item.http_net_add.machine = item.locate_machine
+        item.http_net_add.docker_ip = item.docker_ip
+        item.http_net_add.docker_port = 100003
+        item.http_net_add.machine_port = nil
+    end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
@@ -246,9 +330,23 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "dhcp"
-    item.client_port = 100001
     item.peer_port = 100002
-    item.http_port = 100003
+    do
+        ---@type DockerNetMachinePort
+        item.client_net_add = DockerNetMachinePort:new()
+        item.client_net_add.machine = item.locate_machine
+        item.client_net_add.docker_ip = item.docker_ip
+        item.client_net_add.docker_port = 100001
+        item.client_net_add.machine_port = nil
+    end
+    do
+        ---@type DockerNetMachinePort
+        item.http_net_add = DockerNetMachinePort:new()
+        item.http_net_add.machine = item.locate_machine
+        item.http_net_add.docker_ip = item.docker_ip
+        item.http_net_add.docker_port = 100003
+        item.http_net_add.machine_port = nil
+    end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
@@ -286,9 +384,23 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "30"
-    item.client_port = 100001
     item.peer_port = 100002
-    item.http_port = 100003
+    do
+        ---@type DockerNetMachinePort
+        item.client_net_add = DockerNetMachinePort:new()
+        item.client_net_add.machine = item.locate_machine
+        item.client_net_add.docker_ip = item.docker_ip
+        item.client_net_add.docker_port = 100001
+        item.client_net_add.machine_port = 41401
+    end
+    do
+        ---@type DockerNetMachinePort
+        item.http_net_add = DockerNetMachinePort:new()
+        item.http_net_add.machine = item.locate_machine
+        item.http_net_add.docker_ip = item.docker_ip
+        item.http_net_add.docker_port = 100003
+        item.http_net_add.machine_port = 41402
+    end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
@@ -323,9 +435,23 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "dhcp"
-    item.client_port = 100001
     item.peer_port = 100002
-    item.http_port = 100003
+    do
+        ---@type DockerNetMachinePort
+        item.client_net_add = DockerNetMachinePort:new()
+        item.client_net_add.machine = item.locate_machine
+        item.client_net_add.docker_ip = item.docker_ip
+        item.client_net_add.docker_port = 100001
+        item.client_net_add.machine_port = nil
+    end
+    do
+        ---@type DockerNetMachinePort
+        item.http_net_add = DockerNetMachinePort:new()
+        item.http_net_add.machine = item.locate_machine
+        item.http_net_add.docker_ip = item.docker_ip
+        item.http_net_add.docker_port = 100003
+        item.http_net_add.machine_port = nil
+    end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
@@ -356,9 +482,23 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "dhcp"
-    item.client_port = 100001
     item.peer_port = 100002
-    item.http_port = 100003
+    do
+        ---@type DockerNetMachinePort
+        item.client_net_add = DockerNetMachinePort:new()
+        item.client_net_add.machine = item.locate_machine
+        item.client_net_add.docker_ip = item.docker_ip
+        item.client_net_add.docker_port = 100001
+        item.client_net_add.machine_port = nil
+    end
+    do
+        ---@type DockerNetMachinePort
+        item.http_net_add = DockerNetMachinePort:new()
+        item.http_net_add.machine = item.locate_machine
+        item.http_net_add.docker_ip = item.docker_ip
+        item.http_net_add.docker_port = 100003
+        item.http_net_add.machine_port = nil
+    end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
@@ -389,9 +529,23 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "dhcp"
-    item.client_port = 100001
     item.peer_port = 100002
-    item.http_port = 100003
+    do
+        ---@type DockerNetMachinePort
+        item.client_net_add = DockerNetMachinePort:new()
+        item.client_net_add.machine = item.locate_machine
+        item.client_net_add.docker_ip = item.docker_ip
+        item.client_net_add.docker_port = 100001
+        item.client_net_add.machine_port = 41501
+    end
+    do
+        ---@type DockerNetMachinePort
+        item.http_net_add = DockerNetMachinePort:new()
+        item.http_net_add.machine = item.locate_machine
+        item.http_net_add.docker_ip = item.docker_ip
+        item.http_net_add.docker_port = 100003
+        item.http_net_add.machine_port = 41502
+    end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
@@ -423,9 +577,23 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "dhcp"
-    item.client_port = 100001
     item.peer_port = 100002
-    item.http_port = 100003
+    do
+        ---@type DockerNetMachinePort
+        item.client_net_add = DockerNetMachinePort:new()
+        item.client_net_add.machine = item.locate_machine
+        item.client_net_add.docker_ip = item.docker_ip
+        item.client_net_add.docker_port = 100001
+        item.client_net_add.machine_port = nil
+    end
+    do
+        ---@type DockerNetMachinePort
+        item.http_net_add = DockerNetMachinePort:new()
+        item.http_net_add.machine = item.locate_machine
+        item.http_net_add.docker_ip = item.docker_ip
+        item.http_net_add.docker_port = 100003
+        item.http_net_add.machine_port = nil
+    end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
@@ -459,9 +627,23 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "40"
-    item.client_port = 100001
     item.peer_port = 100002
-    item.http_port = 100003
+    do
+        ---@type DockerNetMachinePort
+        item.client_net_add = DockerNetMachinePort:new()
+        item.client_net_add.machine = item.locate_machine
+        item.client_net_add.docker_ip = item.docker_ip
+        item.client_net_add.docker_port = 100001
+        item.client_net_add.machine_port = nil
+    end
+    do
+        ---@type DockerNetMachinePort
+        item.http_net_add = DockerNetMachinePort:new()
+        item.http_net_add.machine = item.locate_machine
+        item.http_net_add.docker_ip = item.docker_ip
+        item.http_net_add.docker_port = 100003
+        item.http_net_add.machine_port = nil
+    end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
@@ -496,9 +678,23 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "dhcp"
-    item.client_port = 100001
     item.peer_port = 100002
-    item.http_port = 100003
+    do
+        ---@type DockerNetMachinePort
+        item.client_net_add = DockerNetMachinePort:new()
+        item.client_net_add.machine = item.locate_machine
+        item.client_net_add.docker_ip = item.docker_ip
+        item.client_net_add.docker_port = 100001
+        item.client_net_add.machine_port = nil
+    end
+    do
+        ---@type DockerNetMachinePort
+        item.http_net_add = DockerNetMachinePort:new()
+        item.http_net_add.machine = item.locate_machine
+        item.http_net_add.docker_ip = item.docker_ip
+        item.http_net_add.docker_port = 100003
+        item.http_net_add.machine_port = nil
+    end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]

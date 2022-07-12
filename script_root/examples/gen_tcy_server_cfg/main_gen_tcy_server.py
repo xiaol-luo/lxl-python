@@ -85,6 +85,10 @@ if __name__ == "__main__":
         render.render_mongo.export_cluster_opera_file(parse_ret.out_setting, zone, mongo_cluster, "clear", parse_ret.python_path)
         render.render_mongo.export_cluster_opera_file(parse_ret.out_setting, zone, mongo_cluster, "logs", parse_ret.python_path)
 
+    with IndentFlag():
+        render.render_game_server.export_config_file(parse_ret.out_setting, zone, zone.game_server_cluster)
+
+
 
 
 

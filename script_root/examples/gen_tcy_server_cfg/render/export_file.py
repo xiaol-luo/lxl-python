@@ -104,5 +104,12 @@ def cal_mongo_cluster_opera_file_path(root_dir, zone, out_file):
 def cal_mongo_setup_cluster_file_path(root_dir, zone):
     return path_batch_join(root_dir, zone.name, "mongo", "setup_cluster.py")
 
+
 def cal_test_file_path(root_dir, zone):
     return path_batch_join(root_dir, zone.name, "test.py")
+
+
+def cal_game_server_config_file_path(root_dir, zone, server):
+    return path_batch_join(root_dir, zone.name, "game_server", server.server_name, "game_config.xml")
+
+
