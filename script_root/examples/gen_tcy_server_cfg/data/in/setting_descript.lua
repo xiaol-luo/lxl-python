@@ -107,6 +107,7 @@ end
 ---@field fo_need_public_port boolean
 ---@field fo_ip string
 ---@field fo_port number
+---@field fo_port_mapping table
 DockerNetMachinePort = DockerNetMachinePort or class("DockerNetMachinePort", SettingBase)
 
 function DockerNetMachinePort:init_self()
@@ -121,6 +122,10 @@ function DockerNetMachinePort:figure_out_fields()
     if self.fo_need_public_port then
         self.fo_ip = self.machine.ip
         self.fo_port = self.machine_port
+        self.fo_port_mapping = {
+            machine_port = self.machine_port,
+            docker_port = self.docker_port
+        }
     else
         self.fo_ip = self.docker_ip.fo_ip
         self.fo_port = self.docker_port
@@ -388,6 +393,7 @@ RemoteServer = RemoteServer or class("RemoteServer", SettingBase)
 ---@field peer_port number
 ---@field client_net_add DockerNetMachinePort
 ---@field http_net_add DockerNetMachinePort
+---@field fo_port_mapping table<number, number>
 ---@field work_dir DockerVolumeUse
 ---@field config_file DockerVolumeUse
 ---@field remote_server_map table<string, RemoteServer>
@@ -396,10 +402,19 @@ RemoteServer = RemoteServer or class("RemoteServer", SettingBase)
 ---@field mongo_cluster_map table<string, MongoServerCluster>
 GameServer = GameServer or class("GameServer", SettingBase)
 
+function GameServer:figure_out_fields()
+    self.fo_port_mapping = {}
+    if self.client_net_add.fo_port_mapping then
+        table.insert(self.fo_port_mapping, self.client_net_add.fo_port_mapping)
+    end
+    if self.http_net_add.fo_port_mapping then
+        table.insert(self.fo_port_mapping, self.http_net_add.fo_port_mapping)
+    end
+end
+
 ---@class GameServerCluster
 ---@field server_list GameServer[]
 GameServerCluster = GameServerCluster or class("GameServerCluster", SettingBase)
-
 
 ---@class Mongo_Repl_Set_Role
 Mongo_Repl_Set_Role = {}

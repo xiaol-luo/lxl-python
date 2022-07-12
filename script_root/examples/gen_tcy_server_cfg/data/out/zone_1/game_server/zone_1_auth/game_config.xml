@@ -21,16 +21,16 @@
 		<element>for_make_array</element>
 		<element>for_make_array</element>
 		<element>
-			<name>auth</name>
-			<host>10.0.1.201:27017</host>
+			<name>uuid</name>
+			<host>10.0.1.210:27017</host>
 			<auth_db>admin</auth_db>
 			<user>lxl</user>
 			<pwd>xiaolzz</pwd>
 			<thread_num>3</thread_num>
 		</element>
 		<element>
-			<name>uuid</name>
-			<host>10.0.1.201:27017</host>
+			<name>auth</name>
+			<host>10.0.1.210:27017</host>
 			<auth_db>admin</auth_db>
 			<user>lxl</user>
 			<pwd>xiaolzz</pwd>
@@ -40,10 +40,13 @@
 
 	<advertise_peer_ip>10.0.1.11</advertise_peer_ip>
 	<advertise_peer_port>100002</advertise_peer_port>
+	<listen_peer_port>100002</listen_peer_port>
 	<advertise_client_ip>119.91.239.128</advertise_client_ip>
 	<advertise_client_port>41201</advertise_client_port>
+	<listen_client_port>100001</listen_client_port>
 	<advertise_http_ip>119.91.239.128</advertise_http_ip>
 	<advertise_http_port>41202</advertise_http_port>
+	<listen_http_port>100003</listen_http_port>
     <platform_http_ip>119.91.239.128</platform_http_ip>
     <platform_http_port>41102</platform_http_port>
 </root>

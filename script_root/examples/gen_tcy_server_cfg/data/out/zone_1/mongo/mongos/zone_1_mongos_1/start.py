@@ -141,10 +141,10 @@ with IndentFlag():
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.201"
+    opt_ip = "--ip 10.0.1.210"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
         opt="-d", name="zone_1_mongos_1", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
-        command=r"mongos --bind_ip 0.0.0.0 --port 27017 --keyFile /root/zone/zone_1/mongos/zone_1_mongos_1/id_key_file --logpath /root/zone/zone_1/mongos/zone_1_mongos_1/log.txt --configdb rs_cfg/10.0.1.189:27017,10.0.1.190:27017,10.0.1.191:27017"
+        command=r"mongos --bind_ip 0.0.0.0 --port 27017 --keyFile /root/zone/zone_1/mongos/zone_1_mongos_1/id_key_file --logpath /root/zone/zone_1/mongos/zone_1_mongos_1/log.txt --configdb rs_cfg/10.0.1.198:27017,10.0.1.199:27017,10.0.1.200:27017"
     )
     ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, run_cmd, exit_when_error=True)
     if 0 != ret:

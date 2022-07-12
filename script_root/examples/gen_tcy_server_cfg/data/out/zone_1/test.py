@@ -21,16 +21,16 @@
 		<element>for_make_array</element>
 		<element>for_make_array</element>
 		<element>
-			<name>auth</name>
-			<host>10.0.1.201:27017</host>
+			<name>uuid</name>
+			<host>10.0.1.210:27017</host>
 			<auth_db>admin</auth_db>
 			<user>lxl</user>
 			<pwd>xiaolzz</pwd>
 			<thread_num>3</thread_num>
 		</element>
 		<element>
-			<name>uuid</name>
-			<host>10.0.1.201:27017</host>
+			<name>auth</name>
+			<host>10.0.1.210:27017</host>
 			<auth_db>admin</auth_db>
 			<user>lxl</user>
 			<pwd>xiaolzz</pwd>

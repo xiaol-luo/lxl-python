@@ -53,10 +53,13 @@
 
 	<advertise_peer_ip>{{ server.docker_ip.fo_ip }}</advertise_peer_ip>
 	<advertise_peer_port>{{ server.peer_port }}</advertise_peer_port>
+	<listen_peer_port>{{ server.peer_port }}</listen_peer_port>
 	<advertise_client_ip>{{ server.client_net_add.fo_ip }}</advertise_client_ip>
 	<advertise_client_port>{{ server.client_net_add.fo_port }}</advertise_client_port>
+	<listen_client_port>{{ server.client_net_add.docker_port }}</listen_client_port>
 	<advertise_http_ip>{{ server.http_net_add.fo_ip }}</advertise_http_ip>
 	<advertise_http_port>{{ server.http_net_add.fo_port }}</advertise_http_port>
+	<listen_http_port>{{ server.http_net_add.docker_port }}</listen_http_port>
 
 {%- for k, v in server.remote_server_map.items()%}
     <{{ k }}_ip>{{v.ip}}</{{ k }}_ip>
