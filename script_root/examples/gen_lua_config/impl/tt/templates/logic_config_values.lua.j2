@@ -1,0 +1,78 @@
+{#
+sheet_depict
+SheetFieldType(object):
+    Min = 0
+    Bool = 1
+    Int = 2
+    Long = 3
+    Float = 4
+    String = 5
+    Base_Max = 6
+    Vec = 7
+    Map = 8
+    VecVec = 9
+    MapVec = 10
+    Max = 11
+ #}
+
+---@return table<{{sheet_depict.fo_key_field.field_type|lua__field_type_to_string}}, {{ sheet_depict.opt_map.logic_config_struct and sheet_depict.opt_map.logic_config_struct.opt_value }}>
+local function get_config_map ()
+    local item_list = {}
+{%- for data_row in sheet_depict.data_list %}
+    do
+        ---@type {{ sheet_depict.opt_map.logic_config_struct and sheet_depict.opt_map.logic_config_struct.opt_value }}
+        local item = {}
+        table.insert(item_list, item)
+    {%- for field in sheet_depict.field_list %}
+    {%- set col_value = data_row[loop.index - 1] %}
+    {%- if field.field_type > 0 and field.field_type < 6 %} {# base type #}
+        item.{{ field.field_name }} = {{ col_value|lua__base_field_type_value_to_print(field.field_type) }}
+    {%- endif %}
+    {%- if field.field_type == 7  %} {# Vec #}
+        item.{{ field.field_name }} = {}
+        do
+        {%- for val in col_value %}
+            item.{{ field.field_name }}[{{loop.index}}] = {{ val|lua__base_field_type_value_to_print(field.field_value_type) }}
+        {%- endfor %}
+        end
+    {%- endif %}
+    {%- if field.field_type == 8  %} {# Map #}
+        item.{{ field.field_name }} = {}
+        do
+        {%- for key, val in col_value.items() %}
+            item.{{ field.field_name }}[{{ key|lua__base_field_type_value_to_print(field.field_key_type) }}] = {{ val|lua__base_field_type_value_to_print(field.field_value_type) }}
+        {%- endfor %}
+        end
+    {%- endif %}
+    {%- if field.field_type == 9  %} {# VecVec #}
+        item.{{ field.field_name }} = {}
+        {%- for val_list in col_value %}
+        do
+            local tb = {}
+            item.{{ field.field_name }}[{{ loop.index }}] = tb
+            {%- for val in val_list %}
+            tb[{{ loop.index }}] = {{ val|lua__base_field_type_value_to_print(field.field_value_type) }}
+            {%- endfor %}
+        end
+        {%- endfor %}
+    {%- endif %}
+    {%- if field.field_type == 10  %} {# MapVec #}
+        item.{{ field.field_name }} = {}
+        {%- for key, val_list in col_value.items() %}
+        do
+            local tb = {}
+            item.{{ field.field_name }}[{{ key|lua__base_field_type_value_to_print(field.field_key_type) }}] = tb
+            {%- for val in val_list %}
+            tb[{{ loop.index }}] = {{ val|lua__base_field_type_value_to_print(field.field_value_type) }}
+            {%- endfor %}
+        end
+        {%- endfor %}
+    {%- endif %}
+    {%- endfor %}
+    end
+{%- endfor %}
+end
+
+function {{ sheet_depict.opt_map.logic_config_fun_name and sheet_depict.opt_map.logic_config_fun_name.opt_value }}()
+    return {{ sheet_depict.opt_map.logic_config_name and sheet_depict.opt_map.logic_config_name.opt_value }}, get_config_map()
+end

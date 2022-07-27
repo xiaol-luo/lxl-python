@@ -1,0 +1,20 @@
+<root>
+    <env>
+        <excel_dir>examples/gen_lua_config/data/excel</excel_dir>
+        <out_lua_dir>examples/gen_lua_config/data/lua</out_lua_dir>
+    </env>
+    <output_list>
+        <output
+                excel_path="config_base.xlsx"
+                sheet_name="ConfigBase"
+                out_lua_file="example_base_config.lua"
+
+        />
+        <output
+                excel_path="config_base.xlsx"
+                sheet_name="ConfigBase"
+                out_lua_file="example_base_config.lua"
+
+        />
+    </output_list>
+</root>

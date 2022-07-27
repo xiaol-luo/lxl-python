@@ -1,0 +1,1 @@
+venv\Scripts\pyinstaller.exe -F script_root\main_entrance.py script_root\app\app_entrance.py  E:\work\g125\trunk\tools\hotfix_config\script_root\app\hotfix_config\app_hotfix_config.py --hidden-import app -p E:\work\g125\trunk\tools\hotfix_config\script_root\ --hidden-import app.app_entrance  -p E:\work\g125\trunk\tools\hotfix_config\script_root\app
