@@ -1,0 +1,1 @@
+main_entrance.exe --work_dir . --search_dir . --exec examples.gen_lua_config.main.main __split_flag__ --setting_file D:\work_space\code\lxl-python\dist\gen_lua_config.xml

@@ -2,4 +2,6 @@
 .vscode
 .idea
 *.pyc
+*.spec
+build
 pycharm_project/venv
