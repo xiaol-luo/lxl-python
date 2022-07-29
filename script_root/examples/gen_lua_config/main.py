@@ -1,6 +1,6 @@
-
 import argparse
 import logbook
+
 from .impl.setting_parser import SettingParser
 from .impl.excel_sheet_depict import SheetDepict, parse_sheet_depict
 from .impl.gen_lua_config import gen_lua_config
@@ -18,5 +18,7 @@ def main(arg_list):
 
     for item in setting_parser.output_list:
         sheet_depict = parse_sheet_depict(item.excel_path, item.sheet_name)
-        gen_lua_config(sheet_depict, item.out_lua_file)
-
+        if sheet_depict:
+            gen_lua_config(sheet_depict, item.out_lua_file)
+        else:
+            logbook.error("parse_sheet_depict fail, {} {}", item.excel_path, item.sheet_name)

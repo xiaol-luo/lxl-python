@@ -21,16 +21,16 @@
 		<element>for_make_array</element>
 		<element>for_make_array</element>
 		<element>
-			<name>uuid</name>
-			<host>10.0.1.210:27017</host>
+			<name>auth</name>
+			<host>10.0.1.189:27017</host>
 			<auth_db>admin</auth_db>
 			<user>lxl</user>
 			<pwd>xiaolzz</pwd>
 			<thread_num>3</thread_num>
 		</element>
 		<element>
-			<name>auth</name>
-			<host>10.0.1.210:27017</host>
+			<name>uuid</name>
+			<host>10.0.1.189:27017</host>
 			<auth_db>admin</auth_db>
 			<user>lxl</user>
 			<pwd>xiaolzz</pwd>
@@ -39,7 +39,7 @@
 	</mongo_service>
 
 	<advertise_peer_ip>10.0.1.11</advertise_peer_ip>
-	<advertise_peer_port>100002</advertise_peer_port>
+	<advertise_peer_port>10002</advertise_peer_port>
 	<advertise_client_ip>119.91.239.128</advertise_client_ip>
 	<advertise_client_port>41201</advertise_client_port>
 	<advertise_http_ip>119.91.239.128</advertise_http_ip>

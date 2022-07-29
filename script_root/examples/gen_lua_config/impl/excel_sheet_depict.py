@@ -71,15 +71,15 @@ class SheetDepict(object):
     def parse(self, work_sheet: openpyxl.workbook.workbook.Worksheet):
         self.work_sheet = work_sheet
         self.start_row = int(self.work_sheet[SheetDepict.Start_Row_Cell].value)
-        logbook.debug("start row {}", self.start_row)
+        # logbook.debug("start row {}", self.start_row)
         for row in self.work_sheet.iter_rows(min_row=2, max_row=self.start_row-1):
             for cell in row:
                 if cell.value is not None:
-                    logbook.debug("cell {} {}", type(cell), cell.value)
+                    # logbook.debug("cell {} {}", type(cell), cell.value)
                     opt: SheetOpt = SheetOpt.parse(cell.value)
                     if opt:
                         self.opt_map[opt.opt_key] = opt
-                        logbook.debug("xxxxxx {} {}", opt.opt_key, opt.opt_value)
+                        # logbook.debug("xxxxxx {} {}", opt.opt_key, opt.opt_value)
         for note_cell, name_cell, type_cell in self.work_sheet.iter_cols(min_row=self.start_row, max_row=self.start_row + 2):
             if not name_cell.value or not type_cell.value:
                 if self.min_column < 0:
@@ -128,7 +128,7 @@ class SheetDepict(object):
                 cell_str = row[field.col_idx - 1].value
                 field_val = SheetFieldType.extract_data(cell_str, field.field_type, field.field_key_type, field.field_value_type)
                 data.append(field_val)
-        logbook.debug("data list {}", self.data_list)
+        # logbook.debug("data list {}", self.data_list)
         return  True
 
 def parse_sheet_depict(file_path:str, sheet_name:str)->SheetDepict:

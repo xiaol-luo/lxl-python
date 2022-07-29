@@ -46,7 +46,7 @@ class SettingParser(object):
             output.excel_path = os.path.join(self.env.excel_dir, item.get("excel_path"))
             output.sheet_name = item.get("sheet_name")
             output.out_lua_file = os.path.join(self.env.out_lua_dir, item.get("out_lua_file"))
-            logbook.debug("item {} {} {}", output.excel_path, output.sheet_name, output.out_lua_file)
+            # logbook.debug("item {} {} {}", output.excel_path, output.sheet_name, output.out_lua_file)
 
 
 

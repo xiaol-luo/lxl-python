@@ -7,12 +7,14 @@ class SheetFieldType(object):
     Long = 3
     Float = 4
     String = 5
-    Base_Max = 6
-    Vec = 7
-    Map = 8
-    VecVec = 9
-    MapVec = 10
-    Max = 11
+    Raw = 6 # 原封不动地输出,和String的区别只有输出时不带引号。
+    Base_Max = 20
+    Vec = 21
+    Map = 22
+    VecVec = 23
+    MapVec = 24
+    VecMap = 25
+    Max = 26
 
     Base_Type_Strs = {
         "bool": Bool,
@@ -20,6 +22,7 @@ class SheetFieldType(object):
         "long": Long,
         "float": Float,
         "string": String,
+        "raw": Raw,
     }
 
     @staticmethod
@@ -74,6 +77,21 @@ class SheetFieldType(object):
                         ret = True
                 if not parse_succ:
                     field_type = key_type = val_type = SheetFieldType.Min
+        if not ret:  # vecmap
+            m_ret = re.match(r"^\[<(.*), (.*)>\]$", type_str)
+            if m_ret:
+                parse_succ = False
+                sub_ret, sub_type = SheetFieldType._parse_base_type(m_ret.group(1))
+                if sub_ret and SheetFieldType.is_base_type(sub_type):
+                    field_type = SheetFieldType.VecMap
+                    key_type = sub_type
+                    sub_ret, sub_type = SheetFieldType._parse_base_type(m_ret.group(2))
+                    if sub_ret and SheetFieldType.is_base_type(sub_type):
+                        val_type = sub_type
+                        parse_succ = True
+                        ret = True
+                if not parse_succ:
+                    field_type = key_type = val_type = SheetFieldType.Min
         if not ret:  # vec
             m_ret = re.match(r"^\[(.*)\]$", type_str)
             if m_ret:
@@ -105,7 +123,7 @@ class SheetFieldType(object):
             return True, SheetFieldType.Base_Type_Strs[type_str]
         return False, None
 
-    Str_Flag = "\'\'\'"
+    Str_Flag = "\"\"\""
 
     @staticmethod
     def _extract_base_type_data(data_str, field_type):
@@ -131,6 +149,8 @@ class SheetFieldType(object):
                 ret = ""
             else:
                 ret = str(data_str)
+        if SheetFieldType.Raw == field_type:
+            ret = str(data_str)
         assert(ret is not None)
         return ret
 
@@ -200,6 +220,17 @@ class SheetFieldType(object):
                 for v_str in str.split(kv[1], "|"):
                     v = SheetFieldType._extract_base_type_data(SheetFieldType._recover_data_str(mark_to_str_map, v_str), value_type)
                     v_list.append(v)
+        if SheetFieldType.VecMap == field_type:
+            ret = []
+            for list_item_str in collection_item_list:
+                dt = {}
+                ret.append(dt)
+                for kv_str in str.split(list_item_str, "|"):
+                    kv = str.split(kv_str, ":")
+                    assert (len(kv) >= 2)
+                    k = SheetFieldType._extract_base_type_data(SheetFieldType._recover_data_str(mark_to_str_map, kv[0]), key_type)
+                    v = SheetFieldType._extract_base_type_data(SheetFieldType._recover_data_str(mark_to_str_map, kv[1]), value_type)
+                    dt[k] = v
         return ret
 
     @staticmethod

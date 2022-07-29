@@ -1,3 +1,5 @@
-pyinstaller.exe -F script_root/main_entrance.py script_root/examples/gen_lua_config/main.py script_root/examples/gen_lua_config/impl/tt/common.py ^
-script_root/examples/gen_lua_config/impl/setting_parser.py script_root/examples/gen_lua_config/impl/excel_sheet_depict.py script_root/examples/gen_lua_config/impl/gen_lua_config.py ^
---hidden-import examples.gen_lua_config.main -p script_root --add-data  "script_root/examples/gen_lua_config/impl/tt/templates/*;examples/gen_lua_config/impl/tt/templates"
+pyinstaller.exe -F script_root/main_entrance.py  ^
+--collect-submodules script_root/examples/gen_lua_config ^
+-p script_root ^
+--hidden-import examples.gen_lua_config.main ^
+--add-data  "script_root/examples/gen_lua_config/impl/tt/templates/*;examples/gen_lua_config/impl/tt/templates"

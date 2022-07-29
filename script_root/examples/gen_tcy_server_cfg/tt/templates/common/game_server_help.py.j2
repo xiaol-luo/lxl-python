@@ -1,0 +1,4 @@
+
+{% macro start_cmd (game_server_cluster, game_server) -%}
+    {{ game_server.server_bin.fo_abs_path }} {{ game_server.server_role }} {{ game_server.work_dir.fo_abs_path }} {{ game_server.work_dir.fo_abs_path }} {{ game_server.config_file.fo_abs_path }} {{ game_server.lua_script_dir.fo_abs_path }} --lua_args_begin-- -lua_path {{ game_server.lua_script_dir.fo_abs_path }} . -c_path . -require_files servers.entrance.server_entrance  -execute_fns start_script
+{%- endmacro -%}

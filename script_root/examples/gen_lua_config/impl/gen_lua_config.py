@@ -33,7 +33,7 @@ tt_set_filter("lua__base_field_type_value_to_print", lua__base_field_type_value_
 
 def gen_lua_config(sheet_depict: SheetDepict, out_file):
     ret, content = tt_render("logic_config_values.lua.j2", sheet_depict=sheet_depict)
-    logbook.debug("gen_lua_config {} {}", ret, content)
+    # logbook.debug("gen_lua_config {} {}", ret, content)
     if not ret:
         return False
     else:

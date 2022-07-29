@@ -113,3 +113,7 @@ def cal_game_server_config_file_path(root_dir, zone, server):
     return path_batch_join(root_dir, zone.name, "game_server", server.server_name, "game_config.xml")
 
 
+def cal_game_server_start_file_path(root_dir, zone, server):
+    return path_batch_join(root_dir, zone.name, "game_server", server.server_name, "start.py")
+
+

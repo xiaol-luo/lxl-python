@@ -80,7 +80,7 @@ with IndentFlag():
     ssh_client = paramiko.SSHClient()
     ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh_client.connect(hostname="119.91.239.128", port="22", username="root", \
-        pkey=paramiko.RSAKey.from_private_key_file(r"C:/Users/luoxiaolong/.ssh/keys/root/id_rsa", "xiaolzz"))
+        pkey=paramiko.RSAKey.from_private_key_file(r"C:/Users/xiaol.luo/.ssh/keys/root/id_rsa", "xiaolzz"))
 
 ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, [
     "docker exec zone_1_mongodb_33 cat /root/zone/zone_1/mongodb/zone_1_mongodb_33/log.txt",

@@ -87,6 +87,7 @@ if __name__ == "__main__":
 
     with IndentFlag():
         render.render_game_server.export_config_file(parse_ret.out_setting, zone, zone.game_server_cluster)
+        render.render_game_server.export_start_file(parse_ret.out_setting, zone, zone.game_server_cluster)
 
 
 

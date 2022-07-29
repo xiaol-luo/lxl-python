@@ -11,10 +11,10 @@ local function get_config_map ()
         item.float_val = false 
         item.int_vec = {}
         do
-            item.int_vec[1] = "1"
-            item.int_vec[2] = "2"
-            item.int_vec[3] = "3"
-            item.int_vec[4] = "14;1223"
+            item.int_vec[1] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[2] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[3] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[4] = ""
         end 
         item.int_int_map = {}
         do
@@ -52,7 +52,36 @@ local function get_config_map ()
             tb[2] = 202.0
             tb[3] = 203.0
         end 
-        item.str_val = "234"
+        item.vec_map = {}
+        do
+            local tb = {}
+            item.vec_map[1] = tb
+            tb["a"] = 2
+            tb["b"] = 3
+        end
+        do
+            local tb = {}
+            item.vec_map[2] = tb
+            tb["3"] = 1
+            tb["c"] = 4
+        end 
+        item.str_val = "234" 
+        item.raw_val = a.b 
+        item.int_raw_map_vec = {}
+        do
+            local tb = {}
+            item.int_raw_map_vec[1] = tb
+            tb[1] = 101|111
+            tb[2] = 101
+            tb[3] = 102
+        end
+        do
+            local tb = {}
+            item.int_raw_map_vec[2] = tb
+            tb[1] = 201
+            tb[2] = 202
+            tb[3] = 203
+        end
     end
     do
         ---@type LogicConfigCurrency
@@ -62,10 +91,10 @@ local function get_config_map ()
         item.float_val = false 
         item.int_vec = {}
         do
-            item.int_vec[1] = "1"
-            item.int_vec[2] = "2"
-            item.int_vec[3] = "3"
-            item.int_vec[4] = "14;1223"
+            item.int_vec[1] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[2] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[3] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[4] = ""
         end 
         item.int_int_map = {}
         do
@@ -103,7 +132,36 @@ local function get_config_map ()
             tb[2] = 202.0
             tb[3] = 204.0
         end 
-        item.str_val = "2345"
+        item.vec_map = {}
+        do
+            local tb = {}
+            item.vec_map[1] = tb
+            tb["a"] = 2
+            tb["b"] = 3
+        end
+        do
+            local tb = {}
+            item.vec_map[2] = tb
+            tb["3"] = 1
+            tb["c"] = 4
+        end 
+        item.str_val = "2345" 
+        item.raw_val = cd;ab 
+        item.int_raw_map_vec = {}
+        do
+            local tb = {}
+            item.int_raw_map_vec[1] = tb
+            tb[1] = 101|111
+            tb[2] = 101
+            tb[3] = 102
+        end
+        do
+            local tb = {}
+            item.int_raw_map_vec[2] = tb
+            tb[1] = 201
+            tb[2] = 202
+            tb[3] = 203
+        end
     end
     do
         ---@type LogicConfigCurrency
@@ -113,10 +171,10 @@ local function get_config_map ()
         item.float_val = false 
         item.int_vec = {}
         do
-            item.int_vec[1] = "1"
-            item.int_vec[2] = "2"
-            item.int_vec[3] = "3"
-            item.int_vec[4] = "14;1223"
+            item.int_vec[1] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[2] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[3] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[4] = ""
         end 
         item.int_int_map = {}
         do
@@ -154,7 +212,36 @@ local function get_config_map ()
             tb[2] = 202.0
             tb[3] = 205.0
         end 
-        item.str_val = "4456"
+        item.vec_map = {}
+        do
+            local tb = {}
+            item.vec_map[1] = tb
+            tb["a"] = 2
+            tb["b"] = 3
+        end
+        do
+            local tb = {}
+            item.vec_map[2] = tb
+            tb["3"] = 1
+            tb["c"] = 4
+        end 
+        item.str_val = "4456" 
+        item.raw_val = abcd; 
+        item.int_raw_map_vec = {}
+        do
+            local tb = {}
+            item.int_raw_map_vec[1] = tb
+            tb[1] = 101|111
+            tb[2] = 101
+            tb[3] = 102
+        end
+        do
+            local tb = {}
+            item.int_raw_map_vec[2] = tb
+            tb[1] = 201
+            tb[2] = 202
+            tb[3] = 203
+        end
     end
     do
         ---@type LogicConfigCurrency
@@ -164,10 +251,10 @@ local function get_config_map ()
         item.float_val = false 
         item.int_vec = {}
         do
-            item.int_vec[1] = "1"
-            item.int_vec[2] = "2"
-            item.int_vec[3] = "3"
-            item.int_vec[4] = "14;1223"
+            item.int_vec[1] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[2] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[3] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[4] = ""
         end 
         item.int_int_map = {}
         do
@@ -205,7 +292,36 @@ local function get_config_map ()
             tb[2] = 202.0
             tb[3] = 206.0
         end 
-        item.str_val = "6567"
+        item.vec_map = {}
+        do
+            local tb = {}
+            item.vec_map[1] = tb
+            tb["a"] = 2
+            tb["b"] = 3
+        end
+        do
+            local tb = {}
+            item.vec_map[2] = tb
+            tb["3"] = 1
+            tb["c"] = 4
+        end 
+        item.str_val = "6567" 
+        item.raw_val = 6567 
+        item.int_raw_map_vec = {}
+        do
+            local tb = {}
+            item.int_raw_map_vec[1] = tb
+            tb[1] = 101|111
+            tb[2] = 101
+            tb[3] = 102
+        end
+        do
+            local tb = {}
+            item.int_raw_map_vec[2] = tb
+            tb[1] = 201
+            tb[2] = 202
+            tb[3] = 203
+        end
     end
     do
         ---@type LogicConfigCurrency
@@ -215,10 +331,10 @@ local function get_config_map ()
         item.float_val = false 
         item.int_vec = {}
         do
-            item.int_vec[1] = "1"
-            item.int_vec[2] = "2"
-            item.int_vec[3] = "3"
-            item.int_vec[4] = "14;1223"
+            item.int_vec[1] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[2] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[3] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[4] = ""
         end 
         item.int_int_map = {}
         do
@@ -256,7 +372,36 @@ local function get_config_map ()
             tb[2] = 202.0
             tb[3] = 207.0
         end 
-        item.str_val = "8678"
+        item.vec_map = {}
+        do
+            local tb = {}
+            item.vec_map[1] = tb
+            tb["a"] = 2
+            tb["b"] = 3
+        end
+        do
+            local tb = {}
+            item.vec_map[2] = tb
+            tb["3"] = 1
+            tb["c"] = 4
+        end 
+        item.str_val = "8678" 
+        item.raw_val = 8678 
+        item.int_raw_map_vec = {}
+        do
+            local tb = {}
+            item.int_raw_map_vec[1] = tb
+            tb[1] = 101|111
+            tb[2] = 101
+            tb[3] = 102
+        end
+        do
+            local tb = {}
+            item.int_raw_map_vec[2] = tb
+            tb[1] = 201
+            tb[2] = 202
+            tb[3] = 203
+        end
     end
     do
         ---@type LogicConfigCurrency
@@ -266,10 +411,10 @@ local function get_config_map ()
         item.float_val = false 
         item.int_vec = {}
         do
-            item.int_vec[1] = "1"
-            item.int_vec[2] = "2"
-            item.int_vec[3] = "3"
-            item.int_vec[4] = "14;1223"
+            item.int_vec[1] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[2] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[3] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[4] = ""
         end 
         item.int_int_map = {}
         do
@@ -307,7 +452,36 @@ local function get_config_map ()
             tb[2] = 202.0
             tb[3] = 208.0
         end 
-        item.str_val = "10789"
+        item.vec_map = {}
+        do
+            local tb = {}
+            item.vec_map[1] = tb
+            tb["a"] = 2
+            tb["b"] = 3
+        end
+        do
+            local tb = {}
+            item.vec_map[2] = tb
+            tb["3"] = 1
+            tb["c"] = 4
+        end 
+        item.str_val = "10789" 
+        item.raw_val = 10789 
+        item.int_raw_map_vec = {}
+        do
+            local tb = {}
+            item.int_raw_map_vec[1] = tb
+            tb[1] = 101|111
+            tb[2] = 101
+            tb[3] = 102
+        end
+        do
+            local tb = {}
+            item.int_raw_map_vec[2] = tb
+            tb[1] = 201
+            tb[2] = 202
+            tb[3] = 203
+        end
     end
     do
         ---@type LogicConfigCurrency
@@ -317,10 +491,10 @@ local function get_config_map ()
         item.float_val = false 
         item.int_vec = {}
         do
-            item.int_vec[1] = "1"
-            item.int_vec[2] = "2"
-            item.int_vec[3] = "3"
-            item.int_vec[4] = "14;1223"
+            item.int_vec[1] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[2] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[3] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[4] = ""
         end 
         item.int_int_map = {}
         do
@@ -358,7 +532,36 @@ local function get_config_map ()
             tb[2] = 202.0
             tb[3] = 209.0
         end 
-        item.str_val = "12900"
+        item.vec_map = {}
+        do
+            local tb = {}
+            item.vec_map[1] = tb
+            tb["a"] = 2
+            tb["b"] = 3
+        end
+        do
+            local tb = {}
+            item.vec_map[2] = tb
+            tb["3"] = 1
+            tb["c"] = 4
+        end 
+        item.str_val = "12900" 
+        item.raw_val = 12900 
+        item.int_raw_map_vec = {}
+        do
+            local tb = {}
+            item.int_raw_map_vec[1] = tb
+            tb[1] = 101|111
+            tb[2] = 101
+            tb[3] = 102
+        end
+        do
+            local tb = {}
+            item.int_raw_map_vec[2] = tb
+            tb[1] = 201
+            tb[2] = 202
+            tb[3] = 203
+        end
     end
     do
         ---@type LogicConfigCurrency
@@ -368,10 +571,10 @@ local function get_config_map ()
         item.float_val = false 
         item.int_vec = {}
         do
-            item.int_vec[1] = "1"
-            item.int_vec[2] = "2"
-            item.int_vec[3] = "3"
-            item.int_vec[4] = "14;1223"
+            item.int_vec[1] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[2] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[3] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[4] = ""
         end 
         item.int_int_map = {}
         do
@@ -409,7 +612,36 @@ local function get_config_map ()
             tb[2] = 202.0
             tb[3] = 210.0
         end 
-        item.str_val = "15011"
+        item.vec_map = {}
+        do
+            local tb = {}
+            item.vec_map[1] = tb
+            tb["a"] = 2
+            tb["b"] = 3
+        end
+        do
+            local tb = {}
+            item.vec_map[2] = tb
+            tb["3"] = 1
+            tb["c"] = 4
+        end 
+        item.str_val = "15011" 
+        item.raw_val = 15011 
+        item.int_raw_map_vec = {}
+        do
+            local tb = {}
+            item.int_raw_map_vec[1] = tb
+            tb[1] = 101|111
+            tb[2] = 101
+            tb[3] = 102
+        end
+        do
+            local tb = {}
+            item.int_raw_map_vec[2] = tb
+            tb[1] = 201
+            tb[2] = 202
+            tb[3] = 203
+        end
     end
     do
         ---@type LogicConfigCurrency
@@ -419,10 +651,10 @@ local function get_config_map ()
         item.float_val = false 
         item.int_vec = {}
         do
-            item.int_vec[1] = "1"
-            item.int_vec[2] = "2"
-            item.int_vec[3] = "3"
-            item.int_vec[4] = "14;1223"
+            item.int_vec[1] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[2] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[3] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[4] = ""
         end 
         item.int_int_map = {}
         do
@@ -460,7 +692,36 @@ local function get_config_map ()
             tb[2] = 202.0
             tb[3] = 211.0
         end 
-        item.str_val = "17122"
+        item.vec_map = {}
+        do
+            local tb = {}
+            item.vec_map[1] = tb
+            tb["a"] = 2
+            tb["b"] = 3
+        end
+        do
+            local tb = {}
+            item.vec_map[2] = tb
+            tb["3"] = 1
+            tb["c"] = 4
+        end 
+        item.str_val = "17122" 
+        item.raw_val = 17122 
+        item.int_raw_map_vec = {}
+        do
+            local tb = {}
+            item.int_raw_map_vec[1] = tb
+            tb[1] = 101|111
+            tb[2] = 101
+            tb[3] = 102
+        end
+        do
+            local tb = {}
+            item.int_raw_map_vec[2] = tb
+            tb[1] = 201
+            tb[2] = 202
+            tb[3] = 203
+        end
     end
     do
         ---@type LogicConfigCurrency
@@ -470,10 +731,10 @@ local function get_config_map ()
         item.float_val = false 
         item.int_vec = {}
         do
-            item.int_vec[1] = "1"
-            item.int_vec[2] = "2"
-            item.int_vec[3] = "3"
-            item.int_vec[4] = "14;1223"
+            item.int_vec[1] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[2] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[3] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[4] = ""
         end 
         item.int_int_map = {}
         do
@@ -511,7 +772,36 @@ local function get_config_map ()
             tb[2] = 202.0
             tb[3] = 212.0
         end 
-        item.str_val = "19233"
+        item.vec_map = {}
+        do
+            local tb = {}
+            item.vec_map[1] = tb
+            tb["a"] = 2
+            tb["b"] = 3
+        end
+        do
+            local tb = {}
+            item.vec_map[2] = tb
+            tb["3"] = 1
+            tb["c"] = 4
+        end 
+        item.str_val = "19233" 
+        item.raw_val = 19233 
+        item.int_raw_map_vec = {}
+        do
+            local tb = {}
+            item.int_raw_map_vec[1] = tb
+            tb[1] = 101|111
+            tb[2] = 101
+            tb[3] = 102
+        end
+        do
+            local tb = {}
+            item.int_raw_map_vec[2] = tb
+            tb[1] = 201
+            tb[2] = 202
+            tb[3] = 203
+        end
     end
     do
         ---@type LogicConfigCurrency
@@ -521,10 +811,10 @@ local function get_config_map ()
         item.float_val = false 
         item.int_vec = {}
         do
-            item.int_vec[1] = "1"
-            item.int_vec[2] = "2"
-            item.int_vec[3] = "3"
-            item.int_vec[4] = "14;1223"
+            item.int_vec[1] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[2] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[3] = "currency|1|100;currency|2|200;currency|3|300"
+            item.int_vec[4] = ""
         end 
         item.int_int_map = {}
         do
@@ -562,8 +852,43 @@ local function get_config_map ()
             tb[2] = 202.0
             tb[3] = 213.0
         end 
-        item.str_val = "21344"
+        item.vec_map = {}
+        do
+            local tb = {}
+            item.vec_map[1] = tb
+            tb["a"] = 2
+            tb["b"] = 3
+        end
+        do
+            local tb = {}
+            item.vec_map[2] = tb
+            tb["3"] = 1
+            tb["c"] = 4
+        end 
+        item.str_val = "21344" 
+        item.raw_val = 21344 
+        item.int_raw_map_vec = {}
+        do
+            local tb = {}
+            item.int_raw_map_vec[1] = tb
+            tb[1] = 101|111
+            tb[2] = 101
+            tb[3] = 102
+        end
+        do
+            local tb = {}
+            item.int_raw_map_vec[2] = tb
+            tb[1] = 201
+            tb[2] = 202
+            tb[3] = 203
+        end
     end
+
+    local item_map = {}
+    for _, v in ipairs(item_list) do
+        item_map[v.config_id] = v
+    end
+    return item_map, item_list
 end
 
 function _config_require_currency()

@@ -1,0 +1,25 @@
+# machine Machine
+# server_cluster GameServerCluster
+# server GameServer
+# local_config_file
+
+{% import 'common/ssh_help.py.j2' as ssh_help %}
+{% import 'common/docker_help.py.j2' as docker_help %}
+{% import 'common/game_server_help.py.j2' as game_server_help %}
+
+{%- include "common/common_head.py.j2" %}
+{%- set ssh_client = "ssh_client" %}
+{{ ssh_help.invoke_shell(ssh_client, server.locate_machine) }}
+
+
+{{ docker_help.kill_container(ssh_client, server.name) }}
+
+{% set run_cmd = [ docker_help.cmd_mkdir_volume_used(server.work_dir),  ] %}
+{{ docker_help.exec_cmds(ssh_client, server.image, run_cmd, network=server.docker_ip.docker_net, volumes=zone.fo_used_volume_map.values()) }}
+
+{{ docker_help.put_to_docker(ssh_client, server.image, [local_config_file]) }}
+
+{% set run_cmd = game_server_help.start_cmd(server_cluster, server) %}
+{{ docker_help.run_container(ssh_client, server.name, server.image, run_cmd, opt="-d", volumes=zone.fo_used_volume_map.values(), network=server.docker_ip.docker_net, net_used=server.docker_ip, publish_ports=server.fo_port_mapping.values()) }}
+
+

@@ -16,7 +16,7 @@ do
     elem.ip = "119.91.239.128"
     elem.ssh_port = 22
     elem.ssh_user = "root"
-    elem.private_key_file = "C:/Users/luoxiaolong/.ssh/keys/root/id_rsa"
+    elem.private_key_file = "C:/Users/xiaol.luo/.ssh/keys/root/id_rsa"
     elem.ssh_pwd = "xiaolzz"
 end
 
@@ -28,7 +28,7 @@ do
     elem.ip = "119.91.239.128"
     elem.ssh_port = 22
     elem.ssh_user = "root"
-    elem.private_key_file = "C:/Users/luoxiaolong/.ssh/keys/root/id_rsa"
+    elem.private_key_file = "C:/Users/xiaol.luo/.ssh/keys/root/id_rsa"
     elem.ssh_pwd = "xiaolzz"
 end
 

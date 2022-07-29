@@ -323,6 +323,9 @@ function Zone:figure_out_fields()
         if is_class_instance(elem, DockerVolume) then
             self.fo_used_volume_map[elem.name] = elem
         end
+        if is_class_instance(elem, DockerVolumeUse) then
+            self.fo_used_volume_map[elem.docker_volume.name] = elem.docker_volume
+        end
     end)
     ---@param server GameServer
     for server_idx, server in ipairs(self.game_server_cluster.server_list) do
@@ -396,6 +399,8 @@ RemoteServer = RemoteServer or class("RemoteServer", SettingBase)
 ---@field fo_port_mapping table<number, number>
 ---@field work_dir DockerVolumeUse
 ---@field config_file DockerVolumeUse
+---@field server_bin DockerVolumeUse
+---@field lua_script_dir DockerVolumeUse
 ---@field remote_server_map table<string, RemoteServer>
 ---@field etcd_cluster_map table<string, EtcdServerCluster>
 ---@field redis_cluster_map table<string, RedisServerCluster>
@@ -405,10 +410,13 @@ GameServer = GameServer or class("GameServer", SettingBase)
 function GameServer:figure_out_fields()
     self.fo_port_mapping = {}
     if self.client_net_add.fo_port_mapping then
+        -- self.fo_port_mapping[self.client_net_add.fo_port_mapping.docker_port] = self.client_net_add.fo_port_mapping.machine_port
         table.insert(self.fo_port_mapping, self.client_net_add.fo_port_mapping)
     end
     if self.http_net_add.fo_port_mapping then
         table.insert(self.fo_port_mapping, self.http_net_add.fo_port_mapping)
+        -- self.fo_port_mapping[self.http_net_add.fo_port_mapping.docker_port] = self.http_net_add.fo_port_mapping.machine_port
+
     end
 end
 

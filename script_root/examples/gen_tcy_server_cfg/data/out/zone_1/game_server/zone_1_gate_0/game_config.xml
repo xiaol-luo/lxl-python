@@ -12,7 +12,7 @@
 		<element>for_make_array</element>
 		<element>
 			<name>service_discovery</name>
-			<host>http://10.0.1.180:2380;http://10.0.1.181:2380;http://10.0.1.182:2380</host>
+			<host>http://10.0.1.208:2380;http://10.0.1.209:2380;http://10.0.1.210:2380</host>
 			<user>zone_1</user>
 			<pwd>zone_1</pwd>
 		</element>		
@@ -24,7 +24,7 @@
 		<element>
 			<name>online_servers</name>
 			<is_cluster>1</is_cluster>
-			<host>10.0.1.183:6379,10.0.1.184:6379,10.0.1.185:6379,10.0.1.186:6379,10.0.1.187:6379,10.0.1.188:6379</host>
+			<host>10.0.1.202:6379,10.0.1.203:6379,10.0.1.204:6379,10.0.1.205:6379,10.0.1.206:6379,10.0.1.207:6379</host>
 			<pwd>zone_1</pwd>
 			<thread_num>3</thread_num>
 			<cnn_timeout_ms>3000</cnn_timeout_ms>
@@ -38,13 +38,13 @@
 	</mongo_service>
 
 	<advertise_peer_ip>10.0.1.30</advertise_peer_ip>
-	<advertise_peer_port>100002</advertise_peer_port>
-	<listen_peer_port>100002</listen_peer_port>
+	<advertise_peer_port>10002</advertise_peer_port>
+	<listen_peer_port>10002</listen_peer_port>
 	<advertise_client_ip>119.91.239.128</advertise_client_ip>
 	<advertise_client_port>41401</advertise_client_port>
-	<listen_client_port>100001</listen_client_port>
+	<listen_client_port>10001</listen_client_port>
 	<advertise_http_ip>119.91.239.128</advertise_http_ip>
 	<advertise_http_port>41402</advertise_http_port>
-	<listen_http_port>100003</listen_http_port></root>
+	<listen_http_port>10003</listen_http_port></root>
 
 

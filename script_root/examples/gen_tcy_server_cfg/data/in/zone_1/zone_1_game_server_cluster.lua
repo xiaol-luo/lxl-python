@@ -3,6 +3,8 @@
 local docker_net = docker_net_map[Docker_Net_Name.net_zone_1]
 local zone_name = Zone_Name.zone_1
 local game_server_dir = "game_server"
+local lus_script_dir = "tanchiyu/server/lua_script"
+local server_bin_name = "service"
 
 local game_server_cluster = GameServerCluster:new()
 game_server_cluster.server_list = {}
@@ -18,13 +20,13 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "10"
-    item.peer_port = 100002
+    item.peer_port = 10002
     do
         ---@type DockerNetMachinePort
         item.client_net_add = DockerNetMachinePort:new()
         item.client_net_add.machine = item.locate_machine
         item.client_net_add.docker_ip = item.docker_ip
-        item.client_net_add.docker_port = 100001
+        item.client_net_add.docker_port = 10001
         item.client_net_add.machine_port = 41101
     end
     do
@@ -32,20 +34,30 @@ do
         item.http_net_add = DockerNetMachinePort:new()
         item.http_net_add.machine = item.locate_machine
         item.http_net_add.docker_ip = item.docker_ip
-        item.http_net_add.docker_port = 100003
+        item.http_net_add.docker_port = 10003
         item.http_net_add.machine_port = 41102
     end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.name)
+        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.server_name)
     end
     do
         item.config_file = DockerVolumeUse:new()
         item.config_file.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.name, "game_config.xml")
+        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.server_name, "game_config.xml")
     end
-    item.remote_server_map = {}
+    do
+        item.server_bin = DockerVolumeUse:new()
+        item.server_bin.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_build]
+        item.server_bin.relative_path = path_combine(server_bin_name)
+    end
+    do
+        item.lua_script_dir = DockerVolumeUse:new()
+        item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.lua_script_dir.relative_path = path_combine(lus_script_dir)
+    end
+	item.remote_server_map = {}
     item.etcd_cluster_map = {}
     item.redis_cluster_map = {}
     item.mongo_cluster_map = {}
@@ -65,13 +77,13 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "11"
-    item.peer_port = 100002
+    item.peer_port = 10002
     do
         ---@type DockerNetMachinePort
         item.client_net_add = DockerNetMachinePort:new()
         item.client_net_add.machine = item.locate_machine
         item.client_net_add.docker_ip = item.docker_ip
-        item.client_net_add.docker_port = 100001
+        item.client_net_add.docker_port = 10001
         item.client_net_add.machine_port = 41201
     end
     do
@@ -79,20 +91,30 @@ do
         item.http_net_add = DockerNetMachinePort:new()
         item.http_net_add.machine = item.locate_machine
         item.http_net_add.docker_ip = item.docker_ip
-        item.http_net_add.docker_port = 100003
+        item.http_net_add.docker_port = 10003
         item.http_net_add.machine_port = 41202
     end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.name)
+        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.server_name)
     end
     do
         item.config_file = DockerVolumeUse:new()
         item.config_file.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.name, "game_config.xml")
+        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.server_name, "game_config.xml")
     end
-    item.remote_server_map = {}
+    do
+        item.server_bin = DockerVolumeUse:new()
+        item.server_bin.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_build]
+        item.server_bin.relative_path = path_combine(server_bin_name)
+    end
+    do
+        item.lua_script_dir = DockerVolumeUse:new()
+        item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.lua_script_dir.relative_path = path_combine(lus_script_dir)
+    end
+	item.remote_server_map = {}
     do
         item.remote_server_map["platform_http"] = { flag=Regular_Replace_Flag.zone_game_server_http_ip, ext_params=string_concat(zone_name, "platform") }
     end
@@ -116,13 +138,13 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "20"
-    item.peer_port = 100002
+    item.peer_port = 10002
     do
         ---@type DockerNetMachinePort
         item.client_net_add = DockerNetMachinePort:new()
         item.client_net_add.machine = item.locate_machine
         item.client_net_add.docker_ip = item.docker_ip
-        item.client_net_add.docker_port = 100001
+        item.client_net_add.docker_port = 10001
         item.client_net_add.machine_port = 41301
     end
     do
@@ -130,20 +152,30 @@ do
         item.http_net_add = DockerNetMachinePort:new()
         item.http_net_add.machine = item.locate_machine
         item.http_net_add.docker_ip = item.docker_ip
-        item.http_net_add.docker_port = 100003
+        item.http_net_add.docker_port = 10003
         item.http_net_add.machine_port = 41302
     end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.name)
+        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.server_name)
     end
     do
         item.config_file = DockerVolumeUse:new()
         item.config_file.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.name, "game_config.xml")
+        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.server_name, "game_config.xml")
     end
-    item.remote_server_map = {}
+    do
+        item.server_bin = DockerVolumeUse:new()
+        item.server_bin.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_build]
+        item.server_bin.relative_path = path_combine(server_bin_name)
+    end
+    do
+        item.lua_script_dir = DockerVolumeUse:new()
+        item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.lua_script_dir.relative_path = path_combine(lus_script_dir)
+    end
+	item.remote_server_map = {}
     do
         item.remote_server_map["auth_http"] = { flag=Regular_Replace_Flag.zone_game_server_http_ip, ext_params=string_concat(zone_name, "auth") }
     end
@@ -170,13 +202,13 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "dhcp"
-    item.peer_port = 100002
+    item.peer_port = 10002
     do
         ---@type DockerNetMachinePort
         item.client_net_add = DockerNetMachinePort:new()
         item.client_net_add.machine = item.locate_machine
         item.client_net_add.docker_ip = item.docker_ip
-        item.client_net_add.docker_port = 100001
+        item.client_net_add.docker_port = 10001
         item.client_net_add.machine_port = nil
     end
     do
@@ -184,20 +216,30 @@ do
         item.http_net_add = DockerNetMachinePort:new()
         item.http_net_add.machine = item.locate_machine
         item.http_net_add.docker_ip = item.docker_ip
-        item.http_net_add.docker_port = 100003
+        item.http_net_add.docker_port = 10003
         item.http_net_add.machine_port = nil
     end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.name)
+        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.server_name)
     end
     do
         item.config_file = DockerVolumeUse:new()
         item.config_file.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.name, "game_config.xml")
+        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.server_name, "game_config.xml")
     end
-    item.remote_server_map = {}
+    do
+        item.server_bin = DockerVolumeUse:new()
+        item.server_bin.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_build]
+        item.server_bin.relative_path = path_combine(server_bin_name)
+    end
+    do
+        item.lua_script_dir = DockerVolumeUse:new()
+        item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.lua_script_dir.relative_path = path_combine(lus_script_dir)
+    end
+	item.remote_server_map = {}
     item.etcd_cluster_map = {}
     do
         item.etcd_cluster_map["service_discovery"] = { flag=Regular_Replace_Flag.zone_db_cluster, ext_params=nil }
@@ -222,13 +264,13 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "dhcp"
-    item.peer_port = 100002
+    item.peer_port = 10002
     do
         ---@type DockerNetMachinePort
         item.client_net_add = DockerNetMachinePort:new()
         item.client_net_add.machine = item.locate_machine
         item.client_net_add.docker_ip = item.docker_ip
-        item.client_net_add.docker_port = 100001
+        item.client_net_add.docker_port = 10001
         item.client_net_add.machine_port = nil
     end
     do
@@ -236,20 +278,30 @@ do
         item.http_net_add = DockerNetMachinePort:new()
         item.http_net_add.machine = item.locate_machine
         item.http_net_add.docker_ip = item.docker_ip
-        item.http_net_add.docker_port = 100003
+        item.http_net_add.docker_port = 10003
         item.http_net_add.machine_port = nil
     end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.name)
+        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.server_name)
     end
     do
         item.config_file = DockerVolumeUse:new()
         item.config_file.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.name, "game_config.xml")
+        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.server_name, "game_config.xml")
     end
-    item.remote_server_map = {}
+    do
+        item.server_bin = DockerVolumeUse:new()
+        item.server_bin.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_build]
+        item.server_bin.relative_path = path_combine(server_bin_name)
+    end
+    do
+        item.lua_script_dir = DockerVolumeUse:new()
+        item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.lua_script_dir.relative_path = path_combine(lus_script_dir)
+    end
+	item.remote_server_map = {}
     item.etcd_cluster_map = {}
     do
         item.etcd_cluster_map["service_discovery"] = { flag=Regular_Replace_Flag.zone_db_cluster, ext_params=nil }
@@ -276,13 +328,13 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "dhcp"
-    item.peer_port = 100002
+    item.peer_port = 10002
     do
         ---@type DockerNetMachinePort
         item.client_net_add = DockerNetMachinePort:new()
         item.client_net_add.machine = item.locate_machine
         item.client_net_add.docker_ip = item.docker_ip
-        item.client_net_add.docker_port = 100001
+        item.client_net_add.docker_port = 10001
         item.client_net_add.machine_port = nil
     end
     do
@@ -290,20 +342,30 @@ do
         item.http_net_add = DockerNetMachinePort:new()
         item.http_net_add.machine = item.locate_machine
         item.http_net_add.docker_ip = item.docker_ip
-        item.http_net_add.docker_port = 100003
+        item.http_net_add.docker_port = 10003
         item.http_net_add.machine_port = nil
     end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.name)
+        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.server_name)
     end
     do
         item.config_file = DockerVolumeUse:new()
         item.config_file.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.name, "game_config.xml")
+        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.server_name, "game_config.xml")
     end
-    item.remote_server_map = {}
+    do
+        item.server_bin = DockerVolumeUse:new()
+        item.server_bin.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_build]
+        item.server_bin.relative_path = path_combine(server_bin_name)
+    end
+    do
+        item.lua_script_dir = DockerVolumeUse:new()
+        item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.lua_script_dir.relative_path = path_combine(lus_script_dir)
+    end
+	item.remote_server_map = {}
     item.etcd_cluster_map = {}
     do
         item.etcd_cluster_map["service_discovery"] = { flag=Regular_Replace_Flag.zone_db_cluster, ext_params=nil }
@@ -330,13 +392,13 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "dhcp"
-    item.peer_port = 100002
+    item.peer_port = 10002
     do
         ---@type DockerNetMachinePort
         item.client_net_add = DockerNetMachinePort:new()
         item.client_net_add.machine = item.locate_machine
         item.client_net_add.docker_ip = item.docker_ip
-        item.client_net_add.docker_port = 100001
+        item.client_net_add.docker_port = 10001
         item.client_net_add.machine_port = nil
     end
     do
@@ -344,20 +406,30 @@ do
         item.http_net_add = DockerNetMachinePort:new()
         item.http_net_add.machine = item.locate_machine
         item.http_net_add.docker_ip = item.docker_ip
-        item.http_net_add.docker_port = 100003
+        item.http_net_add.docker_port = 10003
         item.http_net_add.machine_port = nil
     end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.name)
+        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.server_name)
     end
     do
         item.config_file = DockerVolumeUse:new()
         item.config_file.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.name, "game_config.xml")
+        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.server_name, "game_config.xml")
     end
-    item.remote_server_map = {}
+    do
+        item.server_bin = DockerVolumeUse:new()
+        item.server_bin.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_build]
+        item.server_bin.relative_path = path_combine(server_bin_name)
+    end
+    do
+        item.lua_script_dir = DockerVolumeUse:new()
+        item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.lua_script_dir.relative_path = path_combine(lus_script_dir)
+    end
+	item.remote_server_map = {}
     item.etcd_cluster_map = {}
     do
         item.etcd_cluster_map["service_discovery"] = { flag=Regular_Replace_Flag.zone_db_cluster, ext_params=nil }
@@ -384,13 +456,13 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "30"
-    item.peer_port = 100002
+    item.peer_port = 10002
     do
         ---@type DockerNetMachinePort
         item.client_net_add = DockerNetMachinePort:new()
         item.client_net_add.machine = item.locate_machine
         item.client_net_add.docker_ip = item.docker_ip
-        item.client_net_add.docker_port = 100001
+        item.client_net_add.docker_port = 10001
         item.client_net_add.machine_port = 41401
     end
     do
@@ -398,20 +470,30 @@ do
         item.http_net_add = DockerNetMachinePort:new()
         item.http_net_add.machine = item.locate_machine
         item.http_net_add.docker_ip = item.docker_ip
-        item.http_net_add.docker_port = 100003
+        item.http_net_add.docker_port = 10003
         item.http_net_add.machine_port = 41402
     end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.name)
+        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.server_name)
     end
     do
         item.config_file = DockerVolumeUse:new()
         item.config_file.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.name, "game_config.xml")
+        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.server_name, "game_config.xml")
     end
-    item.remote_server_map = {}
+    do
+        item.server_bin = DockerVolumeUse:new()
+        item.server_bin.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_build]
+        item.server_bin.relative_path = path_combine(server_bin_name)
+    end
+    do
+        item.lua_script_dir = DockerVolumeUse:new()
+        item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.lua_script_dir.relative_path = path_combine(lus_script_dir)
+    end
+	item.remote_server_map = {}
     item.etcd_cluster_map = {}
     do
         item.etcd_cluster_map["service_discovery"] = { flag=Regular_Replace_Flag.zone_db_cluster, ext_params=nil }
@@ -435,13 +517,13 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "dhcp"
-    item.peer_port = 100002
+    item.peer_port = 10002
     do
         ---@type DockerNetMachinePort
         item.client_net_add = DockerNetMachinePort:new()
         item.client_net_add.machine = item.locate_machine
         item.client_net_add.docker_ip = item.docker_ip
-        item.client_net_add.docker_port = 100001
+        item.client_net_add.docker_port = 10001
         item.client_net_add.machine_port = nil
     end
     do
@@ -449,20 +531,30 @@ do
         item.http_net_add = DockerNetMachinePort:new()
         item.http_net_add.machine = item.locate_machine
         item.http_net_add.docker_ip = item.docker_ip
-        item.http_net_add.docker_port = 100003
+        item.http_net_add.docker_port = 10003
         item.http_net_add.machine_port = nil
     end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.name)
+        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.server_name)
     end
     do
         item.config_file = DockerVolumeUse:new()
         item.config_file.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.name, "game_config.xml")
+        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.server_name, "game_config.xml")
     end
-    item.remote_server_map = {}
+    do
+        item.server_bin = DockerVolumeUse:new()
+        item.server_bin.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_build]
+        item.server_bin.relative_path = path_combine(server_bin_name)
+    end
+    do
+        item.lua_script_dir = DockerVolumeUse:new()
+        item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.lua_script_dir.relative_path = path_combine(lus_script_dir)
+    end
+	item.remote_server_map = {}
     item.etcd_cluster_map = {}
     do
         item.etcd_cluster_map["service_discovery"] = { flag=Regular_Replace_Flag.zone_db_cluster, ext_params=nil }
@@ -482,13 +574,13 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "dhcp"
-    item.peer_port = 100002
+    item.peer_port = 10002
     do
         ---@type DockerNetMachinePort
         item.client_net_add = DockerNetMachinePort:new()
         item.client_net_add.machine = item.locate_machine
         item.client_net_add.docker_ip = item.docker_ip
-        item.client_net_add.docker_port = 100001
+        item.client_net_add.docker_port = 10001
         item.client_net_add.machine_port = nil
     end
     do
@@ -496,20 +588,30 @@ do
         item.http_net_add = DockerNetMachinePort:new()
         item.http_net_add.machine = item.locate_machine
         item.http_net_add.docker_ip = item.docker_ip
-        item.http_net_add.docker_port = 100003
+        item.http_net_add.docker_port = 10003
         item.http_net_add.machine_port = nil
     end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.name)
+        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.server_name)
     end
     do
         item.config_file = DockerVolumeUse:new()
         item.config_file.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.name, "game_config.xml")
+        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.server_name, "game_config.xml")
     end
-    item.remote_server_map = {}
+    do
+        item.server_bin = DockerVolumeUse:new()
+        item.server_bin.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_build]
+        item.server_bin.relative_path = path_combine(server_bin_name)
+    end
+    do
+        item.lua_script_dir = DockerVolumeUse:new()
+        item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.lua_script_dir.relative_path = path_combine(lus_script_dir)
+    end
+	item.remote_server_map = {}
     item.etcd_cluster_map = {}
     do
         item.etcd_cluster_map["service_discovery"] = { flag=Regular_Replace_Flag.zone_db_cluster, ext_params=nil }
@@ -529,13 +631,13 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "dhcp"
-    item.peer_port = 100002
+    item.peer_port = 10002
     do
         ---@type DockerNetMachinePort
         item.client_net_add = DockerNetMachinePort:new()
         item.client_net_add.machine = item.locate_machine
         item.client_net_add.docker_ip = item.docker_ip
-        item.client_net_add.docker_port = 100001
+        item.client_net_add.docker_port = 10001
         item.client_net_add.machine_port = 41501
     end
     do
@@ -543,20 +645,30 @@ do
         item.http_net_add = DockerNetMachinePort:new()
         item.http_net_add.machine = item.locate_machine
         item.http_net_add.docker_ip = item.docker_ip
-        item.http_net_add.docker_port = 100003
+        item.http_net_add.docker_port = 10003
         item.http_net_add.machine_port = 41502
     end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.name)
+        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.server_name)
     end
     do
         item.config_file = DockerVolumeUse:new()
         item.config_file.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.name, "game_config.xml")
+        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.server_name, "game_config.xml")
     end
-    item.remote_server_map = {}
+    do
+        item.server_bin = DockerVolumeUse:new()
+        item.server_bin.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_build]
+        item.server_bin.relative_path = path_combine(server_bin_name)
+    end
+    do
+        item.lua_script_dir = DockerVolumeUse:new()
+        item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.lua_script_dir.relative_path = path_combine(lus_script_dir)
+    end
+	item.remote_server_map = {}
     item.etcd_cluster_map = {}
     do
         item.etcd_cluster_map["service_discovery"] = { flag=Regular_Replace_Flag.zone_db_cluster, ext_params=nil }
@@ -577,13 +689,13 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "dhcp"
-    item.peer_port = 100002
+    item.peer_port = 10002
     do
         ---@type DockerNetMachinePort
         item.client_net_add = DockerNetMachinePort:new()
         item.client_net_add.machine = item.locate_machine
         item.client_net_add.docker_ip = item.docker_ip
-        item.client_net_add.docker_port = 100001
+        item.client_net_add.docker_port = 10001
         item.client_net_add.machine_port = nil
     end
     do
@@ -591,20 +703,30 @@ do
         item.http_net_add = DockerNetMachinePort:new()
         item.http_net_add.machine = item.locate_machine
         item.http_net_add.docker_ip = item.docker_ip
-        item.http_net_add.docker_port = 100003
+        item.http_net_add.docker_port = 10003
         item.http_net_add.machine_port = nil
     end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.name)
+        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.server_name)
     end
     do
         item.config_file = DockerVolumeUse:new()
         item.config_file.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.name, "game_config.xml")
+        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.server_name, "game_config.xml")
     end
-    item.remote_server_map = {}
+    do
+        item.server_bin = DockerVolumeUse:new()
+        item.server_bin.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_build]
+        item.server_bin.relative_path = path_combine(server_bin_name)
+    end
+    do
+        item.lua_script_dir = DockerVolumeUse:new()
+        item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.lua_script_dir.relative_path = path_combine(lus_script_dir)
+    end
+	item.remote_server_map = {}
     item.etcd_cluster_map = {}
     do
         item.etcd_cluster_map["service_discovery"] = { flag=Regular_Replace_Flag.zone_db_cluster, ext_params=nil }
@@ -627,13 +749,13 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "40"
-    item.peer_port = 100002
+    item.peer_port = 10002
     do
         ---@type DockerNetMachinePort
         item.client_net_add = DockerNetMachinePort:new()
         item.client_net_add.machine = item.locate_machine
         item.client_net_add.docker_ip = item.docker_ip
-        item.client_net_add.docker_port = 100001
+        item.client_net_add.docker_port = 10001
         item.client_net_add.machine_port = nil
     end
     do
@@ -641,20 +763,30 @@ do
         item.http_net_add = DockerNetMachinePort:new()
         item.http_net_add.machine = item.locate_machine
         item.http_net_add.docker_ip = item.docker_ip
-        item.http_net_add.docker_port = 100003
+        item.http_net_add.docker_port = 10003
         item.http_net_add.machine_port = nil
     end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.name)
+        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.server_name)
     end
     do
         item.config_file = DockerVolumeUse:new()
         item.config_file.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.name, "game_config.xml")
+        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.server_name, "game_config.xml")
     end
-    item.remote_server_map = {}
+    do
+        item.server_bin = DockerVolumeUse:new()
+        item.server_bin.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_build]
+        item.server_bin.relative_path = path_combine(server_bin_name)
+    end
+    do
+        item.lua_script_dir = DockerVolumeUse:new()
+        item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.lua_script_dir.relative_path = path_combine(lus_script_dir)
+    end
+	item.remote_server_map = {}
     do
         item.remote_server_map["platform_http"] = { flag=Regular_Replace_Flag.zone_game_server_http_ip, ext_params=string_concat(zone_name, "platform") }
     end
@@ -678,13 +810,13 @@ do
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "dhcp"
-    item.peer_port = 100002
+    item.peer_port = 10002
     do
         ---@type DockerNetMachinePort
         item.client_net_add = DockerNetMachinePort:new()
         item.client_net_add.machine = item.locate_machine
         item.client_net_add.docker_ip = item.docker_ip
-        item.client_net_add.docker_port = 100001
+        item.client_net_add.docker_port = 10001
         item.client_net_add.machine_port = nil
     end
     do
@@ -692,20 +824,30 @@ do
         item.http_net_add = DockerNetMachinePort:new()
         item.http_net_add.machine = item.locate_machine
         item.http_net_add.docker_ip = item.docker_ip
-        item.http_net_add.docker_port = 100003
+        item.http_net_add.docker_port = 10003
         item.http_net_add.machine_port = nil
     end
     do
         item.work_dir = DockerVolumeUse:new()
         item.work_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.name)
+        item.work_dir.relative_path = path_combine(zone_name, game_server_dir, item.server_name)
     end
     do
         item.config_file = DockerVolumeUse:new()
         item.config_file.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_data]
-        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.name, "game_config.xml")
+        item.config_file.relative_path = path_combine(zone_name, game_server_dir, item.server_name, "game_config.xml")
     end
-    item.remote_server_map = {}
+    do
+        item.server_bin = DockerVolumeUse:new()
+        item.server_bin.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_build]
+        item.server_bin.relative_path = path_combine(server_bin_name)
+    end
+    do
+        item.lua_script_dir = DockerVolumeUse:new()
+        item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.lua_script_dir.relative_path = path_combine(lus_script_dir)
+    end
+	item.remote_server_map = {}
     item.etcd_cluster_map = {}
     do
         item.etcd_cluster_map["service_discovery"] = { flag=Regular_Replace_Flag.zone_db_cluster, ext_params=nil }

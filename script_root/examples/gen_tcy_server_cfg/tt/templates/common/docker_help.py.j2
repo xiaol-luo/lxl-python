@@ -40,19 +40,27 @@ rm -rf {{volume_used.fo_abs_path}}
 ## volumes typing.List[DockerVolume]
 ## network typing DockerNet
 ## net_used DockerNetUse
-{% macro run_container (ssh_client, container_name, image, cmd, opt="", volumes = None, network=None, net_used=None) -%}
+{% macro run_container (ssh_client, container_name, image, cmd, opt="", volumes = None, network=None, net_used=None, publish_ports=None) -%}
 with IndentFlag():
     opt_mount_volumes = []
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
 {%- if volumes -%}
 {%- for e in volumes %}
     opt_mount_volumes.append("--mount type=volume,src={{e.name}},dst={{e.map_path}}")
-{%- endfor -%}{% endif %}
+{%- endfor -%}
+{%- endif %}
+    opt_publish_ports = []
+{%- if publish_ports -%}
+{%- for v in publish_ports %}
+    # opt_publish_ports.append("--publish {{v.docker_port}}:{{v.machine_port}}/tcp")
+    # opt_publish_ports.append("--publish {{v.docker_port}}:{{v.machine_port}}/udp")
+{%- endfor -%}
+{%- endif %}
 {% if network %}    opt_network = "{{ opt_network(network) }}"{% else %}    opt_network = ""{% endif %}
 {% if net_used %}    opt_ip = "{{ opt_ip(net_used) }}"{% else %}    opt_ip = ""{% endif %}
-    run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {image} {command}".format(
+    run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {p_ports} {image} {command}".format(
         opt="{{opt}}", name="{{container_name}}", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="{{image}}",
-        command=r"{{cmd}}"
+        command=r"{{cmd}}", p_ports=" ".join(opt_publish_ports)
     )
     ret, out_txt, error_txt = paramiko_ssh_cmd({{ssh_client}}, run_cmd, exit_when_error=True)
     if 0 != ret:
@@ -122,11 +130,11 @@ with IndentFlag():
 ## to_docker_file_list typing.List[LocalAndDockerVolumeUse]
 {% macro put_to_docker (ssh_client, image, to_docker_file_list, print_fn_name=None) -%}
 {%- set volume_map = {} -%}
-{%- for e in to_docker_file_list.values() %}
+{%- for e in to_docker_file_list %}
     {%- do volume_map.update({e.volume_use.docker_volume.name: e.volume_use.docker_volume}) -%}
 {%- endfor %}
 {%- set run_cmd_list = [] -%}
-{%- for e in to_docker_file_list.values() %}
+{%- for e in to_docker_file_list %}
 paramiko_sftp_put(ssh_client, '{{e.local_path}}', "/tmp/docker_put_to_data_{0}".format({{loop.index}}))
 {%- set run_cmd = [
     cmd_mkdir_volume_used(e.volume_use, True),
@@ -142,18 +150,18 @@ paramiko_sftp_put(ssh_client, '{{e.local_path}}', "/tmp/docker_put_to_data_{0}".
 ## from_docker_file_list typing.List[LocalAndDockerVolumeUse]
 {% macro get_from_docker (ssh_client, image, from_docker_file_list, print_fn_name=None) -%}
 {%- set volume_map = {} -%}
-{%- for e in from_docker_file_list.values() %}
+{%- for e in from_docker_file_list %}
     {%- do volume_map.update({e.volume_use.docker_volume.name: e.volume_use.docker_volume}) -%}
 {%- endfor %}
 {%- set run_cmd_list = [] -%}
-{%- for e in from_docker_file_list.values() %}
+{%- for e in from_docker_file_list %}
 {% set run_cmd = [
     "cp -f %s /root/tmp/docker_get_from_data_%s"|format(e.volume_use.fo_abs_path, loop.index),
 ] -%}
 {%- do run_cmd_list.extend(run_cmd) -%}
 {%- endfor %}
 {{ exec_cmds(ssh_client, image, run_cmd_list, volumes=volume_map.values(), print_fn_name=print_fn_name) }}
-{%- for e in from_docker_file_list.values() %}
+{%- for e in from_docker_file_list %}
 paramiko_sftp_get(ssh_client, "/tmp/docker_get_from_data_{}".format({{loop.index}}), '{{e.local_path}}')
 {%- endfor %}
 {%- endmacro -%}

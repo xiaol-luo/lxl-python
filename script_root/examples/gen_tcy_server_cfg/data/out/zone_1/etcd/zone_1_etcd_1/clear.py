@@ -79,7 +79,7 @@ with IndentFlag():
     ssh_client = paramiko.SSHClient()
     ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh_client.connect(hostname="119.91.239.128", port="22", username="root", \
-        pkey=paramiko.RSAKey.from_private_key_file(r"C:/Users/luoxiaolong/.ssh/keys/root/id_rsa", "xiaolzz"))
+        pkey=paramiko.RSAKey.from_private_key_file(r"C:/Users/xiaol.luo/.ssh/keys/root/id_rsa", "xiaolzz"))
 
 
 with IndentFlag():
@@ -95,6 +95,8 @@ with IndentFlag():
     ct_name = "ct_{}".format(random.randint(1, 99999999))
     opt_mount_volumes = []
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
+    opt_mount_volumes.append("--mount type=volume,src=tcy_code,dst=/root/code")
+    opt_mount_volumes.append("--mount type=volume,src=tcy_build,dst=/root/build")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = ""
     run_cmd = "docker run -itd --name {name} {network} {mount_volumes} {image} {command}".format(
