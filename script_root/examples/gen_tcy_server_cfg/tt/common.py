@@ -22,3 +22,6 @@ def get_template(tt_path):
     tt = env.get_template(tt_path)
     return tt
 
+def set_filter(name, filter):
+    env = get_env()
+    env.filters[name] = filter

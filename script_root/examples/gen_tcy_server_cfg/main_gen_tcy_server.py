@@ -44,6 +44,9 @@ if __name__ == "__main__":
     with IndentFlag():
         render.render_test.export_test_file(parse_ret.out_setting, zone, None)
 
+    import tt
+    render.render_filter.setup_filters(tt.common.set_filter)
+
     with IndentFlag():
         # etcd
         render.render_etcd.export_cluster_start_file(parse_ret.out_setting, zone, etcd_cluster)
@@ -88,6 +91,9 @@ if __name__ == "__main__":
     with IndentFlag():
         render.render_game_server.export_config_file(parse_ret.out_setting, zone, zone.game_server_cluster)
         render.render_game_server.export_start_file(parse_ret.out_setting, zone, zone.game_server_cluster)
+        render.render_game_server.export_stop_file(parse_ret.out_setting, zone, zone.game_server_cluster)
+        render.render_game_server.export_logs_file(parse_ret.out_setting, zone, zone.game_server_cluster)
+        render.render_game_server.export_clear_file(parse_ret.out_setting, zone, zone.game_server_cluster)
 
 
 

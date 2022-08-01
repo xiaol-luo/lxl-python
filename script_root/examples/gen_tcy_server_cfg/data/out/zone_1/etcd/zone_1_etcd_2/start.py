@@ -93,8 +93,8 @@ with IndentFlag():
     ct_name = "ct_{}".format(random.randint(1, 99999999))
     opt_mount_volumes = []
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
-    opt_mount_volumes.append("--mount type=volume,src=tcy_code,dst=/root/code")
     opt_mount_volumes.append("--mount type=volume,src=tcy_build,dst=/root/build")
+    opt_mount_volumes.append("--mount type=volume,src=tcy_code,dst=/root/code")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
     run_cmd = "docker run -itd --name {name} {network} {mount_volumes} {image} {command}".format(
@@ -117,15 +117,15 @@ with IndentFlag():
 with IndentFlag():
     opt_mount_volumes = []
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
-    opt_mount_volumes.append("--mount type=volume,src=tcy_code,dst=/root/code")
     opt_mount_volumes.append("--mount type=volume,src=tcy_build,dst=/root/build")
+    opt_mount_volumes.append("--mount type=volume,src=tcy_code,dst=/root/code")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_publish_ports = []
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.209"
+    opt_ip = "--ip 10.0.1.181"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {p_ports} {image} {command}".format(
         opt="-d", name="zone_1_etcd_2", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
-        command=r"etcd --name zone_1_etcd_2 --data-dir /root/zone/zone_1/etcd/zone_1_etcd_2 --listen-peer-urls http://0.0.0.0:2380 --listen-client-urls http://0.0.0.0:2379 --initial-advertise-peer-urls http://10.0.1.209:2380 --advertise-client-urls http://10.0.1.209:2379  --log-output stdout --initial-cluster-token 'zone_1' --initial-cluster zone_1_etcd_1=http://10.0.1.208:2380,zone_1_etcd_2=http://10.0.1.209:2380,zone_1_etcd_3=http://10.0.1.210:2380", p_ports=" ".join(opt_publish_ports)
+        command=r"etcd --name zone_1_etcd_2 --data-dir /root/zone/zone_1/etcd/zone_1_etcd_2 --listen-peer-urls http://0.0.0.0:2380 --listen-client-urls http://0.0.0.0:2379 --initial-advertise-peer-urls http://10.0.1.181:2380 --advertise-client-urls http://10.0.1.181:2379  --log-output stdout --initial-cluster-token 'zone_1' --initial-cluster zone_1_etcd_1=http://10.0.1.180:2380,zone_1_etcd_2=http://10.0.1.181:2380,zone_1_etcd_3=http://10.0.1.182:2380", p_ports=" ".join(opt_publish_ports)
     )
     ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, run_cmd, exit_when_error=True)
     if 0 != ret:

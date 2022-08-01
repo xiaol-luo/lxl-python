@@ -96,8 +96,8 @@ with IndentFlag():
     ct_name = "ct_{}".format(random.randint(1, 99999999))
     opt_mount_volumes = []
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
-    opt_mount_volumes.append("--mount type=volume,src=tcy_code,dst=/root/code")
     opt_mount_volumes.append("--mount type=volume,src=tcy_build,dst=/root/build")
+    opt_mount_volumes.append("--mount type=volume,src=tcy_code,dst=/root/code")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = ""
     run_cmd = "docker run -itd --name {name} {network} {mount_volumes} {image} {command}".format(

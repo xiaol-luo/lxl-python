@@ -117,3 +117,14 @@ def cal_game_server_start_file_path(root_dir, zone, server):
     return path_batch_join(root_dir, zone.name, "game_server", server.server_name, "start.py")
 
 
+def cal_game_server_stop_file_path(root_dir, zone, server):
+    return path_batch_join(root_dir, zone.name, "game_server", server.server_name, "stop.py")
+
+
+def cal_game_server_clear_file_path(root_dir, zone, server):
+    return path_batch_join(root_dir, zone.name, "game_server", server.server_name, "clear.py")
+
+
+def cal_game_server_logs_file_path(root_dir, zone, server):
+    return path_batch_join(root_dir, zone.name, "game_server", server.server_name, "logs.py")
+

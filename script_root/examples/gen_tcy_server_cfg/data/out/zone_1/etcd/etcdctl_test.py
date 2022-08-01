@@ -89,8 +89,8 @@ with IndentFlag():
     ct_name = "ct_{}".format(random.randint(1, 99999999))
     opt_mount_volumes = []
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
-    opt_mount_volumes.append("--mount type=volume,src=tcy_code,dst=/root/code")
     opt_mount_volumes.append("--mount type=volume,src=tcy_build,dst=/root/build")
+    opt_mount_volumes.append("--mount type=volume,src=tcy_code,dst=/root/code")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
     run_cmd = "docker run -itd --name {name} {network} {mount_volumes} {image} {command}".format(
@@ -100,7 +100,7 @@ with IndentFlag():
         print("docker exec: run docker container fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
         sys.exit(ret)
     # execute cmds in docker contianer
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.208:2379,//10.0.1.209:2379,//10.0.1.210:2379 ls / '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.180:2379,//10.0.1.181:2379,//10.0.1.182:2379 ls / '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:

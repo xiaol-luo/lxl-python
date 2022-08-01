@@ -1,0 +1,16 @@
+# machine Machine
+# server EtcdServer
+
+{%- import 'common/ssh_help.py.j2' as ssh_help %}
+{%- import 'common/docker_help.py.j2' as docker_help %}
+{%- import 'common/etcd_help.py.j2' as etcd_help %}
+
+{%- include "common/common_head.py.j2" %}
+
+{% set ssh_client = "ssh_client" %}
+{{ ssh_help.invoke_shell(ssh_client, server.locate_machine) }}
+
+paramiko_ssh_cmd({{ssh_client}}, [
+    "docker container kill {{ server.server_name }}",
+    "docker container prune -f",
+])

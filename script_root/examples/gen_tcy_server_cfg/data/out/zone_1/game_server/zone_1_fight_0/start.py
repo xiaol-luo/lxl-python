@@ -83,7 +83,7 @@ with IndentFlag():
 
 with IndentFlag():
     cmds = []
-    cmds.append("docker container kill {name}".format(name="None"))
+    cmds.append("docker container kill {name}".format(name="zone_1_fight_0"))
     cmds.append("docker container prune -f")
     paramiko_ssh_cmd(ssh_client, cmds, exit_when_error=False)
 
@@ -94,8 +94,8 @@ with IndentFlag():
     ct_name = "ct_{}".format(random.randint(1, 99999999))
     opt_mount_volumes = []
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
-    opt_mount_volumes.append("--mount type=volume,src=tcy_code,dst=/root/code")
     opt_mount_volumes.append("--mount type=volume,src=tcy_build,dst=/root/build")
+    opt_mount_volumes.append("--mount type=volume,src=tcy_code,dst=/root/code")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
     run_cmd = "docker run -itd --name {name} {network} {mount_volumes} {image} {command}".format(
@@ -106,6 +106,9 @@ with IndentFlag():
         sys.exit(ret)
     # execute cmds in docker contianer
     ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mkdir -p /root/zone/zone_1/game_server/zone_1_fight_0 '''))
+    if 0 != ret:
+        print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' mkdir -p /root/zone/zone_1/game_server/zone_1_fight_0/hotfix_dir '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     # remove docker container
@@ -147,15 +150,15 @@ with IndentFlag():
 with IndentFlag():
     opt_mount_volumes = []
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
-    opt_mount_volumes.append("--mount type=volume,src=tcy_code,dst=/root/code")
     opt_mount_volumes.append("--mount type=volume,src=tcy_build,dst=/root/build")
+    opt_mount_volumes.append("--mount type=volume,src=tcy_code,dst=/root/code")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_publish_ports = []
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.186"
+    opt_ip = "--ip 10.0.1.202"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {p_ports} {image} {command}".format(
-        opt="-d", name="None", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
-        command=r"/root/build/service fight /root/zone/zone_1/game_server/zone_1_fight_0 /root/zone/zone_1/game_server/zone_1_fight_0 /root/zone/zone_1/game_server/zone_1_fight_0/game_config.xml /root/code/tanchiyu/server/lua_script --lua_args_begin-- -lua_path /root/code/tanchiyu/server/lua_script . -c_path . -require_files servers.entrance.server_entrance  -execute_fns start_script", p_ports=" ".join(opt_publish_ports)
+        opt="-d", name="zone_1_fight_0", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
+        command=r"/root/build/service fight /root/zone/zone_1/game_server/zone_1_fight_0 /root/code/tanchiyu/server/datas /root/zone/zone_1/game_server/zone_1_fight_0/game_config.xml /root/code/tanchiyu/server/lua_script --lua_args_begin-- -lua_path /root/code/tanchiyu/server/lua_script . -c_path . /root/build -require_files servers.entrance.server_entrance  -execute_fns start_script", p_ports=" ".join(opt_publish_ports)
     )
     ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, run_cmd, exit_when_error=True)
     if 0 != ret:

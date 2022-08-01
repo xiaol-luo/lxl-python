@@ -4,6 +4,7 @@ local docker_net = docker_net_map[Docker_Net_Name.net_zone_1]
 local zone_name = Zone_Name.zone_1
 local game_server_dir = "game_server"
 local lus_script_dir = "tanchiyu/server/lua_script"
+local datas_dir = "tanchiyu/server/datas"
 local server_bin_name = "service"
 
 local game_server_cluster = GameServerCluster:new()
@@ -56,6 +57,11 @@ do
         item.lua_script_dir = DockerVolumeUse:new()
         item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
         item.lua_script_dir.relative_path = path_combine(lus_script_dir)
+    end
+    do
+        item.data_dir = DockerVolumeUse:new()
+        item.data_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.data_dir.relative_path = path_combine(datas_dir)
     end
 	item.remote_server_map = {}
     item.etcd_cluster_map = {}
@@ -113,6 +119,11 @@ do
         item.lua_script_dir = DockerVolumeUse:new()
         item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
         item.lua_script_dir.relative_path = path_combine(lus_script_dir)
+    end
+	do
+        item.data_dir = DockerVolumeUse:new()
+        item.data_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.data_dir.relative_path = path_combine(datas_dir)
     end
 	item.remote_server_map = {}
     do
@@ -174,6 +185,11 @@ do
         item.lua_script_dir = DockerVolumeUse:new()
         item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
         item.lua_script_dir.relative_path = path_combine(lus_script_dir)
+    end
+	do
+        item.data_dir = DockerVolumeUse:new()
+        item.data_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.data_dir.relative_path = path_combine(datas_dir)
     end
 	item.remote_server_map = {}
     do
@@ -239,6 +255,11 @@ do
         item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
         item.lua_script_dir.relative_path = path_combine(lus_script_dir)
     end
+	do
+        item.data_dir = DockerVolumeUse:new()
+        item.data_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.data_dir.relative_path = path_combine(datas_dir)
+    end
 	item.remote_server_map = {}
     item.etcd_cluster_map = {}
     do
@@ -300,6 +321,11 @@ do
         item.lua_script_dir = DockerVolumeUse:new()
         item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
         item.lua_script_dir.relative_path = path_combine(lus_script_dir)
+    end
+	do
+        item.data_dir = DockerVolumeUse:new()
+        item.data_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.data_dir.relative_path = path_combine(datas_dir)
     end
 	item.remote_server_map = {}
     item.etcd_cluster_map = {}
@@ -365,6 +391,11 @@ do
         item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
         item.lua_script_dir.relative_path = path_combine(lus_script_dir)
     end
+	do
+        item.data_dir = DockerVolumeUse:new()
+        item.data_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.data_dir.relative_path = path_combine(datas_dir)
+    end
 	item.remote_server_map = {}
     item.etcd_cluster_map = {}
     do
@@ -428,6 +459,11 @@ do
         item.lua_script_dir = DockerVolumeUse:new()
         item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
         item.lua_script_dir.relative_path = path_combine(lus_script_dir)
+    end
+	do
+        item.data_dir = DockerVolumeUse:new()
+        item.data_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.data_dir.relative_path = path_combine(datas_dir)
     end
 	item.remote_server_map = {}
     item.etcd_cluster_map = {}
@@ -493,6 +529,11 @@ do
         item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
         item.lua_script_dir.relative_path = path_combine(lus_script_dir)
     end
+	do
+        item.data_dir = DockerVolumeUse:new()
+        item.data_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.data_dir.relative_path = path_combine(datas_dir)
+    end
 	item.remote_server_map = {}
     item.etcd_cluster_map = {}
     do
@@ -554,6 +595,11 @@ do
         item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
         item.lua_script_dir.relative_path = path_combine(lus_script_dir)
     end
+	do
+        item.data_dir = DockerVolumeUse:new()
+        item.data_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.data_dir.relative_path = path_combine(datas_dir)
+    end
 	item.remote_server_map = {}
     item.etcd_cluster_map = {}
     do
@@ -610,6 +656,11 @@ do
         item.lua_script_dir = DockerVolumeUse:new()
         item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
         item.lua_script_dir.relative_path = path_combine(lus_script_dir)
+    end
+	do
+        item.data_dir = DockerVolumeUse:new()
+        item.data_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.data_dir.relative_path = path_combine(datas_dir)
     end
 	item.remote_server_map = {}
     item.etcd_cluster_map = {}
@@ -668,6 +719,11 @@ do
         item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
         item.lua_script_dir.relative_path = path_combine(lus_script_dir)
     end
+	do
+        item.data_dir = DockerVolumeUse:new()
+        item.data_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.data_dir.relative_path = path_combine(datas_dir)
+    end
 	item.remote_server_map = {}
     item.etcd_cluster_map = {}
     do
@@ -725,6 +781,11 @@ do
         item.lua_script_dir = DockerVolumeUse:new()
         item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
         item.lua_script_dir.relative_path = path_combine(lus_script_dir)
+    end
+	do
+        item.data_dir = DockerVolumeUse:new()
+        item.data_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.data_dir.relative_path = path_combine(datas_dir)
     end
 	item.remote_server_map = {}
     item.etcd_cluster_map = {}
@@ -786,6 +847,11 @@ do
         item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
         item.lua_script_dir.relative_path = path_combine(lus_script_dir)
     end
+	do
+        item.data_dir = DockerVolumeUse:new()
+        item.data_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.data_dir.relative_path = path_combine(datas_dir)
+    end
 	item.remote_server_map = {}
     do
         item.remote_server_map["platform_http"] = { flag=Regular_Replace_Flag.zone_game_server_http_ip, ext_params=string_concat(zone_name, "platform") }
@@ -846,6 +912,11 @@ do
         item.lua_script_dir = DockerVolumeUse:new()
         item.lua_script_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
         item.lua_script_dir.relative_path = path_combine(lus_script_dir)
+    end
+	do
+        item.data_dir = DockerVolumeUse:new()
+        item.data_dir.docker_volume = docker_volume_map[Docker_Volume_Name.zone_1_code]
+        item.data_dir.relative_path = path_combine(datas_dir)
     end
 	item.remote_server_map = {}
     item.etcd_cluster_map = {}

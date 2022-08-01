@@ -1,6 +1,3 @@
-# zone Zone
-# server GameServer
-
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
 	<zone>zone_1</zone>
@@ -12,7 +9,7 @@
 		<element>for_make_array</element>
 		<element>
 			<name>service_discovery</name>
-			<host>http://10.0.1.208:2380;http://10.0.1.209:2380;http://10.0.1.210:2380</host>
+			<host>http://10.0.1.180:2380;http://10.0.1.181:2380;http://10.0.1.182:2380</host>
 			<user>zone_1</user>
 			<pwd>zone_1</pwd>
 		</element>		

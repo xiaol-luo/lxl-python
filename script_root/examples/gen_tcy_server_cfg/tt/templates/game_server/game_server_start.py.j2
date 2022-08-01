@@ -12,14 +12,14 @@
 {{ ssh_help.invoke_shell(ssh_client, server.locate_machine) }}
 
 
-{{ docker_help.kill_container(ssh_client, server.name) }}
+{{ docker_help.kill_container(ssh_client, server.server_name) }}
 
-{% set run_cmd = [ docker_help.cmd_mkdir_volume_used(server.work_dir),  ] %}
+{% set run_cmd = [ docker_help.cmd_mkdir_volume_used(server.work_dir),  "mkdir -p " + server.work_dir.fo_abs_path + "/hotfix_dir" ] %}
 {{ docker_help.exec_cmds(ssh_client, server.image, run_cmd, network=server.docker_ip.docker_net, volumes=zone.fo_used_volume_map.values()) }}
 
 {{ docker_help.put_to_docker(ssh_client, server.image, [local_config_file]) }}
 
 {% set run_cmd = game_server_help.start_cmd(server_cluster, server) %}
-{{ docker_help.run_container(ssh_client, server.name, server.image, run_cmd, opt="-d", volumes=zone.fo_used_volume_map.values(), network=server.docker_ip.docker_net, net_used=server.docker_ip, publish_ports=server.fo_port_mapping.values()) }}
+{{ docker_help.run_container(ssh_client, server.server_name, server.image, run_cmd, opt="-d", volumes=zone.fo_used_volume_map.values(), network=server.docker_ip.docker_net, net_used=server.docker_ip, publish_ports=server.fo_port_mapping.values()) }}
 
 
