@@ -65,7 +65,7 @@ local function get_config_map ()
             tb["3"] = 1
             tb["c"] = 4
         end 
-        item.str_val = "234" 
+        item.str_val = "你号" 
         item.raw_val = a.b 
         item.int_raw_map_vec = {}
         do
@@ -145,7 +145,7 @@ local function get_config_map ()
             tb["3"] = 1
             tb["c"] = 4
         end 
-        item.str_val = "2345" 
+        item.str_val = "你号" 
         item.raw_val = cd;ab 
         item.int_raw_map_vec = {}
         do
@@ -225,7 +225,7 @@ local function get_config_map ()
             tb["3"] = 1
             tb["c"] = 4
         end 
-        item.str_val = "4456" 
+        item.str_val = "你号" 
         item.raw_val = abcd; 
         item.int_raw_map_vec = {}
         do
@@ -305,7 +305,7 @@ local function get_config_map ()
             tb["3"] = 1
             tb["c"] = 4
         end 
-        item.str_val = "6567" 
+        item.str_val = "你号" 
         item.raw_val = 6567 
         item.int_raw_map_vec = {}
         do
@@ -385,7 +385,7 @@ local function get_config_map ()
             tb["3"] = 1
             tb["c"] = 4
         end 
-        item.str_val = "8678" 
+        item.str_val = "你号" 
         item.raw_val = 8678 
         item.int_raw_map_vec = {}
         do
@@ -465,7 +465,7 @@ local function get_config_map ()
             tb["3"] = 1
             tb["c"] = 4
         end 
-        item.str_val = "10789" 
+        item.str_val = "你号" 
         item.raw_val = 10789 
         item.int_raw_map_vec = {}
         do
@@ -545,7 +545,7 @@ local function get_config_map ()
             tb["3"] = 1
             tb["c"] = 4
         end 
-        item.str_val = "12900" 
+        item.str_val = "你号" 
         item.raw_val = 12900 
         item.int_raw_map_vec = {}
         do
@@ -625,7 +625,7 @@ local function get_config_map ()
             tb["3"] = 1
             tb["c"] = 4
         end 
-        item.str_val = "15011" 
+        item.str_val = "你号" 
         item.raw_val = 15011 
         item.int_raw_map_vec = {}
         do
@@ -705,7 +705,7 @@ local function get_config_map ()
             tb["3"] = 1
             tb["c"] = 4
         end 
-        item.str_val = "17122" 
+        item.str_val = "你号" 
         item.raw_val = 17122 
         item.int_raw_map_vec = {}
         do
@@ -785,7 +785,7 @@ local function get_config_map ()
             tb["3"] = 1
             tb["c"] = 4
         end 
-        item.str_val = "19233" 
+        item.str_val = "你号" 
         item.raw_val = 19233 
         item.int_raw_map_vec = {}
         do
@@ -865,7 +865,7 @@ local function get_config_map ()
             tb["3"] = 1
             tb["c"] = 4
         end 
-        item.str_val = "21344" 
+        item.str_val = "你号" 
         item.raw_val = 21344 
         item.int_raw_map_vec = {}
         do

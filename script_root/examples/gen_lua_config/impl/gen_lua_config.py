@@ -37,4 +37,4 @@ def gen_lua_config(sheet_depict: SheetDepict, out_file):
     if not ret:
         return False
     else:
-        file_utils.write_file(out_file, content)
+        file_utils.write_file(out_file, content, encoding='utf-8')
