@@ -16,13 +16,22 @@ SheetFieldType(object):
     VecMap = 25
     Max = 26
  #}
+ 
+{% if sheet_depict.opt_map.logic_config_struct and sheet_depict.opt_map.logic_config_struct.opt_value %}
+---@class {{ sheet_depict.opt_map.logic_config_struct.opt_value }}_
+{%- for field in sheet_depict.field_list %}
+---@field {{ field.field_name }}
+{%- endfor %}
+local {{ sheet_depict.opt_map.logic_config_struct.opt_value }} = {}
+{%- endif %}
+ 
 
----@return table<{{sheet_depict.fo_key_field.field_type|lua__field_type_to_string}}, {{ sheet_depict.opt_map.logic_config_struct and sheet_depict.opt_map.logic_config_struct.opt_value }}>
+---@return table<{{sheet_depict.fo_key_field.field_type|lua__field_type_to_string}}, {{ sheet_depict.opt_map.logic_config_struct and sheet_depict.opt_map.logic_config_struct.opt_value }}_>
 local function get_config_map ()
     local item_list = {}
 {%- for data_row in sheet_depict.data_list %}
     do
-        ---@type {{ sheet_depict.opt_map.logic_config_struct and sheet_depict.opt_map.logic_config_struct.opt_value }}
+        ---@type {{ sheet_depict.opt_map.logic_config_struct and sheet_depict.opt_map.logic_config_struct.opt_value }}_
         local item = {}
         table.insert(item_list, item)
     {%- for field in sheet_depict.field_list %}

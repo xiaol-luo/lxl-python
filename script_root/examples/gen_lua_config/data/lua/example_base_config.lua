@@ -1,10 +1,25 @@
 
+ 
 
----@return table<int, LogicConfigCurrency>
+---@class LogicConfigCurrency_
+---@field config_id
+---@field float_val
+---@field int_vec
+---@field int_int_map
+---@field int_vec_vec
+---@field int_float_map_vec
+---@field vec_map
+---@field str_val
+---@field raw_val
+---@field int_raw_map_vec
+local LogicConfigCurrency = {}
+ 
+
+---@return table<int, LogicConfigCurrency_>
 local function get_config_map ()
     local item_list = {}
     do
-        ---@type LogicConfigCurrency
+        ---@type LogicConfigCurrency_
         local item = {}
         table.insert(item_list, item) 
         item.config_id = 1024 
@@ -84,7 +99,7 @@ local function get_config_map ()
         end
     end
     do
-        ---@type LogicConfigCurrency
+        ---@type LogicConfigCurrency_
         local item = {}
         table.insert(item_list, item) 
         item.config_id = 3024 
@@ -164,7 +179,7 @@ local function get_config_map ()
         end
     end
     do
-        ---@type LogicConfigCurrency
+        ---@type LogicConfigCurrency_
         local item = {}
         table.insert(item_list, item) 
         item.config_id = 5024 
@@ -244,7 +259,7 @@ local function get_config_map ()
         end
     end
     do
-        ---@type LogicConfigCurrency
+        ---@type LogicConfigCurrency_
         local item = {}
         table.insert(item_list, item) 
         item.config_id = 7024 
@@ -324,7 +339,7 @@ local function get_config_map ()
         end
     end
     do
-        ---@type LogicConfigCurrency
+        ---@type LogicConfigCurrency_
         local item = {}
         table.insert(item_list, item) 
         item.config_id = 9024 
@@ -404,7 +419,7 @@ local function get_config_map ()
         end
     end
     do
-        ---@type LogicConfigCurrency
+        ---@type LogicConfigCurrency_
         local item = {}
         table.insert(item_list, item) 
         item.config_id = 11024 
@@ -484,7 +499,7 @@ local function get_config_map ()
         end
     end
     do
-        ---@type LogicConfigCurrency
+        ---@type LogicConfigCurrency_
         local item = {}
         table.insert(item_list, item) 
         item.config_id = 13024 
@@ -564,7 +579,7 @@ local function get_config_map ()
         end
     end
     do
-        ---@type LogicConfigCurrency
+        ---@type LogicConfigCurrency_
         local item = {}
         table.insert(item_list, item) 
         item.config_id = 15024 
@@ -644,7 +659,7 @@ local function get_config_map ()
         end
     end
     do
-        ---@type LogicConfigCurrency
+        ---@type LogicConfigCurrency_
         local item = {}
         table.insert(item_list, item) 
         item.config_id = 17024 
@@ -724,7 +739,7 @@ local function get_config_map ()
         end
     end
     do
-        ---@type LogicConfigCurrency
+        ---@type LogicConfigCurrency_
         local item = {}
         table.insert(item_list, item) 
         item.config_id = 19024 
@@ -804,7 +819,7 @@ local function get_config_map ()
         end
     end
     do
-        ---@type LogicConfigCurrency
+        ---@type LogicConfigCurrency_
         local item = {}
         table.insert(item_list, item) 
         item.config_id = 21024 

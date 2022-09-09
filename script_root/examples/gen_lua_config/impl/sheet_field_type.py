@@ -163,6 +163,10 @@ class SheetFieldType(object):
         hit_flag_record = []
         str_head_idx = None
         str_tail_idx = None
+        if data_str is None:
+            data_str = ""
+        else:
+            data_str = str(data_str)
         while (start_idx < len(data_str)):
             hit_idx = str.find(data_str, SheetFieldType.Str_Flag, start_idx)
             if hit_idx < 0:
@@ -186,7 +190,10 @@ class SheetFieldType(object):
         for str_mark, sub_str, str_head_idx, str_tail_idx in reversed(hit_flag_record):
             new_data_str = new_data_str[:str_head_idx] + str_mark + new_data_str[str_tail_idx:]
             mark_to_str_map[str_mark] = sub_str
-        collection_item_list = str.split(new_data_str, ";")
+        if len(new_data_str) <= 0:
+            collection_item_list = []
+        else:
+            collection_item_list = str.split(new_data_str, ";")
         ret = None
         if SheetFieldType.Vec == field_type:
             ret = []
