@@ -53,7 +53,7 @@ if parse_ret.work_dir:
 
 if parse_ret.search_dir:
     for elem in parse_ret.search_dir:
-        sys.path.append(elem)
+        sys.path.append(os.path.abspath(elem))
 logbook.debug("sys.path is {}", sys.path)
 
 if not parse_ret.exec:

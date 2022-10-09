@@ -82,7 +82,7 @@ do
     item.image = Image_Name.lxl_debian
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
-    item.docker_ip.ip_suffix = "11"
+    item.docker_ip.ip_suffix = "12"
     item.peer_port = 10002
     do
         ---@type DockerNetMachinePort
@@ -825,7 +825,7 @@ do
         item.http_net_add.machine = item.locate_machine
         item.http_net_add.docker_ip = item.docker_ip
         item.http_net_add.docker_port = 10003
-        item.http_net_add.machine_port = nil
+        item.http_net_add.machine_port = 41603
     end
     do
         item.work_dir = DockerVolumeUse:new()

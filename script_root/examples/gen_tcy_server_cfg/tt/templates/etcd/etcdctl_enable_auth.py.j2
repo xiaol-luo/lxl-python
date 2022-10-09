@@ -16,7 +16,7 @@
     "etcdctl --endpoints %(end_points)s --username root:xiaolzz auth enable" | format(end_points=etcd_cluster.fo_end_points),
     "/bin/bash -c  'echo %(pwd)s | etcdctl --endpoints %(end_points)s --username root:xiaolzz user add %(user)s' " | format(pwd=etcd_cluster.pwd, end_points=etcd_cluster.fo_end_points, user=etcd_cluster.user),
     "etcdctl --endpoints %(end_points)s --username root:xiaolzz role add rw_all" | format(end_points=etcd_cluster.fo_end_points),
-    "etcdctl --endpoints %(end_points)s --username root:xiaolzz role grant --readwrite --path / rw_all" | format(end_points=etcd_cluster.fo_end_points),
+    "etcdctl --endpoints %(end_points)s --username root:xiaolzz role grant --readwrite --path /%(zone_name)s/* rw_all" | format(end_points=etcd_cluster.fo_end_points, zone_name=zone.name),
     "etcdctl --endpoints %(end_points)s --username root:xiaolzz user grant --roles rw_all %(user)s" | format(end_points=etcd_cluster.fo_end_points, user=etcd_cluster.user),
 ] %}
 {{ docker_help.exec_cmds(ssh_client, etcd.image, run_cmd, network=etcd.docker_ip.docker_net, volumes=zone.fo_used_volume_map.values()) }}

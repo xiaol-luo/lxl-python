@@ -52,8 +52,8 @@ with IndentFlag():
     opt_publish_ports = []
 {%- if publish_ports -%}
 {%- for v in publish_ports %}
-    # opt_publish_ports.append("--publish {{v.docker_port}}:{{v.machine_port}}/tcp")
-    # opt_publish_ports.append("--publish {{v.docker_port}}:{{v.machine_port}}/udp")
+    opt_publish_ports.append("--publish {{v.machine_port}}:{{v.docker_port}}/tcp")
+    opt_publish_ports.append("--publish {{v.machine_port}}:{{v.docker_port}}/udp")
 {%- endfor -%}
 {%- endif %}
 {% if network %}    opt_network = "{{ opt_network(network) }}"{% else %}    opt_network = ""{% endif %}

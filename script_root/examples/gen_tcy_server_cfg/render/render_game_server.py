@@ -60,4 +60,20 @@ def export_clear_file(out_root_dir:str, zone:typing.Dict[str, typing.Dict[str, s
             file_utils.write_file(out_file, tt_content)
 
 
+def get_etcd_setup_game_server_cmds(zone:typing.Dict[str, typing.Dict[str, str]], game_server_cluster):
+    ret = []
+    ret.append("set {zone_name}/zone_setting/role_min_nums/world_sentinel 1".format(zone_name=zone.name))
+    ret.append("set {zone_name}/zone_setting/role_min_nums/gate 1".format(zone_name=zone.name))
+    ret.append("set {zone_name}/zone_setting/role_min_nums/game 1".format(zone_name=zone.name))
+    ret.append("set {zone_name}/zone_setting/role_min_nums/world 1".format(zone_name=zone.name))
+    ret.append("set {zone_name}/zone_setting/role_min_nums/create_role 1".format(zone_name=zone.name))
+    ret.append("set {zone_name}/zone_setting/role_min_nums/workbench 1".format(zone_name=zone.name))
+
+    for server in game_server_cluster.server_list.values():
+        ret.append("set {zone_name}/zone_setting/allow_join_servers/{server_role}.{server_name} 1".format(
+            zone_name=zone.name, server_role=server.server_role, server_name=server.server_name))
+        if server.server_role == "world":
+            ret.append("set {zone_name}/zone_setting/allow_work_servers/{server_role}.{server_name} 1".format(
+                zone_name=zone.name, server_role=server.server_role, server_name=server.server_name))
+    return ret
 

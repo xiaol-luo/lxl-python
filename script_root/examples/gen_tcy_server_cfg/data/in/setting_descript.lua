@@ -161,7 +161,7 @@ function EtcdServerCluster:figure_out_fields()
         for _, v in ipairs(self.server_list) do
             table.insert(elems, string.format("%s=http://%s:%s", v.name, v.docker_ip.fo_ip, v.peer_port))
             table.insert(end_points, string.format("//%s:%s", v.docker_ip.fo_ip, v.client_port))
-            table.insert(game_server_hosts, string.format("http://%s:%s", v.docker_ip.fo_ip, v.peer_port))
+            table.insert(game_server_hosts, string.format("http://%s:%s", v.docker_ip.fo_ip, v.client_port))
         end
         self.fo_initial_cluster = table.concat(elems, ",")
         self.fo_end_points = table.concat(end_points, ",")
@@ -330,6 +330,8 @@ function Zone:figure_out_fields()
     ---@param server GameServer
     for server_idx, server in ipairs(self.game_server_cluster.server_list) do
         do
+            server.http_net_add:figure_out_fields()
+            server.client_net_add:figure_out_fields()
             local remote_server_map = server.remote_server_map
             server.remote_server_map = {}
             for k, v in pairs(remote_server_map) do
@@ -416,7 +418,9 @@ function GameServer:figure_out_fields()
     if self.http_net_add.fo_port_mapping then
         table.insert(self.fo_port_mapping, self.http_net_add.fo_port_mapping)
         -- self.fo_port_mapping[self.http_net_add.fo_port_mapping.docker_port] = self.http_net_add.fo_port_mapping.machine_port
-
+    end
+        if self.server_role == Game_Server_Role.workbench then
+        print("xxxxxxxxxxx", #self.fo_port_mapping, self.http_net_add.machine_port, self.http_net_add.fo_need_public_port)
     end
 end
 

@@ -57,8 +57,11 @@ if __name__ == "__main__":
         render.render_etcd.export_cluster_opera_file(parse_ret.out_setting, zone, etcd_cluster, "stop", parse_ret.python_path)
         render.render_etcd.export_cluster_opera_file(parse_ret.out_setting, zone, etcd_cluster, "clear", parse_ret.python_path)
         render.render_etcd.export_cluster_opera_file(parse_ret.out_setting, zone, etcd_cluster, "logs", parse_ret.python_path)
-        render.render_etcd.export_cluster_etcdctl_cmds_file(parse_ret.out_setting, zone, etcd_cluster,  "etcdctl_test.py", ["ls /"], is_auth=True)
         render.render_etcd.export_cluster_enable_auth_file(parse_ret.out_setting, zone, etcd_cluster)
+        setup_game_server_cmds = render.render_game_server.get_etcd_setup_game_server_cmds(zone, zone.game_server_cluster)
+        render.render_etcd.export_cluster_etcdctl_cmds_file(parse_ret.out_setting, zone, etcd_cluster,
+                                                            "etcdctl_setup_game_server.py", setup_game_server_cmds, is_auth=True)
+
 
     with IndentFlag():
         # redis

@@ -22,7 +22,7 @@
 		<element>for_make_array</element>
 		<element>
 			<name>uuid</name>
-			<host>10.0.1.183:27017</host>
+			<host>10.0.1.195:27017</host>
 			<auth_db>admin</auth_db>
 			<user>lxl</user>
 			<pwd>xiaolzz</pwd>
@@ -30,7 +30,7 @@
 		</element>
 		<element>
 			<name>auth</name>
-			<host>10.0.1.183:27017</host>
+			<host>10.0.1.195:27017</host>
 			<auth_db>admin</auth_db>
 			<user>lxl</user>
 			<pwd>xiaolzz</pwd>

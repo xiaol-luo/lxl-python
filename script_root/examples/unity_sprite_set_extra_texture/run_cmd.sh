@@ -1,0 +1,1 @@
+--work_dir . --search_dir . --exec examples.unity_sprite_set_extra_texture.main.main __split_flag__ --locate_dir F:/work/tanchiyu/client/game_card/Assets/Res/Tcy/Fish/Appearance/barracuda/eat
