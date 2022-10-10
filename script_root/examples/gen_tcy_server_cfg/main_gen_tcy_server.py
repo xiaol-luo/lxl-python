@@ -10,6 +10,7 @@ import tt
 import typing
 import render
 from script_root.libs.common import *
+import script_root.libs.utils.file_utils as file_utils
 
 import logbook
 logbook.StreamHandler(sys.stdout).push_application()
@@ -102,7 +103,55 @@ if __name__ == "__main__":
         render.render_game_server.export_cluster_opera_file(parse_ret.out_setting, zone, zone.game_server_cluster, "clear", parse_ret.python_path)
         render.render_game_server.export_cluster_opera_file(parse_ret.out_setting, zone, zone.game_server_cluster, "logs", parse_ret.python_path)
 
-
+    with IndentFlag():
+        python_path = parse_ret.python_path or "python"
+        with IndentFlag():
+            script_list = []
+            opera = "start"
+            # etcd
+            script_list.append(render.export_file.cal_etcd_cluster_opera_file_path(
+                parse_ret.out_setting, zone, "{0}_cluster.py".format(opera)))
+            script_list.append(render.export_file.cal_etcd_enable_auth_file_path(
+                parse_ret.out_setting, zone))
+            script_list.append(render.export_file.cal_etcd_etcdctl_cmds_file_path(
+                parse_ret.out_setting, zone, "setup_game_setting.py"))
+            # redis
+            script_list.append(render.export_file.cal_redis_cluster_opera_file_path(
+                parse_ret.out_setting, zone, "{0}_cluster.py".format(opera)))
+            script_list.append(render.export_file.cal_redis_setup_cluster_file_path(
+                parse_ret.out_setting, zone))
+            # mongo
+            script_list.append(render.export_file.cal_mongo_cluster_opera_file_path(
+                parse_ret.out_setting, zone, "{0}_cluster.py".format(opera)))
+            script_list.append(render.export_file.cal_mongo_setup_cluster_file_path(
+                parse_ret.out_setting, zone))
+            # game server
+            script_list.append(render.export_file.cal_game_server_cluster_opera_file_path(
+                parse_ret.out_setting, zone, "{0}_cluster.py".format(opera)))
+            tt_ret, tt_content = tt.render("execute_python_script_list.py.j2", script_list=script_list,
+                                           python_path=python_path)
+            save_file = render.export_file.cal_batch_opera_file_path(parse_ret.out_setting, zone, "batch_{0}.py".format(opera))
+            if tt_ret:
+                file_utils.write_file(save_file, tt_content)
+        for opera in ["stop", "clear", "logs"]:
+            script_list = []
+            # etcd
+            script_list.append(render.export_file.cal_etcd_cluster_opera_file_path(
+                parse_ret.out_setting, zone, "{0}_cluster.py".format(opera)))
+            # redis
+            script_list.append(render.export_file.cal_redis_cluster_opera_file_path(
+                parse_ret.out_setting, zone, "{0}_cluster.py".format(opera)))
+            # mongo
+            script_list.append(render.export_file.cal_mongo_cluster_opera_file_path(
+                parse_ret.out_setting, zone, "{0}_cluster.py".format(opera)))
+            # game server
+            script_list.append(render.export_file.cal_game_server_cluster_opera_file_path(
+                parse_ret.out_setting, zone, "{0}_cluster.py".format(opera)))
+            tt_ret, tt_content = tt.render("execute_python_script_list.py.j2", script_list=script_list,
+                                           python_path=python_path)
+            save_file = render.export_file.cal_batch_opera_file_path(parse_ret.out_setting, zone, "batch_{0}.py".format(opera))
+            if tt_ret:
+                file_utils.write_file(save_file, tt_content)
 
 
 

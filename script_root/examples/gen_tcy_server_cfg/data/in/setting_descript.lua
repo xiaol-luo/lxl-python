@@ -113,22 +113,13 @@ end
 ---@field machine_port number
 ---@field docker_ip DockerNetUse
 ---@field docker_port number
----@field fo_need_public_port boolean
 ---@field fo_ip string
 ---@field fo_port number
 ---@field fo_port_mapping table
 DockerNetMachinePort = DockerNetMachinePort or class("DockerNetMachinePort", SettingBase)
 
-function DockerNetMachinePort:init_self()
-    if not self.machine_port then
-        self.fo_need_public_port = false
-    else
-        self.fo_need_public_port = true
-    end
-end
-
 function DockerNetMachinePort:figure_out_fields()
-    if self.fo_need_public_port then
+    if self.machine_port then
         self.fo_ip = self.machine.ip
         self.fo_port = self.machine_port
         self.fo_port_mapping = {
@@ -460,10 +451,12 @@ end
 
 function GameServer:figure_out_fields()
     self.fo_port_mapping = {}
+    self.client_net_add:figure_out_fields()
     if self.client_net_add.fo_port_mapping then
         -- self.fo_port_mapping[self.client_net_add.fo_port_mapping.docker_port] = self.client_net_add.fo_port_mapping.machine_port
         table.insert(self.fo_port_mapping, self.client_net_add.fo_port_mapping)
     end
+    self.http_net_add:figure_out_fields()
     if self.http_net_add.fo_port_mapping then
         table.insert(self.fo_port_mapping, self.http_net_add.fo_port_mapping)
         -- self.fo_port_mapping[self.http_net_add.fo_port_mapping.docker_port] = self.http_net_add.fo_port_mapping.machine_port

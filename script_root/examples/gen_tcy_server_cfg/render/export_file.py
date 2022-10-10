@@ -131,3 +131,6 @@ def cal_game_server_logs_file_path(root_dir, zone, server):
 def cal_game_server_cluster_opera_file_path(root_dir, zone, file_name):
     return  path_batch_join(root_dir, zone.name, "game_server", file_name)
 
+def cal_batch_opera_file_path(root_dir, zone, file_name):
+    return path_batch_join(root_dir, zone.name, file_name)
+
