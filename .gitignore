@@ -5,3 +5,4 @@
 *.spec
 build
 pycharm_project/venv
+script_root/examples/gen_tcy_server_cfg/data/out
