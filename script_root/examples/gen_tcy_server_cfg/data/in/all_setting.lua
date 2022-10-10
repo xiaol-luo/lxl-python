@@ -21,17 +21,30 @@ all_setting =
     },
 }
 
-travel_table({all_setting, all_setting.machine_map, all_setting.docker_net_map, all_setting.docker_volume_map}, function(elem)
+local sort_way = require("zone_1/zone_1_sorted_uuid")
+
+local sorted_setting = sort_way.sort_fn(all_setting, sort_way.sorted_uuid)
+
+for _, elem in ipairs(sorted_setting) do
+    if elem.get_uuid then
+        local st_uuid = elem:get_uuid()
+        if st_uuid then
+           print(string.format("\"%s\",", st_uuid))
+        end
+    end
+end
+
+for _, elem in ipairs(sorted_setting) do
     if "function" == type(elem.init_self) then
         elem.init_self(elem)
     end
-end)
+end
 
-travel_table({all_setting, all_setting.machine_map, all_setting.docker_net_map, all_setting.docker_volume_map}, function(elem)
+for _, elem in ipairs(sorted_setting) do
     if "function" == type(elem.figure_out_fields) then
         elem.figure_out_fields(elem)
     end
-end)
+end
 
 all_setting_json = lua_json.encode(all_setting)
 

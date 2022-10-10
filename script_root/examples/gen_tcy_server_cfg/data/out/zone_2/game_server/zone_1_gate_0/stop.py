@@ -1,9 +1,5 @@
-# zone
-# locate_machine
-
-
-
-
+# machine Machine
+# server EtcdServer
 import paramiko
 import typing
 import random
@@ -72,11 +68,15 @@ def paramiko_sftp_get(ssh_client: paramiko.SSHClient, remote_src:str, local_dst:
     return ret
 
 
+
 ssh_client = None
 with IndentFlag():
     ssh_client = paramiko.SSHClient()
     ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh_client.connect(hostname="119.91.239.128", port="22", username="root", \
-        pkey=paramiko.RSAKey.from_private_key_file(r"C:/Users/luoxiaolong/.ssh/keys/root/id_rsa", "xiaolzz"))
-    paramiko_sftp_put(ssh_client, "E:/diff.txt", "/root/diff.txt")
-    paramiko_sftp_get(ssh_client, "/root/diff.txt", "xx.txt")
+        pkey=paramiko.RSAKey.from_private_key_file(r"C:/Users/xiaol.luo/.ssh/keys/root/id_rsa", "xiaolzz"))
+
+paramiko_ssh_cmd(ssh_client, [
+    "docker container kill zone_1_gate_0",
+    "docker container prune -f",
+])

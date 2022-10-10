@@ -89,9 +89,9 @@ with IndentFlag():
     ct_name = "ct_{}".format(random.randint(1, 99999999))
     opt_mount_volumes = []
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
-    opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_mount_volumes.append("--mount type=volume,src=tcy_build,dst=/root/build")
     opt_mount_volumes.append("--mount type=volume,src=tcy_code,dst=/root/code")
+    opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
     opt_network = "--network my-network"
     run_cmd = "docker run -itd --name {name} {network} {mount_volumes} {image} {command}".format(
         name=ct_name, network=opt_network,  mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian", command="/bin/bash")
@@ -100,112 +100,112 @@ with IndentFlag():
         print("docker exec: run docker container fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
         sys.exit(ret)
     # execute cmds in docker contianer
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.208:2379,//10.0.1.209:2379,//10.0.1.210:2379 set zone_1/zone_setting/role_min_nums/world_sentinel 1 '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.180:2379,//10.0.1.181:2379,//10.0.1.182:2379 set zone_1/zone_setting/role_min_nums/world_sentinel 1 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.208:2379,//10.0.1.209:2379,//10.0.1.210:2379 set zone_1/zone_setting/role_min_nums/gate 1 '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.180:2379,//10.0.1.181:2379,//10.0.1.182:2379 set zone_1/zone_setting/role_min_nums/gate 1 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.208:2379,//10.0.1.209:2379,//10.0.1.210:2379 set zone_1/zone_setting/role_min_nums/game 1 '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.180:2379,//10.0.1.181:2379,//10.0.1.182:2379 set zone_1/zone_setting/role_min_nums/game 1 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.208:2379,//10.0.1.209:2379,//10.0.1.210:2379 set zone_1/zone_setting/role_min_nums/world 1 '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.180:2379,//10.0.1.181:2379,//10.0.1.182:2379 set zone_1/zone_setting/role_min_nums/world 1 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.208:2379,//10.0.1.209:2379,//10.0.1.210:2379 set zone_1/zone_setting/role_min_nums/create_role 1 '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.180:2379,//10.0.1.181:2379,//10.0.1.182:2379 set zone_1/zone_setting/role_min_nums/create_role 1 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.208:2379,//10.0.1.209:2379,//10.0.1.210:2379 set zone_1/zone_setting/role_min_nums/workbench 1 '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.180:2379,//10.0.1.181:2379,//10.0.1.182:2379 set zone_1/zone_setting/role_min_nums/workbench 1 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.208:2379,//10.0.1.209:2379,//10.0.1.210:2379 set zone_1/zone_setting/allow_join_servers/platform.zone_1_platform 1 '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.180:2379,//10.0.1.181:2379,//10.0.1.182:2379 set zone_1/zone_setting/allow_join_servers/platform.zone_1_platform 1 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.208:2379,//10.0.1.209:2379,//10.0.1.210:2379 set zone_1/zone_setting/allow_join_servers/auth.zone_1_auth 1 '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.180:2379,//10.0.1.181:2379,//10.0.1.182:2379 set zone_1/zone_setting/allow_join_servers/auth.zone_1_auth 1 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.208:2379,//10.0.1.209:2379,//10.0.1.210:2379 set zone_1/zone_setting/allow_join_servers/login.zone_1_login_0 1 '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.180:2379,//10.0.1.181:2379,//10.0.1.182:2379 set zone_1/zone_setting/allow_join_servers/login.zone_1_login_0 1 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.208:2379,//10.0.1.209:2379,//10.0.1.210:2379 set zone_1/zone_setting/allow_join_servers/create_role.zone_1_create_role_0 1 '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.180:2379,//10.0.1.181:2379,//10.0.1.182:2379 set zone_1/zone_setting/allow_join_servers/create_role.zone_1_create_role_0 1 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.208:2379,//10.0.1.209:2379,//10.0.1.210:2379 set zone_1/zone_setting/allow_join_servers/world.zone_1_world_0 1 '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.180:2379,//10.0.1.181:2379,//10.0.1.182:2379 set zone_1/zone_setting/allow_join_servers/world.zone_1_world_0 1 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.208:2379,//10.0.1.209:2379,//10.0.1.210:2379 set zone_1/zone_setting/allow_work_servers/world.zone_1_world_0 1 '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.180:2379,//10.0.1.181:2379,//10.0.1.182:2379 set zone_1/zone_setting/allow_work_servers/world.zone_1_world_0 1 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.208:2379,//10.0.1.209:2379,//10.0.1.210:2379 set zone_1/zone_setting/allow_join_servers/world.zone_1_world_1 1 '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.180:2379,//10.0.1.181:2379,//10.0.1.182:2379 set zone_1/zone_setting/allow_join_servers/world.zone_1_world_1 1 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.208:2379,//10.0.1.209:2379,//10.0.1.210:2379 set zone_1/zone_setting/allow_work_servers/world.zone_1_world_1 1 '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.180:2379,//10.0.1.181:2379,//10.0.1.182:2379 set zone_1/zone_setting/allow_work_servers/world.zone_1_world_1 1 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.208:2379,//10.0.1.209:2379,//10.0.1.210:2379 set zone_1/zone_setting/allow_join_servers/game.zone_1_game_0 1 '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.180:2379,//10.0.1.181:2379,//10.0.1.182:2379 set zone_1/zone_setting/allow_join_servers/game.zone_1_game_0 1 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.208:2379,//10.0.1.209:2379,//10.0.1.210:2379 set zone_1/zone_setting/allow_join_servers/gate.zone_1_gate_0 1 '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.180:2379,//10.0.1.181:2379,//10.0.1.182:2379 set zone_1/zone_setting/allow_join_servers/gate.zone_1_gate_0 1 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.208:2379,//10.0.1.209:2379,//10.0.1.210:2379 set zone_1/zone_setting/allow_join_servers/match.zone_1_match_0 1 '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.180:2379,//10.0.1.181:2379,//10.0.1.182:2379 set zone_1/zone_setting/allow_join_servers/match.zone_1_match_0 1 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.208:2379,//10.0.1.209:2379,//10.0.1.210:2379 set zone_1/zone_setting/allow_join_servers/room.zone_1_room_0 1 '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.180:2379,//10.0.1.181:2379,//10.0.1.182:2379 set zone_1/zone_setting/allow_join_servers/room.zone_1_room_0 1 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.208:2379,//10.0.1.209:2379,//10.0.1.210:2379 set zone_1/zone_setting/allow_join_servers/fight.zone_1_fight_0 1 '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.180:2379,//10.0.1.181:2379,//10.0.1.182:2379 set zone_1/zone_setting/allow_join_servers/fight.zone_1_fight_0 1 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.208:2379,//10.0.1.209:2379,//10.0.1.210:2379 set zone_1/zone_setting/allow_join_servers/world_sentinel.zone_1_world_sentinel_0 1 '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.180:2379,//10.0.1.181:2379,//10.0.1.182:2379 set zone_1/zone_setting/allow_join_servers/world_sentinel.zone_1_world_sentinel_0 1 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.208:2379,//10.0.1.209:2379,//10.0.1.210:2379 set zone_1/zone_setting/allow_join_servers/workbench.zone_1_workbench_0 1 '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.180:2379,//10.0.1.181:2379,//10.0.1.182:2379 set zone_1/zone_setting/allow_join_servers/workbench.zone_1_workbench_0 1 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.208:2379,//10.0.1.209:2379,//10.0.1.210:2379 set zone_1/zone_setting/allow_join_servers/message_hub.zone_1_message_hub_0 1 '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' etcdctl  --username zone_1:zone_1 --endpoints //10.0.1.180:2379,//10.0.1.181:2379,//10.0.1.182:2379 set zone_1/zone_setting/allow_join_servers/message_hub.zone_1_message_hub_0 1 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:

@@ -91,10 +91,19 @@ function travel_table(root_tb, visit_fn)
         local elem = table.remove(stack, 1)
         if "table" == type(elem) and not repeat_checker[elem] then
             repeat_checker[elem] = true
-            for _, v in pairs(elem) do
+			local local_repeat_checker = {}
+			for _, v in ipairs(elem) do
                 if "table" == type(v) then
+					local_repeat_checker[v] = true
                     table.insert(stack, v)
                 end
+            end
+
+            for _, v in pairs(elem) do
+				if "table" == type(v) and not local_repeat_checker[v] then
+					local_repeat_checker[v] = true
+                    table.insert(stack, v)
+				end
             end
 			local ret = visit_fn(elem)
 			if false == ret then

@@ -16,4 +16,5 @@ end
 for _, v in ipairs(tmp_list) do
     assert(not docker_net_map[v.name])
     docker_net_map[v.name] = v
+    v:init_self()
 end

@@ -91,8 +91,8 @@ with IndentFlag():
     opt_mount_volumes = []
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
-    opt_mount_volumes.append("--mount type=volume,src=tcy_build,dst=/root/build")
     opt_mount_volumes.append("--mount type=volume,src=tcy_code,dst=/root/code")
+    opt_mount_volumes.append("--mount type=volume,src=tcy_build,dst=/root/build")
     opt_network = "--network my-network"
     run_cmd = "docker run -itd --name {name} {network} {mount_volumes} {image} {command}".format(
         name=ct_name, network=opt_network,  mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian", command="/bin/bash")
@@ -101,12 +101,12 @@ with IndentFlag():
         print("docker exec: run docker container fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
         sys.exit(ret)
     # execute cmds in docker contianer
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' redis-cli -c --no-auth-warning -a zone_1 -h 10.0.1.180 -p  6379  set a 0 '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' redis-cli -c --no-auth-warning -a zone_1 -h 10.0.1.183 -p  6379  set a 0 '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:
         print("docker exec: run cmd succ, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
-    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' redis-cli -c --no-auth-warning -a zone_1 -h 10.0.1.180 -p  6379  get a '''))
+    ret, out_txt, error_txt = paramiko_ssh_cmd(ssh_client, "docker exec {name} {command}".format(name=ct_name, command=''' redis-cli -c --no-auth-warning -a zone_1 -h 10.0.1.183 -p  6379  get a '''))
     if 0 != ret:
         print("docker exec: run cmd fail, exit_code is {0}\nstd_out is {1}\nstd_error is {2}\n-------------\n".format(ret, out_txt, error_txt))
     else:

@@ -95,8 +95,8 @@ with IndentFlag():
     opt_mount_volumes = []
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
-    opt_mount_volumes.append("--mount type=volume,src=tcy_build,dst=/root/build")
     opt_mount_volumes.append("--mount type=volume,src=tcy_code,dst=/root/code")
+    opt_mount_volumes.append("--mount type=volume,src=tcy_build,dst=/root/build")
     opt_network = "--network my-network"
     run_cmd = "docker run -itd --name {name} {network} {mount_volumes} {image} {command}".format(
         name=ct_name, network=opt_network,  mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian", command="/bin/bash")
@@ -119,11 +119,11 @@ with IndentFlag():
     opt_mount_volumes = []
     opt_mount_volumes.append("--mount type=bind,src=/tmp,dst=/root/tmp")
     opt_mount_volumes.append("--mount type=volume,src=tcy_zone,dst=/root/zone")
-    opt_mount_volumes.append("--mount type=volume,src=tcy_build,dst=/root/build")
     opt_mount_volumes.append("--mount type=volume,src=tcy_code,dst=/root/code")
+    opt_mount_volumes.append("--mount type=volume,src=tcy_build,dst=/root/build")
     opt_publish_ports = []
     opt_network = "--network my-network"
-    opt_ip = "--ip 10.0.1.182"
+    opt_ip = "--ip 10.0.1.185"
     run_cmd = "docker run {opt} --name {name} {network} {ip} {mount_volumes} {p_ports} {image} {command}".format(
         opt="-d", name="zone_1_redis_3", network=opt_network, ip=opt_ip, mount_volumes=" ".join(opt_mount_volumes), image="lxl_debian",
         command=r"redis-server --port 6379 --dir /root/zone/zone_1/redis/zone_1_redis_3 --cluster-enabled yes --bind 0.0.0.0", p_ports=" ".join(opt_publish_ports)

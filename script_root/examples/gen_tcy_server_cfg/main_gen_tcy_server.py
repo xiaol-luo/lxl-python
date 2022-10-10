@@ -39,7 +39,7 @@ if __name__ == "__main__":
     mongo_cluster = zone.mongo_cluster
 
     tmp = json.loads(lua_g.all_setting_json)
-    logbook.debug("lua.globals.all_setting_json {}", json.dumps(tmp, indent=2))
+    # logbook.debug("lua.globals.all_setting_json {}", json.dumps(tmp, indent=2))
 
     with IndentFlag():
         render.render_test.export_test_file(parse_ret.out_setting, zone, None)
@@ -60,7 +60,7 @@ if __name__ == "__main__":
         render.render_etcd.export_cluster_enable_auth_file(parse_ret.out_setting, zone, etcd_cluster)
         setup_game_server_cmds = render.render_game_server.get_etcd_setup_game_server_cmds(zone, zone.game_server_cluster)
         render.render_etcd.export_cluster_etcdctl_cmds_file(parse_ret.out_setting, zone, etcd_cluster,
-                                                            "etcdctl_setup_game_server.py", setup_game_server_cmds, is_auth=True)
+                                                            "setup_game_setting.py", setup_game_server_cmds, is_auth=True)
 
 
     with IndentFlag():
@@ -97,6 +97,11 @@ if __name__ == "__main__":
         render.render_game_server.export_stop_file(parse_ret.out_setting, zone, zone.game_server_cluster)
         render.render_game_server.export_logs_file(parse_ret.out_setting, zone, zone.game_server_cluster)
         render.render_game_server.export_clear_file(parse_ret.out_setting, zone, zone.game_server_cluster)
+        render.render_game_server.export_cluster_opera_file(parse_ret.out_setting,  zone, zone.game_server_cluster, "start", parse_ret.python_path)
+        render.render_game_server.export_cluster_opera_file(parse_ret.out_setting, zone, zone.game_server_cluster, "stop", parse_ret.python_path)
+        render.render_game_server.export_cluster_opera_file(parse_ret.out_setting, zone, zone.game_server_cluster, "clear", parse_ret.python_path)
+        render.render_game_server.export_cluster_opera_file(parse_ret.out_setting, zone, zone.game_server_cluster, "logs", parse_ret.python_path)
+
 
 
 

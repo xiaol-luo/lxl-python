@@ -13,6 +13,12 @@ function SettingBase:figure_out_fields()
 
 end
 
+--[[
+function SettingBase:get_uuid()
+    return nil
+end
+--]]
+
 ---@class Machine
 ---@field name string
 ---@field ip string
@@ -60,6 +66,9 @@ function DockerNet:ctor()
 end
 
 function DockerNet:init_self()
+    if self._ip_dhcp_val then
+       return
+    end
     local mask = nil
     self.fo_ip_prefix, mask = string.match(self.subnet, "(.*)%.%d+/(%d+)")
     print("DockerNet:init_self", self.fo_ip_prefix,mask)
@@ -81,7 +90,7 @@ function DockerNet:cal_ip(ip_suffix, is_apply)
     else
         ret = string.format("%s.%s", self.fo_ip_prefix, ip_suffix)
     end
-    print("DockerNet:cal_ip ", ret, ip_suffix, is_apply, self._ip_dhcp_val)
+    -- print("DockerNet:cal_ip ", ret, ip_suffix, is_apply, self._ip_dhcp_val)
     return ret
 end
 
@@ -143,6 +152,14 @@ end
 ---@field image string
 EtcdServer = EtcdServer or class("EtcdServer", SettingBase)
 
+function EtcdServer:get_uuid()
+    return "etcd_server_" .. self.name
+end
+
+function EtcdServer:init_self()
+    self.docker_ip:init_self()
+end
+
 ---@class EtcdServerCluster
 ---@field server_list table<number, EtcdServer>
 ---@field user string
@@ -177,6 +194,14 @@ end
 ---@field db_path DockerVolumeUse
 ---@field image string
 RedisServer = RedisServer or class("RedisServer", SettingBase)
+
+function RedisServer:get_uuid()
+    return "redis_server_" .. self.name
+end
+
+function RedisServer:init_self()
+    self.docker_ip:init_self()
+end
 
 ---@class RedisServerCluster
 ---@field replicas number
@@ -217,6 +242,14 @@ end
 ---@field key_file_path DockerVolumeUse
 MongoDbServer = MongoDbServer or class("MongoDbServer", SettingBase)
 
+function MongoDbServer:get_uuid()
+    return "mongodb_server" .. self.name
+end
+
+function MongoDbServer:init_self()
+    self.docker_ip:init_self()
+end
+
 ---@class MongosServer
 ---@field name string
 ---@field locate_machine Machine
@@ -226,6 +259,14 @@ MongoDbServer = MongoDbServer or class("MongoDbServer", SettingBase)
 ---@field pid_file_path DockerVolumeUse
 ---@field key_file_path string
 MongosServer = MongosServer or class("MongosServer", SettingBase)
+
+function MongosServer:get_uuid()
+    return "mongos_server" .. self.name
+end
+
+function MongosServer:init_self()
+    self.docker_ip:init_self()
+end
 
 ---@class MongoRole
 ---@field name string
@@ -409,6 +450,14 @@ RemoteServer = RemoteServer or class("RemoteServer", SettingBase)
 ---@field mongo_cluster_map table<string, MongoServerCluster>
 GameServer = GameServer or class("GameServer", SettingBase)
 
+function GameServer:get_uuid()
+    return "game_server_" .. self.server_name
+end
+
+function GameServer:init_self()
+    self.docker_ip:init_self()
+end
+
 function GameServer:figure_out_fields()
     self.fo_port_mapping = {}
     if self.client_net_add.fo_port_mapping then
@@ -418,9 +467,6 @@ function GameServer:figure_out_fields()
     if self.http_net_add.fo_port_mapping then
         table.insert(self.fo_port_mapping, self.http_net_add.fo_port_mapping)
         -- self.fo_port_mapping[self.http_net_add.fo_port_mapping.docker_port] = self.http_net_add.fo_port_mapping.machine_port
-    end
-        if self.server_role == Game_Server_Role.workbench then
-        print("xxxxxxxxxxx", #self.fo_port_mapping, self.http_net_add.machine_port, self.http_net_add.fo_need_public_port)
     end
 end
 
