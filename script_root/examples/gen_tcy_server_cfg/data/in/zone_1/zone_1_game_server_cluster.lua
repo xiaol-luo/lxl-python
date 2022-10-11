@@ -144,7 +144,7 @@ do
     table.insert(game_server_cluster.server_list, item)
     item.server_role = Game_Server_Role.login
     item.server_name = string_concat(zone_name, "login_0")
-    item.locate_machine = machine_map[Machine_Name.ll]
+    item.locate_machine = machine_map[Machine_Name.mm]
     item.image = Image_Name.lxl_debian
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net

@@ -14,7 +14,7 @@ do
     table.insert(redis_cluster.server_list, item)
     item.name = string_concat(zone_name, "redis_1")
     item.image = Image_Name.lxl_debian
-    item.locate_machine = machine_map[Machine_Name.ll]
+    item.locate_machine = machine_map[Machine_Name.mm]
     item.docker_ip = DockerNetUse:new()
     item.docker_ip.docker_net = docker_net
     item.docker_ip.ip_suffix = "dhcp"
