@@ -1,4 +1,6 @@
 import os
+import parsimonious
+import logbook
 
 class ObEnglishUtils(object):
     Out_Article_Prefix = "oat_"
@@ -40,7 +42,8 @@ class ObEnglishUtils(object):
 
     @staticmethod
     def cal_out_article_name(_in_name):
-        in_name = ObEnglishUtils.extract_article_name(_in_name)
+        tmp_name = ObEnglishUtils.cal_article_name(_in_name)
+        in_name = ObEnglishUtils.extract_article_name(tmp_name)
         hit_pos = in_name.find(ObEnglishUtils.In_Article_Dir)
         if hit_pos < 0:
             return None
@@ -67,7 +70,8 @@ class ObEnglishUtils(object):
 
     @staticmethod
     def cal_raw_words_name(_in_name):
-        in_name = ObEnglishUtils.extract_article_name(_in_name)
+        tmp_name = ObEnglishUtils.cal_article_name(_in_name)
+        in_name = ObEnglishUtils.extract_article_name(tmp_name)
         hit_pos = in_name.find(ObEnglishUtils.In_Article_Dir)
         if hit_pos < 0:
             return None
@@ -103,3 +107,35 @@ class ObEnglishUtils(object):
         if ret:
             return ret
         assert(False)
+
+    @staticmethod
+    def content_word_set_link(content):
+        ret = None
+        grammer = parsimonious.grammar.Grammar(r"""
+            all = elem*
+            elem = word / other
+            word = ~r"[a-zA-Z]+"
+            other = ~r"[^a-zA-Z]+"
+        """)
+        try:
+            ast_tree = grammer.parse(content)
+            visitor = ConvertToLinkModeVisitor()
+            ret = visitor.visit(ast_tree)
+        except:
+            pass
+        return ret
+
+
+class ConvertToLinkModeVisitor(parsimonious.nodes.NodeVisitor):
+    def visit_all(self, node, visited_children):
+        ret = "".join(visited_children)
+        return ret
+
+    def visit_elem(self, node, visited_children):
+        return visited_children[0]
+
+    def visit_word(self, node, visited_children):
+        return "[[{0}]]".format(node.text)
+
+    def visit_other(self, node, visited_children):
+        return node.text
