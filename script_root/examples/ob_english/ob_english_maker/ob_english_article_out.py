@@ -149,6 +149,13 @@ class ObEnglishArticleOut(object):
             if sentence.content and not sentence.translation:
                 sentence.translation = translate_map[sentence.content]
 
+    def reuse_translate(self, old_article):
+        for sentence in self.sentence_list:
+            if sentence.content and not sentence.translation:
+                for elem in old_article.sentence_list:
+                    if elem.translation and elem.content == sentence.content:
+                        sentence.translation = elem.translation
+
 
 class ArticleOutAstVisitor(parsimonious.nodes.NodeVisitor):
     def __init__(self):
