@@ -6,6 +6,7 @@ from script_root.libs.common.code_help import IndentFlag
 from . import tt
 from .ob_english_maker.ob_english_article_out import ObEnglishArticleOut
 from .ob_english_maker.ob_english_maker import ObEnglishMaker, ObEnglishUtils
+from .ob_english_maker import ob_english_article_out
 
 
 def main(arg_list):
@@ -22,11 +23,18 @@ def main(arg_list):
     note_maker = ObEnglishMaker(parse_ret.notebook)
     note_maker.setup_workspace()
 
-    note_maker.handle_article("hello.md")
-
     with IndentFlag():
-        out_article = ObEnglishArticleOut.create_from_file(note_maker, "test.md")
-        out_article.to_content()
+        article = note_maker.handle_article("test.md")
+
+        out_article_name = ObEnglishUtils.cal_out_article_name("test.md")
+
+        #out_article_1: ob_english_article_out.ObEnglishArticleOut = ob_english_article_out.ObEnglishArticleOut.create_from_article(
+        #    note_maker, article)
+        # out_article_1.save()
+
+        out_article_2:ob_english_article_out.ObEnglishArticleOut = ob_english_article_out.ObEnglishArticleOut.create_from_file(
+            note_maker, out_article_name)
+        out_article_2.save()
 
     note_maker.save_workspace()
 

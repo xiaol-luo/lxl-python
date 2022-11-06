@@ -29,15 +29,21 @@ class ObEnglishUtils(object):
     def extract_word(in_str):
         ret = os.path.basename(in_str)
         while ret.endswith(".md"):
-            ret = ret[:len(".md")]
+            ret = ret[:-len(".md")]
         return ret
 
     @staticmethod
     def cal_article_name(in_name):
-        ret = in_name
+        hit_pos = in_name.find(ObEnglishUtils.Out_Article_Dir)
+        if hit_pos >= 0:
+            return ObEnglishUtils.extract_article_name_from_out_article(in_name)
+        hit_pos = in_name.find(ObEnglishUtils.Raw_Words_Dir)
+        if hit_pos >= 0:
+            return ObEnglishUtils.extract_article_name_from_raw_words(in_name)
         hit_pos = in_name.find(ObEnglishUtils.In_Article_Dir)
-        if hit_pos < 0:
-            in_name = ObEnglishUtils.In_Article_Dir + "/" + in_name
+        if hit_pos >= 0:
+            return in_name
+        in_name = ObEnglishUtils.In_Article_Dir + "/" + in_name
         return in_name
 
     @staticmethod

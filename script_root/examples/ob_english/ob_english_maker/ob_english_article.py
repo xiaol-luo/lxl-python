@@ -5,6 +5,7 @@ import logbook
 import typing
 
 from . import ob_english_maker
+from . import ob_english_article_out
 import script_root.libs.utils.file_utils as file_utils
 
 
@@ -25,7 +26,7 @@ class ObEnglishArticle(object):
     maker:ob_english_maker.ObEnglishMaker
     name:str
     content:str
-    lines:typing.List[ArticleAstVisitorSentence]
+    sentience_list:typing.List[ArticleAstVisitorSentence]
 
     def __init__(self, maker:ob_english_maker.ObEnglishMaker):
         super(ObEnglishArticle, self).__init__()
@@ -37,7 +38,7 @@ class ObEnglishArticle(object):
     def load(self):
         file_path = self.maker.work_path.joinpath(self.name)
         if file_path.is_file():
-            self.content = file_utils.read_file(file_path.as_posix())
+            self.content = file_utils.read_file(file_path.as_posix(), encoding="utf-8")
         else:
             self.content = ""
         self.parse_content()
@@ -63,6 +64,7 @@ class ObEnglishArticle(object):
                 self.maker.get_word(word)
 
 
+
 class ArticleAstVisitor(parsimonious.nodes.NodeVisitor):
     def __init__(self, article:ObEnglishArticle):
         super(ArticleAstVisitor, self).__init__()
@@ -77,7 +79,7 @@ class ArticleAstVisitor(parsimonious.nodes.NodeVisitor):
             line_content = elem[1]
             # logbook.debug("ArticleAstVisitor.visit_all line {} {}", line_content, words)
             line_data = ArticleAstVisitorSentence()
-            line_data.content = line_content
+            line_data.content = line_content.replace("\r\n"," ").replace("\n", " ").strip(" ")
             line_data.words = words
             ret.append(line_data)
         return ret

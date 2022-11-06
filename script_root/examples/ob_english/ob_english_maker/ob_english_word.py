@@ -36,7 +36,7 @@ class ObEnglishWord(object):
         file_path = self.maker.work_path.joinpath(self.name)
         all_lines = None
         if file_path.is_file():
-            all_lines = file_utils.read_all_lines(file_path.as_posix())
+            all_lines = file_utils.read_all_lines(file_path.as_posix(), encoding='utf-8')
         else:
             all_lines = []
         self.content = "\n".join(all_lines)
@@ -47,7 +47,7 @@ class ObEnglishWord(object):
 
     def save(self):
         file_path = self.maker.work_path.joinpath(self.name)
-        file_utils.write_file(file_path.as_posix(), "\n".join([self.word, self.translation]))
+        file_utils.write_file(file_path.as_posix(), "\n".join([self.word, self.translation]), encoding="utf-8")
 
     def do_translate(self):
         if not self.translation:

@@ -1,9 +1,9 @@
 
 
-{%- for elem in sentence_list %}
+{% for elem in sentence_list %}
 - {{elem.content|set_link}}
 > {{elem.translation}}
-{%- endfor %}
+{% endfor %}
 
 <!--__date__
 {{date}}
@@ -12,6 +12,7 @@ __date__-->
 <!--__sentence__
 {%- for elem in sentence_list %}
 {{elem.content}}
+========== Content And Translate  ==========
 {{elem.translation}}
 ========== GGGGGGGG  ==========
 {%- endfor %}

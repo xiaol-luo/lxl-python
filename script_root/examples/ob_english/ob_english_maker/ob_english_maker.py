@@ -8,12 +8,7 @@ import os.path
 from .ob_english_word import ObEnglishWord
 from .ob_english_article import ObEnglishArticle
 from .ob_english_utils import ObEnglishUtils
-
-class ObEnglishOutArticle(object):
-    def __init__(self):
-        super(ObEnglishOutArticle, self).__init__()
-        self.name = ""
-        self.content = ""
+from . import ob_english_article_out
 
 
 class ObEnglishLine(object):
@@ -52,12 +47,16 @@ class ObEnglishMaker(object):
                 self.get_word(word, True)
 
     def save_workspace(self):
+        self.check_translate_words()
         for v in self.word_map.values():
             v.save()
 
-    def handle_article(self, article_name: str):
-        article_path = self.work_path.joinpath(article_name)
-        logbook.debug("handle_article {0} {1}", self.work_path, article_path)
+    def handle_article(self, _article_name: str):
+        article_name = ObEnglishUtils.cal_article_name(_article_name)
+        article = ObEnglishArticle(self)
+        article.name = article_name
+        article.load()
+        return article
 
 
     def get_word(self, word:str, is_add_not_exist=True)->ObEnglishWord:
@@ -70,6 +69,23 @@ class ObEnglishMaker(object):
             ret.load()
             ret.check_translate()
         return ret
+
+    def check_translate_words(self):
+        wait_translate_list = []
+        for elem in self.word_map.values():
+            if elem.word and not elem.translation:
+                wait_translate_list.append(elem.word)
+        if len(wait_translate_list) <= 0:
+            return
+        from ..translate import translator
+        ret_list = translator.translate_words(wait_translate_list)
+        translate_map = {}
+        for i in range(0, len(wait_translate_list)):
+            translate_map[wait_translate_list[i]] = ret_list[i]
+        for word in wait_translate_list:
+            w = self.get_word(word, False)
+            w.translation = translate_map[word]
+
 
 
 
