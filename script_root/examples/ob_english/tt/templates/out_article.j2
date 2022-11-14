@@ -3,7 +3,7 @@
 > {{elem.translation}}
 {% endfor %}
 
-### RAW WORDS
+### RAW WORDS {{ raw_word_list|length }}
 {%- for elem in raw_word_list %}
 {{elem.word|set_link}} {% for i in range(0, 64-elem.word|length) -%} &nbsp {%- endfor %} {{elem.translation|replace("\n", ";")}}
 {%- endfor %}
