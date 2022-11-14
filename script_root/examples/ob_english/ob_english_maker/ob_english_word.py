@@ -39,9 +39,9 @@ class ObEnglishWord(object):
             all_lines = file_utils.read_all_lines(file_path.as_posix(), encoding='utf-8')
         else:
             all_lines = []
-        self.content = "\n".join(all_lines)
-        if len(all_lines) > 0:
-            self.translation = "\n".join(all_lines[1:])
+        self.content = "".join(all_lines)
+        if len(all_lines) > 1:
+            self.translation = "".join(all_lines[1:])
         else:
             self.translation = ""
 

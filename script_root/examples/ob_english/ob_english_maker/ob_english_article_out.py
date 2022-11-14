@@ -10,11 +10,12 @@ from . import ob_english_article
 from .. import tt
 import script_root.libs.utils.file_utils as file_utils
 import os
+import datetime
 
 
 class ArticleSentence(object):
-    content:str
-    translation:str
+    content: str
+    translation: str
 
     def __init__(self):
         super(ArticleSentence, self).__init__()
@@ -26,25 +27,47 @@ class ArticleSentence(object):
 
 
 class ObEnglishArticleOut(object):
-    maker:ob_english_maker.ObEnglishMaker
-    name:str
-    raw_word_set:typing.Set[str]
-    sentence_list:typing.List[ArticleSentence]
+    maker: ob_english_maker.ObEnglishMaker
+    name: str
+    date: str
+    raw_word_set: typing.Set[str]
+    sentence_list: typing.List[ArticleSentence]
 
-    def __init__(self, maker:ob_english_maker.ObEnglishMaker):
+    def __init__(self, maker: ob_english_maker.ObEnglishMaker):
         super(ObEnglishArticleOut, self).__init__()
         self.maker = maker
         self.name = ""
-        self.date = None
+        self.date = ""
         self.raw_word_set = set()
         self.sentence_list = []
 
+    @property
+    def create_date(self) -> datetime.datetime:
+        ret = None
+        if len(self.date) > 0:
+            ret = datetime.datetime.fromisoformat(self.date)
+        return ret
+
+    def update_from_other(self, other: ObEnglishArticleOut):
+        if other.date:
+            self.date = other.date
+        self.raw_word_set.update(other.raw_word_set)
+        old_sentence_list = self.sentence_list
+        self.sentence_list = []
+        for i in other.sentence_list:
+            st = ArticleSentence()
+            self.sentence_list.append(st)
+            st.content = i.content
+            for j in old_sentence_list:
+                if i.content == j.content:
+                    st.translation = j.translation
+
     @staticmethod
-    def create_from_article(maker:ob_english_maker.ObEnglishMaker, article:ob_english_article.ObEnglishArticle):
+    def create_from_article(maker: ob_english_maker.ObEnglishMaker, article: ob_english_article.ObEnglishArticle):
         ret = ObEnglishArticleOut(maker)
         ret.name = ob_english_maker.ObEnglishUtils.cal_out_article_name(article.name)
         ret.date = ""
-        sentence:ob_english_article.ArticleAstVisitorSentence
+        sentence: ob_english_article.ArticleAstVisitorSentence
         for sentence in article.sentience_list:
             st = ArticleSentence()
             st.content = sentence.content
@@ -54,7 +77,6 @@ class ObEnglishArticleOut(object):
                 maker.get_word(word, True)
                 ret.raw_word_set.add(word)
         return ret
-
 
     @staticmethod
     def create_from_file(maker, name):
@@ -82,13 +104,13 @@ class ObEnglishArticleOut(object):
             date_block_end = ~r"[\s]*__date__-->[\s]*"
             
             raw_word_block = raw_word_block_begin raw_word_block_content raw_word_block_end
-            raw_word_block_begin = ~r"[\s]*<!--__raw_word__[\s]*"
+            raw_word_block_begin = ~r"<!--__raw_word__[\s]*"
             raw_word_block_content = raw_word_block_word*
-            raw_word_block_word = ~r"[^\n]*\n"
+            raw_word_block_word = ~r"[a-zA-Z]+[\s]*"
             raw_word_block_end = ~r"[\s]*__raw_word__-->[\s]*"
             
             sentence_block = sentence_block_begin sentence_block_content sentence_block_end
-            sentence_block_begin = ~r"[\s]*<!--__sentence__[\s]*"
+            sentence_block_begin =  ~r"[\s]*<!--__sentence__[\s]*"
             sentence_block_content = sentence_block_content_unit*
             sentence_block_content_unit = sentence_block_content_original sentence_block_content_gap sentence_block_content_translate sentence_block_content_end_gap
             sentence_block_content_gap = ~r"[/s]*========== Content And Translate  ==========\n[/s]*"
@@ -98,7 +120,7 @@ class ObEnglishArticleOut(object):
             sentence_block_word = ~r"[^\n]*\n"
             sentence_block_end = ~r"[\s]*__sentence__-->[\s]*"
             
-            line = line_with_end / line_elems 
+            line = line_with_end / line_elems
             line_with_end = line_elems line_end 
             line_elems = line_elem*
             line_elem = word / chinese_word / line_any
@@ -119,14 +141,21 @@ class ObEnglishArticleOut(object):
                 self.maker.get_word(elem, True)
 
     def to_content(self):
+        raw_word_list = []
+        sorted_word_list = list(self.raw_word_set)
+        sorted_word_list.sort()
+        for e in sorted_word_list:
+            raw_word_list.append(self.maker.get_word(e, True))
         is_ok, out_content = tt.render("out_article.j2",
-                  date=self.date,
-                  sentence_list=self.sentence_list,
-                  raw_word_list=list(self.raw_word_set))
+                                       date=self.date,
+                                       sentence_list=self.sentence_list,
+                                       raw_word_list=raw_word_list)
         return is_ok and out_content or None
 
     def save(self):
         self.check_translate()
+        if not self.date:
+            self.date = datetime.datetime.now().isoformat()
         out_content = self.to_content()
         if out_content:
             out_file = self.maker.work_path.joinpath(self.name)
@@ -172,23 +201,23 @@ class ArticleOutAstVisitor(parsimonious.nodes.NodeVisitor):
             if block.expr_name == "line":
                 continue
             if block.expr_name == "date_block":
-                content_node:parsimonious.nodes.Node = block.children[1]
+                content_node: parsimonious.nodes.Node = block.children[1]
                 assert content_node.expr_name == "date_block_content"
                 ret["date"] = content_node.text
             if block.expr_name == "sentence_block":
-                content_node:parsimonious.nodes.Node = block.children[1]
+                content_node: parsimonious.nodes.Node = block.children[1]
                 assert content_node.expr_name == "sentence_block_content"
-                unit:parsimonious.nodes.Node
+                unit: parsimonious.nodes.Node
                 for unit in content_node.children:
                     assert unit.expr_name == "sentence_block_content_unit"
-                    original_st:parsimonious.nodes.Node = unit.children[0]
-                    translate_st:parsimonious.nodes.Node = unit.children[2]
+                    original_st: parsimonious.nodes.Node = unit.children[0]
+                    translate_st: parsimonious.nodes.Node = unit.children[2]
                     st = ArticleSentence()
                     st.content = original_st.text.strip("\n")
                     st.translation = translate_st.text.strip("\n")
                     ret["sentence_list"].append(st)
             if block.expr_name == "raw_word_block":
-                content_node:parsimonious.nodes.Node = block.children[1]
+                content_node: parsimonious.nodes.Node = block.children[1]
                 assert content_node.expr_name == "raw_word_block_content"
                 for elem in content_node.children:
                     ret["raw_word_list"].append(elem.text.strip("\n"))
@@ -302,4 +331,3 @@ class ArticleOutAstVisitor(parsimonious.nodes.NodeVisitor):
     def visit_sentence_block_content_end_gap(self, node, visited_children):
         logbook.debug("ArticleAstVisitor.visit_sentence_block_content_gap {}", node.text)
         return node
-

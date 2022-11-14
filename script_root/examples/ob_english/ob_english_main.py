@@ -34,10 +34,11 @@ def main(arg_list):
 
         out_article_2:ob_english_article_out.ObEnglishArticleOut = ob_english_article_out.ObEnglishArticleOut.create_from_file(
             note_maker, out_article_name)
-        # out_article_2.save()
-        out_article_1.reuse_translate(out_article_2)
-        out_article_1.save()
+        out_article_2.update_from_other(out_article_1)
+        out_article_2.save()
 
+        # out_article_1.reuse_translate(out_article_2)
+        # out_article_1.save()
 
     note_maker.save_workspace()
 

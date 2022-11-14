@@ -1,9 +1,12 @@
-
-
 {% for elem in sentence_list %}
 - {{elem.content|set_link}}
 > {{elem.translation}}
 {% endfor %}
+
+### RAW WORDS
+{%- for elem in raw_word_list %}
+{{elem.word|set_link}} {% for i in range(0, 64-elem.word|length) -%} &nbsp {%- endfor %} {{elem.translation|replace("\n", ";")}}
+{%- endfor %}
 
 <!--__date__
 {{date}}
@@ -20,6 +23,7 @@ __sentence__-->
 
 <!--__raw_word__
 {%- for elem in raw_word_list %}
-{{elem}}
+{{elem.word}}
 {%- endfor %}
 __raw_word__-->
+
