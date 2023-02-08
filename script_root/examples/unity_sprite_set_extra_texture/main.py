@@ -38,6 +38,7 @@ class AnimData(object):
     stop_time: float
     image_time_list: typing.List[float]
     file_info: UnityFileInfo
+    is_loop: int
 
     def __init__(self):
         super(AnimData, self).__init__()
@@ -49,6 +50,7 @@ class AnimData(object):
         self.stop_time = 0
         self.last_frame_begin_time = 0
         self.file_info = None
+        self.is_loop = 1
 
 class AnimControllerData(object):
     name: str
@@ -135,6 +137,9 @@ def main(arg_list):
             if not os.path.isdir(anim_res_dir):
                 continue
             anim_data = AnimData()
+            anim_data.is_loop = 1
+            if anim_name == "turn":
+                anim_data.is_loop = 0
             anim_data.name = anim_name
             anim_ctrl_data.anim_data_map[anim_data.name] = anim_data
             anim_data.file_info = UnityFileInfo()
