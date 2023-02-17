@@ -38,3 +38,6 @@ logging.debug("%s %s", ret.returncode, ret.stdout)
 #subprocess.check_output -> stdout
 #subprocess.getoutput ->stdout
 #subprocess.getstatusoutput ->returncode, stdout
+
+
+

@@ -6,6 +6,7 @@ import importlib
 import argparse
 import logbook
 
+
 def log_formatter(record: logbook.LogRecord, handler: logbook.Handler)->typing.NoReturn:
     record.lineno
     record.func_name
@@ -81,3 +82,4 @@ for elem in parse_ret.exec:
             logbook.error("not found exec_fun {}", elem)
             sys.exit(-20400)
         exec_fun(exec_args)
+

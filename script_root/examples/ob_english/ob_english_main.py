@@ -7,6 +7,7 @@ from . import tt
 from .ob_english_maker.ob_english_article_out import ObEnglishArticleOut
 from .ob_english_maker.ob_english_maker import ObEnglishMaker, ObEnglishUtils
 from .ob_english_maker import ob_english_article_out
+from .translate import translator
 
 
 def main(arg_list):
@@ -16,6 +17,10 @@ def main(arg_list):
     arg_parser.add_argument("--action")
     parse_ret = arg_parser.parse_args(arg_list)
     logbook.debug("parse_ret {}", parse_ret)
+
+    if True:
+        translator.test()
+        return
 
     tt.set_filter("set_link", ObEnglishUtils.content_word_set_link)
     ObEnglishUtils.ensure_dirs(parse_ret.notebook)
@@ -39,7 +44,6 @@ def main(arg_list):
 
         # out_article_1.reuse_translate(out_article_2)
         # out_article_1.save()
-
     note_maker.save_workspace()
 
 

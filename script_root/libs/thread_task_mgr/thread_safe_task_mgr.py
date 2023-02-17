@@ -3,7 +3,8 @@ import typing
 
 FnParam = typing.ParamSpec("FnParam")
 FnRet = typing.Optional[typing.List[typing.Any]]
-
+Task_Fn = typing.Callable[[FnParam], FnRet]
+Task_Callback_Fn = typing.Callable[[typing.Concatenate[bool, FnParam]], typing.NoReturn]
 
 class Task(object):
     fn: typing.Callable[[FnParam], FnRet]

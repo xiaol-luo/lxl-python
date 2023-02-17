@@ -20,6 +20,20 @@ def _main():
     print(rsp.text)
 
 
-
 if __name__ == "__main__":
-    _main()
+    # _main()
+    json_str = '''   
+{
+  "msgParam" : "String",
+  "msgKey" : "String",
+  "openConversationId" : "String",
+  "robotCode" : "String",
+}
+    '''
+    dt = {}
+    dt["msgParam"] = '{"content":"1"}'
+    dt["msgKey"] = "sampleText"
+    dt["openConversationId"] = "a"
+    dt["robotCode"] = "dingwehpxwcu9ou51pok"
+    ss = requests.session()
+    ss.post("https://api.dingtalk.com/v1.0/robot/groupMessages/send", )
