@@ -15,6 +15,7 @@ def log_formatter(record: logbook.LogRecord, handler: logbook.Handler)->typing.N
 log_format_string = '[{record.time:%Y-%m-%d %H:%M:%S.%f%z}] {record.level_name}: [{record.filename}:{record.lineno}] {record.message}'
 logbook.StreamHandler(sys.stdout, format_string=log_format_string).push_application()
 
+logbook.debug("reach here")
 
 def split_args(arg_list: typing.List[str]) -> typing.Tuple[typing.List[str], typing.List[str]]:
     entrance_args = None

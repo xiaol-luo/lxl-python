@@ -11,6 +11,7 @@ from ..bottle import FormsDict
 from libs.gevent_ext.gevent_cmd import GeventCmd
 import enum
 from .app_setting import get_setting
+from ..dd_robot_client.dd_robot_client import DDRobotClient
 
 
 def _print_dict(dt: FormsDict, tag=""):
@@ -30,13 +31,15 @@ class AppDD(WebApp):
     web_ins: WebIns
     app_secret: str
     _cmd_map: typing.Dict[str, GeventCmd]
+    robot_client: DDRobotClient
 
-    def __init__(self, web_ins: WebIns):
+    def __init__(self, web_ins: WebIns, app_secret, robot_client: DDRobotClient):
         super(AppDD, self).__init__(web_ins)
         self._last_uuid = 0
-        self.app_secret = "ayrkHs1qser_7WVQWMY3ytz3rBFFvAHvv8VkLPGtgTkNnvQo4Q1LcCGMeDVVT-Mw"
+        self.app_secret = app_secret
         self._cmd_dt = {}
         self._setting = get_setting()
+        self.robot_client = robot_client
         logbook.debug("_setting {}", self._setting)
 
     @staticmethod
@@ -89,7 +92,7 @@ class AppDD(WebApp):
 
         from .app_dd_task import AppDDTask_BuildAndroid
         app_setting = get_setting()
-        task = AppDDTask_BuildAndroid(app_setting)
+        task = AppDDTask_BuildAndroid(app_setting, self.robot_client)
         task.start()
         gevent.joinall([task])
 
@@ -133,7 +136,7 @@ class AppDD(WebApp):
 
     def _on_bind_methods(self):
         self.web_ins.route("/hello", method="POST", callback=self.dd_cmd)
-        # self.web_ins.route("/hello", method="GET", callback=self.hello)
+        self.web_ins.route("/hello", method="GET", callback=self.hello)
         # self.web_ins.route("/xxx", callback=self.xxx)
-        self.web_ins.route("/dd_cmd", method="POST", callback=self.dd_cmd)
-        self.web_ins.route("/dd_cmd", method="GET", callback=self.dd_cmd)
+        self.web_ins.route("/ddcmd", method="POST", callback=self.dd_cmd)
+        self.web_ins.route("/ddcmd", method="GET", callback=self.dd_cmd)

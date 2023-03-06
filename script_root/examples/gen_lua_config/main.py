@@ -1,4 +1,6 @@
 import argparse
+import os
+
 import logbook
 
 from .impl.setting_parser import SettingParser
@@ -12,6 +14,8 @@ def main(arg_list):
 
     for (k, v) in vars(parse_ret).items():
         logbook.debug("k, v: {} {}", k, v)
+
+    logbook.debug("working dir {}", os.getcwd())
 
     setting_parser = SettingParser()
     setting_parser.parse_file(parse_ret.setting_file)

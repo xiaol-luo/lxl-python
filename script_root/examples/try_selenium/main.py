@@ -1,5 +1,6 @@
 import logbook
 from seleniumwire import  webdriver
+# import selenium.webdriver as webdriver
 from selenium.webdriver.common.by import By as FindElemBy
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
@@ -14,6 +15,7 @@ def response_interceptor(request, response):
 def main(arg_list):
     logbook.debug("1111111111111111")
 
+    # driver = webdriver.Chrome()
     driver = webdriver.Chrome()
 
     driver.response_interceptor = response_interceptor

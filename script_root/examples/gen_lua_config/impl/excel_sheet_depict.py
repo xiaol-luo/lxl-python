@@ -85,7 +85,7 @@ class SheetDepict(object):
                 if self.min_column < 0:
                     continue
                 else:
-                    break
+                    continue
             if self.min_column < 0:
                 self.min_column = name_cell.col_idx
             self.max_column = name_cell.col_idx
