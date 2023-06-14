@@ -21,6 +21,7 @@ def main(arg_list):
     setting_parser.parse_file(parse_ret.setting_file)
 
     for item in setting_parser.output_list:
+        logbook.debug("parse_sheet_depict {} {}", item.excel_path, item.sheet_name)
         sheet_depict = parse_sheet_depict(item.excel_path, item.sheet_name)
         if sheet_depict:
             gen_lua_config(sheet_depict, item.out_lua_file)

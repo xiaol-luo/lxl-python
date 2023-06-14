@@ -52,7 +52,7 @@ class SheetFieldType(object):
     def parse_type(type_str):
         ret = False
         field_type = key_type = val_type = SheetFieldType.Min
-        type_str = type_str.strip()
+        type_str = str.lower(type_str.strip())
         if not ret:  # base
             ret, field_type = SheetFieldType._parse_base_type(type_str)
         if not ret:  # vecvec
@@ -116,7 +116,7 @@ class SheetFieldType(object):
                         ret = True
                 if not parse_succ:
                     field_type = key_type = val_type = SheetFieldType.Min
-        return True, field_type, key_type, val_type
+        return ret, field_type, key_type, val_type
 
     @staticmethod
     def _parse_base_type(type_str):

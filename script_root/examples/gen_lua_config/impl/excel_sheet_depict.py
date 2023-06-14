@@ -96,9 +96,9 @@ class SheetDepict(object):
             sheet_field.field_type = SheetFieldType()
             str_list = str.split(type_cell.value, ";")
             field_type_str = str_list[0]
-            if len(str_list) <= 0 or len(str_list[0]) <= 0:
+            if len(str_list) <= 0 or len(field_type_str) <= 0:
                 return False
-            ret, sheet_field.field_type, sheet_field.field_key_type, sheet_field.field_value_type = SheetFieldType.parse_type(str_list[0])
+            ret, sheet_field.field_type, sheet_field.field_key_type, sheet_field.field_value_type = SheetFieldType.parse_type(field_type_str)
             if not ret:
                 return False
             if "config_id" == name_cell.value:
